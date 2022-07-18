@@ -13,7 +13,7 @@ emergency_planning_tool <- function() {
       ),
   fluidRow(
         # Table of top drivers of vulnerability for clicked LSOA (module)
-        topDriversOutput("test")
+        topDriversTableOutput("test")
       )
     )
   
@@ -59,7 +59,7 @@ emergency_planning_tool <- function() {
     )
 
     # Table of top drivers of vulnerability for clicked LSOA (module)
-    topDriversServer("test",
+    topDriversTableServer("test",
       vuln_drivers = vuln_drivers_flood,
       lsoas_clicked = lsoas_clicked_global
     )

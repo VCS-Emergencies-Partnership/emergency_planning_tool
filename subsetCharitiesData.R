@@ -1,5 +1,5 @@
 # Server ----
-subsetCharityDataServer <- function(id, charities_data, charities_ltla_lookup_data, ltlas_for_filtering) {
+subsetCharitiesDataServer <- function(id, charities_data, charities_ltla_lookup_data, ltlas_for_filtering) {
   
   # Checks to ensure the inputs are reactive
   stopifnot(is.reactive(ltlas_for_filtering))
@@ -25,12 +25,12 @@ subsetCharityDataServer <- function(id, charities_data, charities_ltla_lookup_da
 # charities_ltla_lookup <- read_rds("data/charities_ltla_lookup.rds")
 # charities_data <- read_rds("data/charities_list_latlong.rds")
 # 
-# subsetCharityDataTest <- function() {
+# subsetCharitiesDataTest <- function() {
 #   ui <- fluidPage(
 # 
 #   )
 #   server <- function(input, output, session) {
-#     charities_subset <-  subsetCharityDataServer(
+#     charities_subset <-  subsetCharitiesDataServer(
 #       "test",
 #       charities_data = charities_data,
 #       charities_ltla_lookup_data = charities_ltla_lookup,
@@ -43,4 +43,4 @@ subsetCharityDataServer <- function(id, charities_data, charities_ltla_lookup_da
 # }
 # 
 # # Run test
-# subsetCharityDataTest()
+# subsetCharitiesDataTest()

@@ -1,27 +1,31 @@
 # UI -----
-charityMapUI <- function(id) {
+charitiesMapUI <- function(id) {
   leafletOutput(
-    NS(id, "charity_map"),
+    NS(id, "charities_map"),
     height = 630
   )
 }
 
 # Server -----
-charityMapServer <- function(id, charities_data_subset) {
+charitiesMapServer <- function(id, charities_data_subset) {
 
-  # Checks to ensure the input is reactive (data input not reactive)
+  # Checks to ensure the input is reactive 
   stopifnot(is.reactive(charities_data_subset))
 
   moduleServer(id, function(input, output, session) {
-    output$charity_map <- renderLeaflet({
+    output$charities_map <- renderLeaflet({
 
       # only plot the charities where the contact info is within the chosen LTLA
-      charities_for_map <- charities_data_subset() |>
+      charities_within_area <- charities_data_subset() |>
         dplyr::filter(flag_contact_in_ltla == TRUE) |>
         # avoided replace_na() as from tidyr (package not used elsewhere yet)
-        mutate_at(c("charity_contact_web", "charity_contact_email", "charity_contact_phone", "charity_activities"),  ~replace(., is.na(.), "-")) 
+        mutate_at(c("charity_contact_web", 
+                    "charity_contact_email", 
+                    "charity_contact_phone", 
+                    "charity_activities"),  
+                  ~replace(., is.na(.), "-")) 
       
-      charities_for_map |>
+      charities_within_area |>
         leaflet() |>
         addProviderTiles(providers$CartoDB.Positron) |>
         addCircleMarkers(~long,
@@ -29,11 +33,11 @@ charityMapServer <- function(id, charities_data_subset) {
                           label = ~charity_name,
                           clusterOptions = markerClusterOptions(),
                          popup = paste0(
-                           "<b> Name: </b>", charities_for_map$charity_name, "<br>",
-                           "<b> Web: </b>", charities_for_map$charity_contact_web, "<br>",
-                           "<b> Email: </b>", charities_for_map$charity_contact_email, "<br>",
-                           "<b> Phone: </b>", charities_for_map$charity_contact_phone, "<br>",
-                           "<b> Actvities: </b>", charities_for_map$charity_activities
+                           "<b> Name: </b>", charities_within_area$charity_name, "<br>",
+                           "<b> Web: </b>", charities_within_area$charity_contact_web, "<br>",
+                           "<b> Email: </b>", charities_within_area$charity_contact_email, "<br>",
+                           "<b> Phone: </b>", charities_within_area$charity_contact_phone, "<br>",
+                           "<b> Actvities: </b>", charities_within_area$charity_activities
                          )
                          
         )
@@ -48,9 +52,9 @@ charityMapServer <- function(id, charities_data_subset) {
 # charities_ltla_lookup <- read_rds("data/charities_ltla_lookup.rds")
 # charities_data <- read_rds("data/charities_list_latlong.rds")
 # 
-# source("subsetCharityData.R")
+# source("subsetCharitiesData.R")
 # 
-# charityMapTest <- function() {
+# charitiesMapTest <- function() {
 #   ui <- fluidPage(
 #     charityMapUI("test"),
 #   )
@@ -63,11 +67,11 @@ charityMapServer <- function(id, charities_data_subset) {
 #       ltlas_for_filtering = reactive(c("E08000014"))
 #     )
 # 
-#     charityMapServer("test",
+#     charitiesMapServer("test",
 #       charities_data_subset = charities_subset_test
 #     )
 #   }
 #   shinyApp(ui, server)
 # }
 # 
-# charityMapTest()
+# charitiesMapTest()

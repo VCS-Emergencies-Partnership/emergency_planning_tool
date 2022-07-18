@@ -1,5 +1,5 @@
 # UI ----
-topDriversOutput <- function(id) {
+topDriversTableOutput <- function(id) {
   tagList(
     textOutput(NS(id, "lsoas_clicked_name")),
     tableOutput(NS(id, "top_drivers_table"))
@@ -7,7 +7,7 @@ topDriversOutput <- function(id) {
 }
 
 # Server ----
-topDriversServer <- function(id, vuln_drivers, lsoas_clicked) {
+topDriversTableServer <- function(id, vuln_drivers, lsoas_clicked) {
 
   # Checks to ensure the inputs are reactive (data not reactive)
   stopifnot(is.reactive(lsoas_clicked))
@@ -35,16 +35,16 @@ topDriversServer <- function(id, vuln_drivers, lsoas_clicked) {
 
 # vuln_drivers_flood <- read_rds("data/flooding_drivers.rds")
 #
-# topDriversTest <- function() {
+# topDriversTableTest <- function() {
 #   ui <- fluidPage(
-#     topDriversOutput("test")
+#     topDriversTableOutput("test")
 #   )
 #   server <- function(input, output, session) {
-#     topDriversServer("test",
+#     topDriversTableServer("test",
 #                      vuln_drivers = vuln_drivers_flood,
 #                      lsoas_clicked = reactive(c("E01000001")))
 #   }
 #   shinyApp(ui, server)
 # }
 # # Run test
-# topDriversTest()
+# topDriversTableTest()

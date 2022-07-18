@@ -17,7 +17,9 @@ vulnMapServer <- function(id, lsoa_vuln_scores_sf_subset, lsoas_clicked) {
 
     output$vuln_map <- renderLeaflet({
       
-      pal <- colorBin("Reds", domain = lsoa_vuln_scores_sf_subset()$vulnerability_quantiles, bins = c(1:10))
+      pal <- colorBin("Reds", 
+                      domain = lsoa_vuln_scores_sf_subset()$vulnerability_quantiles, 
+                      bins = c(1:10))
       
       lsoa_vuln_scores_sf_subset() |>
         leaflet() |>
