@@ -18,18 +18,18 @@ selectAreasDropdownServer <- function(id, selected_ltlas) {
   moduleServer(id, function(input, output, session) {
     observeEvent(input$selectAreasDropdown,
       {
-        selected_ltlas$ltlas <- input$selectAreasDropdown
+        selected_ltlas(input$selectAreasDropdown)
       },
       ignoreNULL = FALSE
     )
 
     # This sits in its own observer because it needs to track any changes to
     # the global `selected_ltlas$ltlas` reactive values, not just the selectizeInput
-    observeEvent(selected_ltlas$ltlas, {
+    observeEvent(selected_ltlas(), {
       updateSelectizeInput(
         session,
         "selectAreasDropdown",
-        selected = selected_ltlas$ltlas
+        selected = selected_ltlas()
       )
     })
   })
@@ -46,9 +46,9 @@ selectAreasDropdownServer <- function(id, selected_ltlas) {
 #     selectAreasDropdownUI("test")
 #   )
 #   server <- function(input, output, session) {
-#     selected_ltlas <- reactiveValues(ltlas = c())
+#     selected_ltlas <- reactiveVal(vector())
 # 
-#     selectAreasDropdownServer("test", 
+#     selectAreasDropdownServer("test",
 #                                selected_ltlas = selected_ltlas)
 #   }
 #   shinyApp(ui, server)

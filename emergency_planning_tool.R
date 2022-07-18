@@ -67,8 +67,8 @@ emergency_planning_tool <- function() {
     # Selected Areas - Server -------------
 
     # Set an empty global reactive values list to be passed between modules
-    selected_ltlas <- reactiveValues(ltlas = c())
-    selected_lsoas <- reactiveValues(lsoas = c())
+    selected_ltlas <- reactiveVal(vector())
+    selected_lsoas <- reactiveVal(vector())
 
     # To be replaced with selected values from page 1
     # lsoas_selected <- reactive({
@@ -100,15 +100,11 @@ emergency_planning_tool <- function() {
 
     observeEvent(input$selected_area_button, {
       # Once click button then find the LSOAs within the selected_ltlas
-      variable <- reactive({
-        lsoa_ltla_lookup |>
-          filter(ltla21_code %in% selected_ltlas$ltlas) |>
-          select(lsoa11_code) |>
-          pull()
-      })
-
-      selected_lsoas$lsoas <- variable()
-
+      selected_lsoas(
+        subsetLSOAServer("test",
+      lsoa_ltla_lookup = lsoa_ltla_lookup,
+       ltlas_for_filtering = selected_ltlas)
+)
       # Swap to vulnerability tab
       updateTabsetPanel(session,
         "tabs",
@@ -127,8 +123,8 @@ emergency_planning_tool <- function() {
     # Vulnerabilities - Server -------------
 
     # Only render the vulnerability tab components when the tab is selected
-    observeEvent(input$tabs, {
-      if (input$tabs == "vulnerabilities") {
+    # observeEvent(input$tabs, {
+    #   if (input$tabs == "vulnerabilities") {
 
         # Subset the vulnerability scores data with selected LSOAs
         lsoa_vuln_scores_subset <- subsetVulnDataServer(
@@ -155,21 +151,21 @@ emergency_planning_tool <- function() {
         topDriversTableServer("test",
           vuln_drivers = vuln_drivers_flood,
           lsoas_clicked = lsoas_clicked_global
-        )
-      }
-    })
+         )
+      # }
+    # })
 
     # Charities - Server -------------
 
-    observeEvent(input$tabs, {
-
-      # Only render the vulnerability tab components when the tab is selected
-      if (input$tabs == "organisations") {
+    # observeEvent(input$tabs, {
+    # 
+    #   # Only render the vulnerability tab components when the tab is selected
+    #   if (input$tabs == "organisations") {
         charities_subset <- subsetCharitiesDataServer(
           "test",
           charities_data = charities_data,
           charities_ltla_lookup_data = charities_ltla_lookup,
-          ltlas_for_filtering = reactive(c("E08000014"))
+          ltlas_for_filtering = selected_ltlas
         )
 
         # Map of charities working within the area (module)
@@ -181,8 +177,8 @@ emergency_planning_tool <- function() {
         charitiesTableServer("test",
           charities_data_subset = charities_subset
         )
-      }
-    })
+      # }
+    # })
   }
 
   shinyApp(ui, server)

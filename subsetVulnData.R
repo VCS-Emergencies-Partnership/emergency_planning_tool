@@ -27,7 +27,7 @@ subsetVulnDataServer <- function(id, lsoa_data, lsoas_for_filtering) {
 #     lsoa_vuln_scores_subset_flood <-  subsetVulnDataServer(
 #       "test",
 #       lsoa_data = lsoa_vuln_scores_flood,
-#       lsoas_for_filtering = reactive(c("E01000001", "E01000002", "E01000003", "E01000007"))
+#       lsoas_for_filtering = reactiveVal(c("E01000001", "E01000002", "E01000003", "E01000007"))
 #     )
 # 
 #     observe(print(lsoa_vuln_scores_subset_flood()))

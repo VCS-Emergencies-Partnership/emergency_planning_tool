@@ -64,17 +64,17 @@ selectedAreaMapServer <- function(id, boundaries_data, selected_ltlas) {
     # namespace (`clicked`), and one to the global namespace (`selected`)
 
     # Contained to local namespace
-    clicked_ltlas <- reactiveValues(ltlas = vector())
+    clicked_ltlas <- reactiveVal(vector())
 
     # As polygons are clicked, update both the local and global reactive values
     observeEvent(input$map_shape_click, {
       if (input$map_shape_click$group == "base") {
-        selected_ltlas$ltlas <- c(selected_ltlas$ltlas, input$map_shape_click$id)
-        clicked_ltlas$ltlas <- c(clicked_ltlas$ltlas, input$map_shape_click$id)
+        selected_ltlas(c(selected_ltlas(), input$map_shape_click$id))
+        clicked_ltlas(c(clicked_ltlas(), input$map_shape_click$id))
         leafletProxy("map") |> showGroup(input$map_shape_click$id)
       } else {
-        selected_ltlas$ltlas <- setdiff(selected_ltlas$ltlas, input$map_shape_click$group)
-        clicked_ltlas$ltlas <- setdiff(clicked_ltlas$ltlas, input$map_shape_click$group)
+        selected_ltlas(setdiff(selected_ltlas(), input$map_shape_click$group))
+        clicked_ltlas(setdiff(clicked_ltlas(), input$map_shape_click$group))
         leafletProxy("map") |> hideGroup(input$map_shape_click$group)
       }
     })
@@ -82,16 +82,16 @@ selectedAreaMapServer <- function(id, boundaries_data, selected_ltlas) {
     # Track differences in the local and global reactive values. If activity has
     # occurred outside of this module, update the local reactive values to match
     # the global reactive values and update the map polygons
-    observeEvent(selected_ltlas$ltlas,
+    observeEvent(selected_ltlas(),
       {
-        removed <- setdiff(clicked_ltlas$ltlas, selected_ltlas$ltlas)
-        added <- setdiff(selected_ltlas$ltlas, clicked_ltlas$ltlas)
+        removed <- setdiff(clicked_ltlas(), selected_ltlas())
+        added <- setdiff(selected_ltlas(), clicked_ltlas())
 
         leafletProxy("map") |>
           hideGroup(removed) |>
           showGroup(added)
 
-        clicked_ltlas$ltlas <- selected_ltlas$ltlas
+        clicked_ltlas(selected_ltlas())
       }
     )
   })
@@ -108,9 +108,9 @@ selectedAreaMapServer <- function(id, boundaries_data, selected_ltlas) {
 #     selectedAreaMapUI("test")
 #   )
 #   server <- function(input, output, session) {
-#     selected_ltlas <- reactiveValues(ltlas = c())
+#     selected_ltlas <- reactiveVal(vector())
 # 
-#     selectedAreaMapServer("test", 
+#     selectedAreaMapServer("test",
 #                           boundaries_data = boundaries_ltlas,
 #                           selected_ltlas = selected_ltlas)
 #   }
