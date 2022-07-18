@@ -5,8 +5,8 @@ library(readr)
 library(dplyr)
 
 source("topVuln.R")
-source("subsetData.R")
-source("vulMap.R")
+source("subsetVulnData.R")
+source("vulnMap.R")
 source("topDrivers.R")
 source("emergency_planning_tool.R")
 

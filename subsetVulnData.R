@@ -1,5 +1,5 @@
 # Server ----
-subsetDataServer <- function(id, lsoa_data, lsoas_for_filtering) {
+subsetVulnDataServer <- function(id, lsoa_data, lsoas_for_filtering) {
   
   # Checks to ensure the inputs are reactive
   stopifnot(is.reactive(lsoas_for_filtering))
@@ -19,12 +19,12 @@ subsetDataServer <- function(id, lsoa_data, lsoas_for_filtering) {
   
 # lsoa_vuln_scores_flood <- read_rds("data/flooding_vuln_scores_sf.rds")
 # 
-# subsetDataTest <- function() {
+# subsetVulnDataTest <- function() {
 #   ui <- fluidPage(
 # 
 #   )
 #   server <- function(input, output, session) {
-#     lsoa_vuln_scores_subset_flood <-  subsetDataServer(
+#     lsoa_vuln_scores_subset_flood <-  subsetVulnDataServer(
 #       "test",
 #       lsoa_data = lsoa_vuln_scores_flood,
 #       lsoas_for_filtering = reactive(c("E01000001", "E01000002", "E01000003", "E01000007"))
@@ -36,4 +36,4 @@ subsetDataServer <- function(id, lsoa_data, lsoas_for_filtering) {
 # }
 # 
 # # Run test
-# subsetDataTest()
+# subsetVulnDataTest()

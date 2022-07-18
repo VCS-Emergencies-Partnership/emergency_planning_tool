@@ -232,16 +232,20 @@ combined_charities_codes_selected <- combined_charities_codes |>
 
 # Save ---
 combined_charities_codes_selected |>
-  write_csv("data/charities_ltla.csv")
+  write_rds("data/charities_ltla_lookup.rds")
 
 ############################################
-# Charity activities & HQ locations ----
+# Charity activities & HQ/Contact locations ----
 ############################################
 
 charities_subset <- charities_list_raw |>
   select(organisation_number, charity_name, charity_name, charity_activities, charity_contact_postcode, charity_contact_phone, charity_contact_email, charity_contact_web) |>
   semi_join(combined_charities_codes_selected, by = "organisation_number") |>
-  mutate(charity_contact_postcode_join = str_to_upper(str_replace_all(charity_contact_postcode, " ", "")))
+  mutate(charity_contact_postcode_join = str_to_upper(str_replace_all(charity_contact_postcode, " ", ""))) |>
+  left_join(lookup_postcode_oa11_lsoa11_msoa11_ltla20, by = c("charity_contact_postcode_join" = "postcode")) |>
+  left_join(lookup_lsoa11_ltla21, by = "lsoa11_code") |>
+  select(-c("oa11_code", "lsoa11_code", "msoa11_code", "ltla20_code", "lsoa11_code", "lsoa11_code")) |>
+  rename(charity_contact_ltla_name = ltla21_name, charity_contact_ltla_code = ltla21_code)
 
 # TO DO: Could come back here to add in classification e.g. elderly etc. or provides services, grants etc. 
 
@@ -251,11 +255,24 @@ unique_postcodes <- charities_subset |>
 
 # Save 
 unique_postcodes |>
-  write_rds("data/postcodes.rds")
+  write_rds("data/char_postcodes/postcodes.rds")
 # Use PostcodesioR in postcode_lookup.R script to find lat/long of postcodes
 
 # Uncomment this if want to rerun the postcode lookup
 # source("data_prep/postcode_lookup.R")
 
 # Read in the postcode lookup results 
-unique_postcodes_lookup <- read_rds("data/postcodes_lookup.rds")
+unique_postcodes_lookup <- read_rds("data/char_postcodes/postcodes_lookup.rds")
+
+# Join charity data to lat/long 
+charities_subset_loc <- charities_subset |>
+  left_join(unique_postcodes_lookup, by = "charity_contact_postcode_join")
+
+# Save
+charities_subset_loc |>
+  write_rds("data/charities_list_latlong.rds")
+
+# charities_subset_loc |>
+#   select(organisation_number, charity_contact_ltla_code) |>
+#   filter(!is.na(charity_contact_ltla_code)) |>
+#   write_rds("data/charities_contact_ltla_lookup.rds")

@@ -41,7 +41,7 @@ emergency_planning_tool <- function() {
     })
 
     # Subset the vulnerability scores data with selected LSOAs
-    lsoa_vuln_scores_subset <- subsetDataServer(
+    lsoa_vuln_scores_subset <- subsetVulnDataServer(
       "test",
       lsoa_data = vuln_scores_flood,
       lsoas_for_filtering = lsoas_selected
