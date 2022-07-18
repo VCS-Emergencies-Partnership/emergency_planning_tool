@@ -1,5 +1,5 @@
 # UI ----
-topVulnOutput <- function(id) {
+topVulnUI <- function(id) {
   textOutput(NS(id, "top_vuln_text"))
 }
 
@@ -35,7 +35,7 @@ topVulnServer <- function(id, lsoa_vuln_scores_sf_subset) {
 # 
 # topVulnTest <- function() {
 #   ui <- fluidPage(
-#     topVulnOutput("test")
+#     topVulnUI("test")
 #   )
 #   server <- function(input, output, session) {
 #     topVulnServer("test",

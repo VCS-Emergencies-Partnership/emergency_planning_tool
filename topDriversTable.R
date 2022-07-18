@@ -1,5 +1,5 @@
 # UI ----
-topDriversTableOutput <- function(id) {
+topDriversTableUI <- function(id) {
   tagList(
     textOutput(NS(id, "lsoas_clicked_name")),
     tableOutput(NS(id, "top_drivers_table"))
@@ -37,7 +37,7 @@ topDriversTableServer <- function(id, vuln_drivers, lsoas_clicked) {
 #
 # topDriversTableTest <- function() {
 #   ui <- fluidPage(
-#     topDriversTableOutput("test")
+#     topDriversTableUI("test")
 #   )
 #   server <- function(input, output, session) {
 #     topDriversTableServer("test",

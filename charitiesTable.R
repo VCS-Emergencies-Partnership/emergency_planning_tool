@@ -28,6 +28,7 @@ charitiesTableServer <- function(id, charities_data_subset) {
             "charity_contact_web",
             "charity_contact_email",
             "charity_contact_phone",
+            "charity_contact_ltla_name",
             "charity_activities"
           ),
           ~ replace(., is.na(.), "-")
@@ -37,7 +38,7 @@ charitiesTableServer <- function(id, charities_data_subset) {
           "Website" = "charity_contact_web",
           "Email" = "charity_contact_email",
           "Phone" = "charity_contact_phone",
-          "Postcode" = "charity_contact_postcode",
+          "Contact Info Local Authority" = "charity_contact_ltla_name",
           "Actvities" = "charity_activities",
           "flag_contact_in_ltla"
         )

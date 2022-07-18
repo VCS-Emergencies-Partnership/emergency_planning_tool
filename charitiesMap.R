@@ -60,7 +60,7 @@ charitiesMapServer <- function(id, charities_data_subset) {
 #   )
 # 
 #   server <- function(input, output, session) {
-#     charities_subset_test <- subsetCharityDataServer(
+#     charities_subset_test <- subsetCharitiesDataServer(
 #       "test",
 #       charities_data = charities_data,
 #       charities_ltla_lookup_data = charities_ltla_lookup,
