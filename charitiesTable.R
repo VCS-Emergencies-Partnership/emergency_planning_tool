@@ -48,6 +48,9 @@ charitiesTableServer <- function(id, charities_data_subset) {
     # one table where the contact info is within the chosen LTLA
     output$charities_table_within_area <- DT::renderDT(
       {
+        # Catch errors if no area has been selected - show message as at top of the page 
+        validate(need(nrow(charities_data_subset()) != 0 , "Please select an area on the first tab."))
+        
         charities_data_subset_clean() |>
           dplyr::filter(flag_contact_in_ltla == TRUE) |>
           select(-flag_contact_in_ltla)

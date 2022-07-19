@@ -16,8 +16,8 @@ emergency_planning_tool <- function() {
         # Map to select area (module)
         selectedAreaMapUI("test"),
 
-        # Button once selected area - don't know if need this? TO DO: Think about UX 
-      #  actionButton("selected_area_button", "Next page")
+        # Button once selected area - don't know if need this? TO DO: Think about UX
+        #  actionButton("selected_area_button", "Next page")
       ),
 
       # Vulnerabilities - UI -------------
@@ -82,53 +82,61 @@ emergency_planning_tool <- function() {
 
     # Vulnerabilities - Server -------------
 
-    # Subset the vulnerability scores data with selected LSOAs
-    lsoa_vuln_scores_subset <- subsetVulnDataServer(
-      "test",
-      lsoa_data = vuln_scores_flood,
-      ltlas_for_filtering = selected_ltlas
-    )
-       
-    # Metric of % of most vulnerable neighborhoods (module)
-    topVulnServer("test",
-      lsoa_vuln_scores_sf_subset = lsoa_vuln_scores_subset
-    )
+    # Only render the vulnerability tab components when the tab is selected
+    observeEvent(input$tabs, {
+      if (input$tabs == "vulnerabilities") {
 
-    # Vulnerability index map (module)
-    vulnMapServer("test",
-      lsoa_vuln_scores_sf_subset = lsoa_vuln_scores_subset,
-      lsoas_clicked = lsoas_clicked_global
-    )
+        # Subset the vulnerability scores data with selected LSOAs
+        lsoa_vuln_scores_subset <- subsetVulnDataServer(
+          "test",
+          lsoa_data = vuln_scores_flood,
+          ltlas_for_filtering = selected_ltlas
+        )
 
-    # # Variable to store the LSOA of clicked
-    lsoas_clicked_global <- reactiveVal()
+        # Metric of % of most vulnerable neighborhoods (module)
+        topVulnServer("test",
+          lsoa_vuln_scores_sf_subset = lsoa_vuln_scores_subset
+        )
 
-    # Table of top drivers of vulnerability for clicked LSOA (module)
-    topDriversTableServer("test",
-      vuln_drivers = vuln_drivers_flood,
-      lsoas_clicked = lsoas_clicked_global
-    )
+        # Vulnerability index map (module)
+        vulnMapServer("test",
+          lsoa_vuln_scores_sf_subset = lsoa_vuln_scores_subset,
+          lsoas_clicked = lsoas_clicked_global
+        )
 
+        # # Variable to store the LSOA of clicked
+        lsoas_clicked_global <- reactiveVal()
+
+        # Table of top drivers of vulnerability for clicked LSOA (module)
+        topDriversTableServer("test",
+          vuln_drivers = vuln_drivers_flood,
+          lsoas_clicked = lsoas_clicked_global
+        )
+      }
+    })
 
     # Charities - Server -------------
-      
-    charities_subset <- subsetCharitiesDataServer(
-      "test",
-      charities_data = charities_data,
-      charities_ltla_lookup_data = charities_ltla_lookup,
-      ltlas_for_filtering = selected_ltlas
-    )
-    
-    # Map of charities working within the area (module)
-    charitiesMapServer("test",
-      charities_data_subset = charities_subset
-    )
 
-    # Table of charities (module)
-    charitiesTableServer("test",
-      charities_data_subset = charities_subset
-    )
+    observeEvent(input$tabs, {
+      if (input$tabs == "organisations") {
+        charities_subset <- subsetCharitiesDataServer(
+          "test",
+          charities_data = charities_data,
+          charities_ltla_lookup_data = charities_ltla_lookup,
+          ltlas_for_filtering = selected_ltlas
+        )
 
+        # Map of charities working within the area (module)
+        charitiesMapServer("test",
+          charities_data_subset = charities_subset
+        )
+
+        # Table of charities (module)
+        charitiesTableServer("test",
+          charities_data_subset = charities_subset
+        )
+      }
+    })
   }
 
   shinyApp(ui, server)

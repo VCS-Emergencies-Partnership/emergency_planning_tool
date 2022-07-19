@@ -17,6 +17,9 @@ vulnMapServer <- function(id, lsoa_vuln_scores_sf_subset, lsoas_clicked) {
 
     output$vuln_map <- renderLeaflet({
       
+      # Catch errors if no area has been selected - blank message as not at top of the page
+      validate(need(nrow(lsoa_vuln_scores_sf_subset()) != 0, ""))
+      
       pal <- colorBin("Reds", 
                       domain = lsoa_vuln_scores_sf_subset()$vulnerability_quantiles, 
                       bins = c(1:10))

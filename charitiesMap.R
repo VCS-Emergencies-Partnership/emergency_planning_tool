@@ -14,6 +14,9 @@ charitiesMapServer <- function(id, charities_data_subset) {
 
   moduleServer(id, function(input, output, session) {
     output$charities_map <- renderLeaflet({
+      
+      # Catch errors if no area has been selected - blank message as not at top of the page
+      validate(need(nrow(charities_data_subset()) != 0 , ""))
 
       # only plot the charities where the contact info is within the chosen LTLA
       charities_within_area <- charities_data_subset() |>

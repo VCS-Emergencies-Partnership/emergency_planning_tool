@@ -11,6 +11,11 @@ topVulnServer <- function(id, lsoa_vuln_scores_sf_subset) {
 
   moduleServer(id, function(input, output, session) {
     output$top_vuln_text <- renderText({
+      
+      # Catch errors if no area has been selected - show message as at top of the page 
+      validate(need(nrow(lsoa_vuln_scores_sf_subset()) != 0, "Please select an area on the first tab."))
+      
+      
       prop_top_20 <- lsoa_vuln_scores_sf_subset() |>
         summarise(prop = sum(top_20_national) / n())
 
