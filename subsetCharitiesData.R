@@ -12,7 +12,7 @@ subsetCharitiesDataServer <- function(id, charities_data, charities_ltla_lookup_
         inner_join(charities_data, by = "organisation_number") |>
         select(-ltla21_code) |>
         # create flag where charity has contact info is within the chosen LTLA
-        mutate(flag_contact_in_ltla = charity_contact_ltla_code %in% ltlas_for_filtering()) 
+        mutate(flag_contact_in_ltla = charity_contact_ltla_name %in% ltlas_for_filtering()) 
       
     })
   })

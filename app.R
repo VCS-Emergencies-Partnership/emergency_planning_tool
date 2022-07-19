@@ -13,7 +13,6 @@ source("topDriversTable.R")
 source("subsetCharitiesData.R")
 source("charitiesTable.R")
 source("charitiesMap.R")
-source("subsetLSOAs.R")
 source("emergency_planning_tool.R")
 
 vuln_scores_flood <- read_rds("data/flooding_vuln_scores_sf.rds")
