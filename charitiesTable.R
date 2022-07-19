@@ -21,6 +21,7 @@ charitiesTableServer <- function(id, charities_data_subset) {
 
   moduleServer(id, function(input, output, session) {
     charities_data_subset_clean <- reactive({
+      
       charities_data_subset() |>
         # avoided replace_na() as from tidyr (package not used elsewhere yet)
         mutate_at(

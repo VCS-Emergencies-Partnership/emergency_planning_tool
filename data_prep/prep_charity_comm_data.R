@@ -228,7 +228,7 @@ combined_charities_codes |>
   nrow()
 
 combined_charities_codes_selected <- combined_charities_codes |>
-  select(organisation_number, ltla21_code)
+  select(organisation_number, ltla21_code, ltla21_name) 
 
 # Save ---
 combined_charities_codes_selected |>

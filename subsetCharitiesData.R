@@ -8,7 +8,7 @@ subsetCharitiesDataServer <- function(id, charities_data, charities_ltla_lookup_
     reactive({
       
       charities_ltla_lookup |>
-        dplyr::filter(ltla21_code %in% ltlas_for_filtering()) |>
+        dplyr::filter(ltla21_name %in% ltlas_for_filtering()) |>
         inner_join(charities_data, by = "organisation_number") |>
         select(-ltla21_code) |>
         # create flag where charity has contact info is within the chosen LTLA
@@ -34,7 +34,7 @@ subsetCharitiesDataServer <- function(id, charities_data, charities_ltla_lookup_
 #       "test",
 #       charities_data = charities_data,
 #       charities_ltla_lookup_data = charities_ltla_lookup,
-#       ltlas_for_filtering = reactive(c("E08000014", "E09000018" ,"E06000060"))
+#       ltlas_for_filtering = reactive(c("Central Bedfordshire", "Broxbourne"))
 #     )
 # 
 #     observe(print(charities_subset()))
