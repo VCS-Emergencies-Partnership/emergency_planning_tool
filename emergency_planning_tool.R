@@ -46,20 +46,33 @@ emergency_planning_tool <- function() {
         title = "Organisations",
         value = "organisations",
         fluidRow(
-          column(
-            4,
-            # Map of charities working within the area (module)
-            charitiesMapUI("test")
+          radioButtons("organisation_within_area",
+            label = "",
+            choices = list(
+              "Charities that operate & registered
+                                      address is within your selected area" = TRUE,
+              "Charities that operate in your selected
+                                      area but the registered address is either
+                                      out-with your selected area or not registered" = FALSE
+            ),
+            selected = TRUE,
+            inline = TRUE
           ),
-          column(
-            8,
-            # Table of charities (module)
-            charitiesTableUI("test")
+          fluidRow(
+            column(
+              5,
+              charitiesMapUI("test")
+            ),
+            column(
+              7,
+              charitiesTableUI("test")
+            )
           )
         )
       )
     )
   )
+
 
 
   server <- function(input, output, session) {
@@ -128,12 +141,14 @@ emergency_planning_tool <- function() {
 
         # Map of charities working within the area (module)
         charitiesMapServer("test",
-          charities_data_subset = charities_subset
+          charities_data_subset = charities_subset,
+          filter_for_within_area = reactive(input$organisation_within_area)
         )
 
         # Table of charities (module)
         charitiesTableServer("test",
-          charities_data_subset = charities_subset
+          charities_data_subset = charities_subset,
+          filter_for_within_area = reactive(input$organisation_within_area)
         )
       }
     })

@@ -1,27 +1,17 @@
 # UI -----
 charitiesTableUI <- function(id) {
-  tabsetPanel(
-    type = "tabs",
-    tabPanel(
-      "Contact info is within area",
-      DT::DTOutput(NS(id, "charities_table_within_area"))
-    ),
-    tabPanel(
-      "Contact info is outwith area",
-      DT::DTOutput(NS(id, "charities_table_outwith_area"))
-    )
-  )
+  DT::DTOutput(NS(id, "charities_table"))
 }
 
 # Server -----
-charitiesTableServer <- function(id, charities_data_subset) {
+charitiesTableServer <- function(id, charities_data_subset, filter_for_within_area) {
 
   # Checks to ensure the input is reactive
   stopifnot(is.reactive(charities_data_subset))
+  stopifnot(is.reactive(filter_for_within_area))
 
   moduleServer(id, function(input, output, session) {
     charities_data_subset_clean <- reactive({
-      
       charities_data_subset() |>
         # avoided replace_na() as from tidyr (package not used elsewhere yet)
         mutate_at(
@@ -45,32 +35,13 @@ charitiesTableServer <- function(id, charities_data_subset) {
         )
     })
 
-    # one table where the contact info is within the chosen LTLA
-    output$charities_table_within_area <- DT::renderDT(
+    output$charities_table <- DT::renderDT(
       {
-        # Catch errors if no area has been selected - show message as at top of the page 
-        validate(need(nrow(charities_data_subset()) != 0 , "Please select an area on the first tab."))
-        
-        charities_data_subset_clean() |>
-          dplyr::filter(flag_contact_in_ltla == TRUE) |>
-          select(-flag_contact_in_ltla)
-      },
-      options = list(
-        scrollX = TRUE,
-        scrollCollapse = TRUE,
-        # widen certain columns which contain a low of text
-        columnDefs = list(
-          list(width = "1100px", targets = c(6))
-        ),
-        autoWidth = TRUE
-      )
-    )
+        # Catch errors if no area has been selected - show message as at top of the page
+        validate(need(nrow(charities_data_subset()) != 0, "Please select an area on the first tab."))
 
-    # one table where the contact info is within the chosen LTLA
-    output$charities_table_outwith_area <- DT::renderDT(
-      {
         charities_data_subset_clean() |>
-          dplyr::filter(flag_contact_in_ltla == FALSE) |>
+          dplyr::filter(flag_contact_in_ltla == filter_for_within_area()) |>
           select(-flag_contact_in_ltla)
       },
       options = list(
@@ -93,29 +64,30 @@ charitiesTableServer <- function(id, charities_data_subset) {
 
 # charities_ltla_lookup <- read_rds("data/charities_ltla_lookup.rds")
 # charities_data <- read_rds("data/charities_list_latlong.rds")
-# 
+#
 # source("subsetCharitiesData.R")
-# 
+#
 # charitiesTableTest <- function() {
 #   ui <- fluidPage(
 #     charitiesTableUI("test")
 #   )
-# 
+#
 #   server <- function(input, output, session) {
 #     charities_subset_test <- subsetCharitiesDataServer(
 #       "test",
 #       charities_data = charities_data,
 #       charities_ltla_lookup_data = charities_ltla_lookup,
-#       ltlas_for_filtering = reactive(c("E08000014"))
+#       ltlas_for_filtering = reactive(c("Hartlepool"))
 #     )
-# 
-#     observe(print(charities_subset_test()))
-# 
+#
+#    # observe(print(charities_subset_test()))
+#
 #     charitiesTableServer("test",
-#       charities_data_subset = charities_subset_test
+#       charities_data_subset = charities_subset_test,
+#       filter_for_within_area = reactive("TRUE")
 #     )
 #   }
 #   shinyApp(ui, server)
 # }
-# 
+#
 # charitiesTableTest()

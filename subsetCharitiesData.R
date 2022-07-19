@@ -6,7 +6,6 @@ subsetCharitiesDataServer <- function(id, charities_data, charities_ltla_lookup_
   
   moduleServer(id, function(input, output, session) {
     reactive({
-      
       charities_ltla_lookup |>
         dplyr::filter(ltla21_name %in% ltlas_for_filtering()) |>
         inner_join(charities_data, by = "organisation_number") |>
