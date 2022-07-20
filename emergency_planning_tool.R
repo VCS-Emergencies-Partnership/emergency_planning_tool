@@ -2,6 +2,23 @@ emergency_planning_tool <- function() {
 
   # ---- UI ----
   ui <- fluidPage(
+    fluidRow(
+      column(
+        9,
+        align = "left",
+        # Tool explanation
+        explanation()
+      ),
+      column(
+        3,
+        # Dropdown to select emergency
+        selectInput(
+          "emergency_type",
+          label = "Select emergency event",
+          choices = c("Flooding")
+        )
+      )
+    ),
     tabsetPanel(
       id = "tabs",
 
@@ -26,17 +43,22 @@ emergency_planning_tool <- function() {
         title = "Vulnerabilities",
         value = "vulnerabilities",
         fluidRow(
-
-          # Metric of % of most vulnerable neighborhoods (module)
-          topVulnUI("test")
-        ),
-        fluidRow(
-          # Vulnerability index map (module)
-          vulnMapUI("test")
-        ),
-        fluidRow(
-          # Table of top drivers of vulnerability for clicked LSOA (module)
-          topDriversTableUI("test")
+          column(
+            6,
+            # Vulnerability index map (module)
+            vulnMapUI("test")
+          ),
+          column(
+            6,
+            fluidRow(
+              # Metric of % of most vulnerable neighborhoods (module)
+              topVulnUI("test")
+            ),
+            fluidRow(
+              # Table of top drivers of vulnerability for clicked LSOA (module)
+              topDriversTableUI("test")
+            )
+          )
         )
       ),
 

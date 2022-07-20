@@ -13,6 +13,8 @@ source("topDriversTable.R")
 source("subsetCharitiesData.R")
 source("charitiesTable.R")
 source("charitiesMap.R")
+source("explanation.R")
+
 source("emergency_planning_tool.R")
 
 vuln_scores_flood <- read_rds("data/flooding_vuln_scores_sf.rds")
@@ -23,3 +25,4 @@ lsoa_ltla_lookup <- read_rds("data/lsoa_ltla_lookup.rds")
 boundaries_ltlas <- read_rds("data/boundaries_ltlas.rds")
 
 emergency_planning_tool()
+
