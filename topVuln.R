@@ -1,6 +1,11 @@
 # UI ----
 topVulnUI <- function(id) {
-  textOutput(NS(id, "top_vuln_text"))
+  div(
+    # TO DO: Decide if want border
+    # "border-style: solid; border-color: black; border-width: thin;
+    style = "text-align: center; font-size: 120%",
+    textOutput(NS(id, "top_vuln_text"))
+  )
 }
 
 # Server ----
@@ -11,16 +16,17 @@ topVulnServer <- function(id, lsoa_vuln_scores_sf_subset) {
 
   moduleServer(id, function(input, output, session) {
     output$top_vuln_text <- renderText({
-      
-      # Catch errors if no area has been selected - show message as at top of the page 
+
+      # Catch errors if no area has been selected - show message as at top of the page
       validate(need(nrow(lsoa_vuln_scores_sf_subset()) != 0, "Please select an area on the first tab."))
-      
-      
+
       prop_top_20 <- lsoa_vuln_scores_sf_subset() |>
         summarise(prop = sum(top_20_national) / n())
 
-      paste0(round(prop_top_20$prop, 2), 
-                   "% of the neighbourhoods in your area are the most vulnerable to flooding nationally")
+      paste0(
+        round(prop_top_20$prop, 2),
+        "% of the neighbourhoods in your area are the most vulnerable to flooding nationally"
+      )
     })
   })
 }

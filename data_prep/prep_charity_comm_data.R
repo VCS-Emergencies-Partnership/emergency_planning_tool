@@ -97,7 +97,7 @@ utla_list_geogr_eng <- lookup_ltla21_utla21 |>
   mutate(utla21_name = str_to_lower(utla21_name)) |>
   arrange(utla21_name)
 
-# Merge the UTLA codes to the charity list 
+# Merge the UTLA codes to the charity list
 all_england_charities_codes <- all_england_charities |>
   merge(utla_list_geogr_eng)
 
@@ -111,9 +111,9 @@ london_utla_codes <- lookup_ltla21_region21 |>
   left_join(lookup_ltla21_utla21, by = "ltla21_code") |>
   filter(region21_name == "London") |>
   select(-c("region21_code", "region21_name", "ltla21_name.y")) |>
-  rename(ltla21_name = ltla21_name.x) 
+  rename(ltla21_name = ltla21_name.x)
 
-# Merge the UTLA codes to the charity list 
+# Merge the UTLA codes to the charity list
 all_london_charities_codes <- all_london_charities |>
   select(organisation_number) |>
   merge(london_utla_codes)
@@ -219,7 +219,7 @@ utla_charities_eng_codes <- utla_charities_eng |>
 utla_charities_eng_codes |>
   filter(if_any(everything(), is.na))
 
-# Combine England, London and UTLA charities 
+# Combine England, London and UTLA charities
 combined_charities_codes <- utla_charities_eng_codes |>
   bind_rows(all_london_charities_codes) |>
   bind_rows(all_england_charities_codes)
@@ -228,7 +228,7 @@ combined_charities_codes |>
   nrow()
 
 combined_charities_codes_selected <- combined_charities_codes |>
-  select(organisation_number, ltla21_code, ltla21_name) 
+  select(organisation_number, ltla21_code, ltla21_name)
 
 # Save ---
 combined_charities_codes_selected |>
@@ -247,13 +247,13 @@ charities_subset <- charities_list_raw |>
   select(-c("oa11_code", "lsoa11_code", "msoa11_code", "ltla20_code", "lsoa11_code", "lsoa11_code")) |>
   rename(charity_contact_ltla_name = ltla21_name, charity_contact_ltla_code = ltla21_code)
 
-# TO DO: Could come back here to add in classification e.g. elderly etc. or provides services, grants etc. 
+# TO DO: Could come back here to add in classification e.g. elderly etc. or provides services, grants etc.
 
 unique_postcodes <- charities_subset |>
   distinct(charity_contact_postcode_join) |>
-  filter(!is.na(charity_contact_postcode_join)) 
+  filter(!is.na(charity_contact_postcode_join))
 
-# Save 
+# Save
 unique_postcodes |>
   write_rds("data/char_postcodes/postcodes.rds")
 # Use PostcodesioR in postcode_lookup.R script to find lat/long of postcodes
@@ -261,10 +261,10 @@ unique_postcodes |>
 # Uncomment this if want to rerun the postcode lookup
 # source("data_prep/postcode_lookup.R")
 
-# Read in the postcode lookup results 
+# Read in the postcode lookup results
 unique_postcodes_lookup <- read_rds("data/char_postcodes/postcodes_lookup.rds")
 
-# Join charity data to lat/long 
+# Join charity data to lat/long
 charities_subset_loc <- charities_subset |>
   left_join(unique_postcodes_lookup, by = "charity_contact_postcode_join")
 
@@ -276,3 +276,36 @@ charities_subset_loc |>
 #   select(organisation_number, charity_contact_ltla_code) |>
 #   filter(!is.na(charity_contact_ltla_code)) |>
 #   write_rds("data/charities_contact_ltla_lookup.rds")
+
+############################################
+# Charity classifications ----
+############################################
+
+charities_classification_raw |>
+  distinct(classification_type, classification_description) |>
+  arrange(classification_type)
+
+charities_categories <- charities_classification_raw |>
+  mutate(category = case_when(
+    classification_type == "Who" & classification_description == "Young" ~ "Young people",
+    classification_type == "Who" & classification_description == "Elderly/old People" ~ "Older people",
+    (classification_type == "Who" & classification_description == "People With Disabilities") | 
+      (classification_type == "What" & classification_description == "Disability")  ~ "Disabilities",
+    classification_type == "What" & classification_description == "Economic/community Development/employment" ~ "Income/Employment",
+    classification_type == "What" & classification_description == "The Prevention Or Relief Of Poverty" ~ "Income/Poverty",
+    classification_type == "What" & classification_description == "Accommodation/housing" ~ "Accommodation/housing",
+    classification_type == "What" & classification_description == "The Advancement Of Health Or Saving Of Lives" ~ "Health",
+    TRUE ~ "Other"
+  )) |>
+  mutate(method = case_when(
+    classification_type == "How" & classification_description == "Provides Services" | 
+      classification_type == "How" & classification_description == "Provides Human Resources" ~ "Services or Human Resources",
+    classification_type == "How" & classification_description == "Provides Buildings/facilities/open Space" ~ "Buildings/facilities/open Space",
+    classification_type == "How" & classification_description == "Provides Advocacy/advice/information" ~ "Advocacy/advice/information",
+    TRUE ~ "Other"
+  )) |>
+  select(organisation_number, category, method)
+
+# Only keep rows where have a category or method that is not 'Other' 
+charities_categories |>
+  pivot_longer(!organisation_number, names = "what", values = "value")

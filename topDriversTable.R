@@ -1,13 +1,14 @@
 # UI ----
 topDriversTableUI <- function(id) {
   tagList(
+    "Neighbourhoods drivers of vulnerabilities ranked",
     textOutput(NS(id, "lsoas_clicked_name")),
     tableOutput(NS(id, "top_drivers_table"))
   )
 }
 
 # Server ----
-topDriversTableServer <- function(id, vuln_drivers, lsoas_clicked) {
+topDriversTableServer <- function(id, vuln_drivers, lsoas_clicked, selected_ltlas) {
 
   # Checks to ensure the inputs are reactive (data not reactive)
   stopifnot(is.reactive(lsoas_clicked))
@@ -24,15 +25,26 @@ topDriversTableServer <- function(id, vuln_drivers, lsoas_clicked) {
             "Please click on a neighbourhood on the map to view the drivers of vulnerability to your chosen emergency event."
           ))
 
-
           drivers <- vuln_drivers |>
             dplyr::filter(lsoa11_name %in% lsoas_clicked()) |>
-            select(variable, value)
+            select(
+              `Driver of flooding vulnerability` = variable,
+              Value = value
+            )
         })
 
-        output$lsoas_clicked_name <- renderText(lsoas_clicked())
+        output$lsoas_clicked_name <- renderText({
+          paste("Neighbourhood: ", lsoas_clicked())
+        })
       },
       ignoreNULL = FALSE # means event triggered when the input (i.e. lsoa_clicked()) is NULL. Needed to trigger the validate message
+    )
+
+    observeEvent(
+      selected_ltlas(),
+      {
+        lsoas_clicked(NULL)
+      }
     )
   })
 }
@@ -42,15 +54,16 @@ topDriversTableServer <- function(id, vuln_drivers, lsoas_clicked) {
 # --------------------------------------------------------------------------------
 
 # vuln_drivers_flood <- read_rds("data/flooding_drivers.rds")
-#
+# 
 # topDriversTableTest <- function() {
 #   ui <- fluidPage(
 #     topDriversTableUI("test")
 #   )
 #   server <- function(input, output, session) {
 #     topDriversTableServer("test",
-#                      vuln_drivers = vuln_drivers_flood,
-#                      lsoas_clicked = reactive(c("E01000001")))
+#       vuln_drivers = vuln_drivers_flood,
+#       lsoas_clicked = reactive(c("City of London 001A"))
+#     )
 #   }
 #   shinyApp(ui, server)
 # }
