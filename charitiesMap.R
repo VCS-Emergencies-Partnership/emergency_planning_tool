@@ -7,7 +7,9 @@ charitiesMapUI <- function(id) {
 }
 
 # Server -----
-charitiesMapServer <- function(id, charities_data_subset, filter_for_within_area) {
+charitiesMapServer <- function(id, 
+                               charities_data_subset, 
+                               filter_for_within_area) {
 
   # Checks to ensure the input is reactive
   stopifnot(is.reactive(charities_data_subset))

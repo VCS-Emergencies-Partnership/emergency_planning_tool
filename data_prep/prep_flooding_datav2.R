@@ -73,9 +73,10 @@ vuln_variables_ranked <- vuln_variables_normalised |>
   arrange(lsoa_code, desc(normalised_value)) |>
   group_by(lsoa_code) |>
   mutate(normalised_rank = rank(-normalised_value, 
-                                na.last = FALSE,
+                                na.last = TRUE,
                                 ties.method = "first")) |>
-  ungroup()
+  ungroup() |>
+  mutate(normalised_rank = if_else(is.na(normalised_value), NA_integer_, normalised_rank))
 
 # Calculating quantiles of the raw values split by variable
 # Gives picture of how value compares on a national level
@@ -83,16 +84,17 @@ vuln_variables_aligned_long <- vuln_variables_aligned |>
   pivot_longer(-lsoa_code, names_to = "variable", values_to = "value")
 
 # Quantiles by each variable (not LSOA)
-# TO DO: think about if makes sense for aligne variables (when multipied by -1)
+# TO DO: think about if makes sense for align variables (when multipied by -1)
 vuln_variables_quantised <- vuln_variables_aligned_long |>
   arrange(variable, desc(value)) |>
   group_by(variable) |>
   mutate(variable_rank = rank(-value,
-                              na.last = FALSE,
+                              na.last = TRUE,
                               ties.method = "first")) |>
   group_by(variable) |>
   mutate(variable_quantiles = quantise(variable_rank, num_quantiles = 10)) |>
-  ungroup()
+  ungroup() |>
+  mutate(variable_quantiles = if_else(is.na(value), NA_integer_, variable_quantiles))
 
 # Combine the ranks and the national quantiles and add LSOA names
 lsoa_names <- lookup_lsoa11_ltla21 |>

@@ -297,15 +297,20 @@ charities_categories <- charities_classification_raw |>
     classification_type == "What" & classification_description == "The Advancement Of Health Or Saving Of Lives" ~ "Health",
     TRUE ~ "Other"
   )) |>
-  mutate(method = case_when(
+  mutate(service = case_when(
     classification_type == "How" & classification_description == "Provides Services" | 
       classification_type == "How" & classification_description == "Provides Human Resources" ~ "Services or Human Resources",
     classification_type == "How" & classification_description == "Provides Buildings/facilities/open Space" ~ "Buildings/facilities/open Space",
     classification_type == "How" & classification_description == "Provides Advocacy/advice/information" ~ "Advocacy/advice/information",
     TRUE ~ "Other"
   )) |>
-  select(organisation_number, category, method)
+  select(organisation_number, category, service)
 
-# Only keep rows where have a category or method that is not 'Other' 
-charities_categories |>
-  pivot_longer(!organisation_number, names = "what", values = "value")
+# Only keep rows where have a category or service that is not 'Other' 
+charities_categories_tidy <- charities_categories |>
+  pivot_longer(!organisation_number, names_to = "what", values_to = "value") |>
+  filter(value != "Other")
+
+# Save 
+charities_categories_tidy |>
+  write_rds("data/charities_categories.rds")

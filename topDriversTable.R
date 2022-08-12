@@ -28,9 +28,13 @@ topDriversTableServer <- function(id, vuln_drivers, lsoas_clicked, selected_ltla
           drivers <- vuln_drivers |>
             dplyr::filter(lsoa11_name %in% lsoas_clicked()) |>
             select(
+              `Rank` = normalised_rank,
               `Driver of flooding vulnerability` = variable,
-              Value = value
-            )
+              Value = value,
+              `Comparison of value nationally` = variable_quantiles
+            ) |> 
+            arrange(Rank)
+            
         })
 
         output$lsoas_clicked_name <- renderText({
@@ -61,6 +65,7 @@ topDriversTableServer <- function(id, vuln_drivers, lsoas_clicked, selected_ltla
 #   )
 #   server <- function(input, output, session) {
 #     topDriversTableServer("test",
+#       selected_ltlas = reactive(c("City of London")),
 #       vuln_drivers = vuln_drivers_flood,
 #       lsoas_clicked = reactive(c("City of London 001A"))
 #     )

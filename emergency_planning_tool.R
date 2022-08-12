@@ -54,9 +54,10 @@ emergency_planning_tool <- function() {
             fluidRow(
               column(width = 1),
               # Metric of % of most vulnerable neighborhoods (module)
-              column(10, 
-                     align = "center",
-                     topVulnUI("test")),
+              column(10,
+                align = "center",
+                topVulnUI("test")
+              ),
               column(width = 1)
             ),
             br(),
@@ -74,7 +75,15 @@ emergency_planning_tool <- function() {
       tabPanel(
         title = "Organisations",
         value = "organisations",
+        br(),
         fluidRow(
+          # Dropdowns to select categories and services of charities
+          subsetCharitiesDataCategoriesUI("test",
+            charities_categories_data = charities_categories_data
+          )
+        ),
+        fluidRow(
+          # Radiobutton to select whether filtering charities within or outwith area
           radioButtons("organisation_within_area",
             label = "",
             choices = list(
@@ -86,33 +95,34 @@ emergency_planning_tool <- function() {
             ),
             selected = TRUE,
             inline = TRUE
+          )
+        ),
+        fluidRow(
+          column(
+            5,
+            charitiesMapUI("test")
           ),
-          fluidRow(
-            column(
-              5,
-              charitiesMapUI("test")
-            ),
-            column(
-              7,
-              charitiesTableUI("test")
-            )
+          column(
+            7,
+            downloadButton("download_data"),
+            charitiesTableUI("test")
           )
         )
-      ),
+    ),
 
-      # Resources - UI -------------
-      
-      tabPanel(
-        title = "Resources",
-        value = "resources",
-        
+    # Resources - UI -------------
+
+    tabPanel(
+      title = "Resources",
+      value = "resources",
     )
   )
 )
 
 
 
-  server <- function(input, output, session) {
+
+server <- function(input, output, session) {
 
     # Selected Areas - Server -------------
 
@@ -170,6 +180,8 @@ emergency_planning_tool <- function() {
 
     observeEvent(input$tabs, {
       if (input$tabs == "organisations") {
+
+        # Subset charity data based on LTLAs selected
         charities_subset <- subsetCharitiesDataServer(
           "test",
           charities_data = charities_data,
@@ -177,16 +189,34 @@ emergency_planning_tool <- function() {
           ltlas_for_filtering = selected_ltlas
         )
 
+        # Subset charity data based on categories and services selected
+        charities_categories_subset <- subsetCharitiesDataCategoriesServer(
+          "test",
+          subset_charities_data = charities_subset,
+          charities_categories_data = charities_categories_data
+        )
+
         # Map of charities working within the area (module)
         charitiesMapServer("test",
-          charities_data_subset = charities_subset,
+          charities_data_subset = charities_categories_subset,
           filter_for_within_area = reactive(input$organisation_within_area)
         )
 
         # Table of charities (module)
         charitiesTableServer("test",
-          charities_data_subset = charities_subset,
+          charities_data_subset = charities_categories_subset,
           filter_for_within_area = reactive(input$organisation_within_area)
+        )
+        
+        # Download of the subset charity data 
+        
+        output$download_data <- downloadHandler(
+          filename = function() {
+            "ept_charities_extract.csv"
+          },
+          content = function(file) {
+            write.csv(charities_categories_subset(), file)
+          }
         )
       }
     })

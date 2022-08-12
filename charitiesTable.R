@@ -32,7 +32,9 @@ charitiesTableServer <- function(id, charities_data_subset, filter_for_within_ar
           "Contact Info Local Authority" = "charity_contact_ltla_name",
           "Actvities" = "charity_activities",
           "flag_contact_in_ltla"
-        )
+        ) |>
+        mutate(Website = ifelse(Website == "-", Website, paste0("<a href='", Website, "' target='_blank'>", Website, "</a>")),
+               Email = ifelse(Website == "-", Email, paste0("<a href='", Email, "' target='_blank'>", Email, "</a>")))
     })
 
     output$charities_table <- DT::renderDT(
@@ -44,6 +46,7 @@ charitiesTableServer <- function(id, charities_data_subset, filter_for_within_ar
           dplyr::filter(flag_contact_in_ltla == filter_for_within_area()) |>
           select(-flag_contact_in_ltla)
       },
+      escape = FALSE, # needed for the hyperlink column
       options = list(
         scrollX = TRUE,
         scrollCollapse = TRUE,
