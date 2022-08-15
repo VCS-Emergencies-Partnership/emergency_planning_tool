@@ -109,7 +109,7 @@ emergency_planning_tool <- function() {
           ),
           column(
             7,
-            downloadButton("download_data"),
+         #   downloadButton("download_data"),
             charitiesTableUI("test")
           )
         )
@@ -227,14 +227,14 @@ server <- function(input, output, session) {
         
         # Download of the subset charity data 
         
-        output$download_data <- downloadHandler(
-          filename = function() {
-            "ept_charities_extract.csv"
-          },
-          content = function(file) {
-            write.csv(charities_categories_subset(), file)
-          }
-        )
+        # output$download_data <- downloadHandler(
+        #   filename = function() {
+        #     "ept_charities_extract.csv"
+        #   },
+        #   content = function(file) {
+        #     write.csv(charities_categories_subset(), file)
+        #   }
+        # )
       }
     })
   }

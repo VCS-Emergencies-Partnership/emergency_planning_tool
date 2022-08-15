@@ -193,9 +193,6 @@ vuln_scores_overall_sf <- boundaries_lsoa11 |>
 # Check if mismtaches of LSOAs in vuln data but not in geographr data
 vuln_scores_overall |>
   anti_join(boundaries_lsoa11, by = c("lsoa_code" = "lsoa11_code"))
-# 619 not in boundaries_lsoa11
-
-# TO DO: Come back to this - using ms_simplify in geographr removes 677 lsoas
 
 boundaries_lsoa11 |>
   filter(str_detect(lsoa11_code, "^E")) |>
