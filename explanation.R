@@ -10,7 +10,8 @@ explanation <- function() {
           target = "_blank",
           img(src = "www/vcsep_logo.png")
           )
-    )),
+      )
+    ),
     column(
       10,
       tags$h4(

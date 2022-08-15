@@ -27,6 +27,12 @@ topDriversTableServer <- function(id, vuln_drivers, lsoas_clicked, selected_ltla
 
           drivers <- vuln_drivers |>
             dplyr::filter(lsoa11_name %in% lsoas_clicked()) |>
+            # explain the concept of quantiles in plain language 
+            # variable_quantiles = 1 means in top 10% worst scoring neighborhoods nationally
+            mutate(variable_quantiles = case_when(
+              variable_quantiles <= 5 ~ paste0("in lowest ", variable_quantiles, "0% of neighbourhoods"),
+              variable_quantiles > 5 ~ paste0("in highest ", 11-variable_quantiles, "0% of neighbourhoods"),
+              )) |>
             select(
               `Rank` = normalised_rank,
               `Driver of flooding vulnerability` = variable,

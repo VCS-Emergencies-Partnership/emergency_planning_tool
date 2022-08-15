@@ -44,6 +44,11 @@ emergency_planning_tool <- function() {
         value = "vulnerabilities",
         br(),
         fluidRow(
+          # Button to show licence (module)
+          floodingLisenceUI("test")
+        ),
+        br(),
+        fluidRow(
           column(
             6,
             # Vulnerability index map (module)
@@ -115,6 +120,15 @@ emergency_planning_tool <- function() {
     tabPanel(
       title = "Resources",
       value = "resources",
+    ),
+    
+    # Licence, methodology & data - UI -------------
+    
+    tabPanel(
+      title = "Methodology & Data",
+      value = "methodology_data",
+      
+      "Info here on the flooding vulnerability index (links to Sayers), any lisences & dates of data used."
     )
   )
 )
@@ -141,6 +155,9 @@ server <- function(input, output, session) {
     )
 
     # Vulnerabilities - Server -------------
+    
+    # Flooding vulnerability licence (module
+    floodingLisenceServer("test")
 
     # Only render the vulnerability tab components when the tab is selected
     observeEvent(input$tabs, {
