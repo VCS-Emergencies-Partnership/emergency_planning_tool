@@ -4,11 +4,10 @@ charitiesTableUI <- function(id) {
 }
 
 # Server -----
-charitiesTableServer <- function(id, charities_data_subset, filter_for_within_area) {
+charitiesTableServer <- function(id, charities_data_subset) {
 
   # Checks to ensure the input is reactive
   stopifnot(is.reactive(charities_data_subset))
-  stopifnot(is.reactive(filter_for_within_area))
 
   moduleServer(id, function(input, output, session) {
     charities_data_subset_clean <- reactive({
@@ -25,31 +24,31 @@ charitiesTableServer <- function(id, charities_data_subset, filter_for_within_ar
           ~ replace(., is.na(.), "-")
         ) |>
         select(
+          "Contact Info Local Authority" = "charity_contact_ltla_name",
           "Name" = "charity_name",
           "Website" = "charity_contact_web",
           "Email" = "charity_contact_email",
           "Phone" = "charity_contact_phone",
           "Actvities" = "charity_activities",
-          "Contact Info Local Authority" = "charity_contact_ltla_name",
           "flag_contact_in_ltla"
         ) |>
-        mutate(Website = ifelse(Website == "-", Website, paste0("<a href='", Website, "' target='_blank'>", Website, "</a>")),
-               Email = ifelse(Website == "-", Email, paste0("<a href='", Email, "' target='_blank'>", Email, "</a>")))
+        mutate(Website = ifelse(Website == "-", Website, paste0("<a href='", Website, "' target='_blank'>", Website, "</a>")))
     })
 
     output$charities_table <- DT::renderDT(
       {
         # Catch errors if no area has been selected - show message as at top of the page
-        validate(need(nrow(charities_data_subset()) != 0, "Please select an area on the first tab."))
+        shiny::validate(need(nrow(charities_data_subset()) != 0, "Please select an area on the first tab."))
         
         charities_data_subset_clean() |>
-          dplyr::filter(flag_contact_in_ltla == filter_for_within_area()) |>
+          arrange(desc(flag_contact_in_ltla), Name) |>
           select(-flag_contact_in_ltla)
       },
       rownames = FALSE,
       escape = FALSE, # needed for the hyperlink column
       extensions = c("Buttons", "ColReorder"),
       options = list(
+        pageLength = 5,
         scrollX = TRUE,
         scrollCollapse = TRUE,
         dom = "Bfrtip",
@@ -64,13 +63,12 @@ charitiesTableServer <- function(id, charities_data_subset, filter_for_within_ar
           )
         ),
         colReorder = TRUE,
+        autoWidth = TRUE,
        # widen certain columns which contain a low of text
-        columnDefs = list(
-          list(width="200px", targets = c(2,3),
-               width = "1100px", targets = c(5))
-        ),
-        autoWidth = TRUE
-      )
+        # columnDefs = list(
+        #   list(width = "500px", targets = c(6))
+        # )
+    )
     )
   })
 }
@@ -101,8 +99,7 @@ charitiesTableTest <- function() {
    # observe(print(charities_subset_test()))
 
     charitiesTableServer("test",
-      charities_data_subset = charities_subset_test,
-      filter_for_within_area = reactive("TRUE")
+      charities_data_subset = charities_subset_test
     )
   }
   shinyApp(ui, server)

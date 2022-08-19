@@ -88,55 +88,39 @@ emergency_planning_tool <- function() {
           )
         ),
         fluidRow(
-          # Radiobutton to select whether filtering charities within or outwith area
-          radioButtons("organisation_within_area",
-            label = "",
-            choices = list(
-              "Charities that operate & registered
-                                      address is within your selected area" = TRUE,
-              "Charities that operate in your selected
-                                      area but the registered address is either
-                                      out-with your selected area or not registered" = FALSE
-            ),
-            selected = TRUE,
-            inline = TRUE
-          )
-        ),
-        fluidRow(
           column(
             5,
             charitiesMapUI("test")
           ),
           column(
             7,
-         #   downloadButton("download_data"),
+            #   downloadButton("download_data"),
             charitiesTableUI("test")
           )
         )
-    ),
+      ),
 
-    # Resources - UI -------------
+      # Resources - UI -------------
 
-    tabPanel(
-      title = "Resources",
-      value = "resources",
-    ),
-    
-    # Licence, methodology & data - UI -------------
-    
-    tabPanel(
-      title = "Methodology & Data",
-      value = "methodology_data",
-      
-      "Info here on the flooding vulnerability index (links to Sayers), any lisences & dates of data used."
+      tabPanel(
+        title = "Resources",
+        value = "resources",
+      ),
+
+      # Licence, methodology & data - UI -------------
+
+      tabPanel(
+        title = "Methodology & Data",
+        value = "methodology_data",
+        "Info here on the flooding vulnerability index (links to Sayers), any lisences & dates of data used."
+      )
     )
   )
-)
 
 
 
 
-server <- function(input, output, session) {
+  server <- function(input, output, session) {
 
     # Selected Areas - Server -------------
 
@@ -154,8 +138,9 @@ server <- function(input, output, session) {
       selected_ltlas = selected_ltlas
     )
 
+
     # Vulnerabilities - Server -------------
-    
+
     # Flooding vulnerability licence (module
     floodingLisenceServer("test")
 
@@ -198,6 +183,14 @@ server <- function(input, output, session) {
     observeEvent(input$tabs, {
       if (input$tabs == "organisations") {
 
+        # Subset the vulnerability scores data with selected LSOAs
+        # Repeated from when the 'vulnerabilities' tab is selected
+        lsoa_vuln_scores_subset <- subsetVulnDataServer(
+          "test",
+          lsoa_data = vuln_scores_flood,
+          ltlas_for_filtering = selected_ltlas
+        )
+
         # Subset charity data based on LTLAs selected
         charities_subset <- subsetCharitiesDataServer(
           "test",
@@ -216,25 +209,13 @@ server <- function(input, output, session) {
         # Map of charities working within the area (module)
         charitiesMapServer("test",
           charities_data_subset = charities_categories_subset,
-          filter_for_within_area = reactive(input$organisation_within_area)
+          lsoa_vuln_scores_sf_subset = lsoa_vuln_scores_subset
         )
 
         # Table of charities (module)
         charitiesTableServer("test",
-          charities_data_subset = charities_categories_subset,
-          filter_for_within_area = reactive(input$organisation_within_area)
+          charities_data_subset = charities_categories_subset
         )
-        
-        # Download of the subset charity data 
-        
-        # output$download_data <- downloadHandler(
-        #   filename = function() {
-        #     "ept_charities_extract.csv"
-        #   },
-        #   content = function(file) {
-        #     write.csv(charities_categories_subset(), file)
-        #   }
-        # )
       }
     })
   }

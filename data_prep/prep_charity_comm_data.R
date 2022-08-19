@@ -291,17 +291,13 @@ charities_categories <- charities_classification_raw |>
     classification_type == "Who" & classification_description == "Elderly/old People" ~ "Older people",
     (classification_type == "Who" & classification_description == "People With Disabilities") | 
       (classification_type == "What" & classification_description == "Disability")  ~ "Disabilities",
-    classification_type == "What" & classification_description == "Economic/community Development/employment" ~ "Income/Employment",
-    classification_type == "What" & classification_description == "The Prevention Or Relief Of Poverty" ~ "Income/Poverty",
-    classification_type == "What" & classification_description == "Accommodation/housing" ~ "Accommodation/housing",
-    classification_type == "What" & classification_description == "The Advancement Of Health Or Saving Of Lives" ~ "Health",
+    classification_type == "What" ~ classification_description,
     TRUE ~ "Other"
   )) |>
   mutate(service = case_when(
     classification_type == "How" & classification_description == "Provides Services" | 
       classification_type == "How" & classification_description == "Provides Human Resources" ~ "Services or Human Resources",
-    classification_type == "How" & classification_description == "Provides Buildings/facilities/open Space" ~ "Buildings/facilities/open Space",
-    classification_type == "How" & classification_description == "Provides Advocacy/advice/information" ~ "Advocacy/advice/information",
+    classification_type == "How" ~ classification_description,
     TRUE ~ "Other"
   )) |>
   select(organisation_number, category, service)

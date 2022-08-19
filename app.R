@@ -26,7 +26,6 @@ lsoa_ltla_lookup <- read_rds("data/lsoa_ltla_lookup.rds")
 boundaries_ltlas <- read_rds("data/boundaries_ltlas.rds")
 charities_categories_data <- read_rds("data/charities_categories.rds")
 
-
 source("emergency_planning_tool.R")
 emergency_planning_tool()
 
