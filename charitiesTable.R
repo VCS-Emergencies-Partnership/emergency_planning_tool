@@ -63,7 +63,7 @@ charitiesTableServer <- function(id, charities_data_subset) {
           )
         ),
         colReorder = TRUE,
-        autoWidth = TRUE,
+        autoWidth = TRUE
        # widen certain columns which contain a low of text
         # columnDefs = list(
         #   list(width = "500px", targets = c(6))

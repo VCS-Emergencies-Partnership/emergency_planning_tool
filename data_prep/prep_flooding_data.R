@@ -174,7 +174,7 @@ vuln_variables_combined_labels |>
          "value" = "value_label",
          "variable" = "variable_label") |>
   relocate("lsoa11_name", .after = "lsoa11_code") |>
-  write_rds("data/flooding_drivers_v2.rds")
+  write_rds("data/flooding_drivers.rds")
 
 #--------------------------------------------------------------
 # Overall flooding vulnerability scores ----------------------
