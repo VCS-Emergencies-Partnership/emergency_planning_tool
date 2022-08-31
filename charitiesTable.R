@@ -78,31 +78,31 @@ charitiesTableServer <- function(id, charities_data_subset) {
 # Test -------------------------------------------------------------------------
 #--------------------------------------------------------------------------------
 
-charities_ltla_lookup <- read_rds("data/charities_ltla_lookup.rds")
-charities_data <- read_rds("data/charities_list_latlong.rds")
-
-source("subsetCharitiesData.R")
-
-charitiesTableTest <- function() {
-  ui <- fluidPage(
-    charitiesTableUI("test")
-  )
-
-  server <- function(input, output, session) {
-    charities_subset_test <- subsetCharitiesDataServer(
-      "test",
-      charities_data = charities_data,
-      charities_ltla_lookup_data = charities_ltla_lookup,
-      ltlas_for_filtering = reactive(c("Hartlepool"))
-    )
-
-   # observe(print(charities_subset_test()))
-
-    charitiesTableServer("test",
-      charities_data_subset = charities_subset_test
-    )
-  }
-  shinyApp(ui, server)
-}
-
-charitiesTableTest()
+# charities_ltla_lookup <- read_rds("data/charities_ltla_lookup.rds")
+# charities_data <- read_rds("data/charities_list_latlong.rds")
+# 
+# source("subsetCharitiesData.R")
+# 
+# charitiesTableTest <- function() {
+#   ui <- fluidPage(
+#     charitiesTableUI("test")
+#   )
+# 
+#   server <- function(input, output, session) {
+#     charities_subset_test <- subsetCharitiesDataServer(
+#       "test",
+#       charities_data = charities_data,
+#       charities_ltla_lookup_data = charities_ltla_lookup,
+#       ltlas_for_filtering = reactive(c("Hartlepool"))
+#     )
+# 
+#    # observe(print(charities_subset_test()))
+# 
+#     charitiesTableServer("test",
+#       charities_data_subset = charities_subset_test
+#     )
+#   }
+#   shinyApp(ui, server)
+# }
+# 
+# charitiesTableTest()

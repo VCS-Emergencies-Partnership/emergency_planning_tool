@@ -62,27 +62,27 @@ subsetCharitiesDataCategoriesServer <- function(id,
 # Test -------------------------------------------------------------------------
 #--------------------------------------------------------------------------------
 
-charities_data <- read_rds("data/charities_list_latlong.rds")
-charities_categories_data <- read_rds("data/charities_categories.rds")
-
-subsetCharitiesDataCategoriesTest <- function() {
-  ui <- fluidPage(
-    subsetCharitiesDataCategoriesUI("test",
-      charities_categories_data = charities_categories_data
-    )
-  )
-
-  server <- function(input, output, session) {
-    charities_subset <- subsetCharitiesDataCategoriesServer(
-      "test",
-      subset_charities_data = reactive(charities_data),
-      charities_categories_data = charities_categories_data
-    )
-
-    observe(print(charities_subset()))
-  }
-  shinyApp(ui, server)
-}
+# charities_data <- read_rds("data/charities_list_latlong.rds")
+# charities_categories_data <- read_rds("data/charities_categories.rds")
+# 
+# subsetCharitiesDataCategoriesTest <- function() {
+#   ui <- fluidPage(
+#     subsetCharitiesDataCategoriesUI("test",
+#       charities_categories_data = charities_categories_data
+#     )
+#   )
+# 
+#   server <- function(input, output, session) {
+#     charities_subset <- subsetCharitiesDataCategoriesServer(
+#       "test",
+#       subset_charities_data = reactive(charities_data),
+#       charities_categories_data = charities_categories_data
+#     )
+# 
+#     observe(print(charities_subset()))
+#   }
+#   shinyApp(ui, server)
+# }
 
 # Run test
-subsetCharitiesDataCategoriesTest()
+# subsetCharitiesDataCategoriesTest()
