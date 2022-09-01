@@ -3,7 +3,7 @@ selectAreasDropdownUI <- function(id) {
   selectizeInput(
     NS(id, "selectAreasDropdown"),
     label = NULL,
-    choices = sort(unique(lsoa_ltla_lookup$ltla21_name)),
+    choices = sort(unique(lsoa_flood_risk_ltla_lookup$ltla21_name)),
     multiple = TRUE,
     options = list(
       plugins = list("remove_button"),
@@ -39,7 +39,7 @@ selectAreasDropdownServer <- function(id, selected_ltlas) {
 # Test -------------------------------------------------------------------------
 #--------------------------------------------------------------------------------
 
-# lsoa_ltla_lookup <- read_rds("data/lsoa_ltla_lookup.rds")
+# lsoa_flood_risk_ltla_lookup <- read_rds("data/lsoa_flood_risk_ltla_lookup.rds")
 # 
 # selectAreasDropdownTest <- function() {
 #   ui <- fluidPage(

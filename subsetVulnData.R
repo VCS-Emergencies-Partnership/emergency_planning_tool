@@ -7,7 +7,7 @@ subsetVulnDataServer <- function(id, lsoa_data, ltlas_for_filtering) {
   moduleServer(id, function(input, output, session) {
 
     lsoas_selected <- reactive({
-      lsoa_ltla_lookup |>
+      lsoa_flood_risk_ltla_lookup |>
         dplyr::filter(ltla21_name %in% ltlas_for_filtering()) |>
         select(c("lsoa11_code")) |>
         pull()
