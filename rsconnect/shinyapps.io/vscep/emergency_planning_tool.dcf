@@ -5,10 +5,10 @@ account: vscep
 server: shinyapps.io
 hostUrl: https://api.shinyapps.io/v1
 appId: 6879067
-bundleId: 6252388
+bundleId: 6255337
 url: https://vscep.shinyapps.io/emergency_planning_tool/
-when: 1661877922.70942
-lastSyncTime: 1661877922.70945
+when: 1661950420.56832
+lastSyncTime: 1661950420.56835
 asMultiple: FALSE
 asStatic: FALSE
-ignoredFiles: app_function.R|emergency_planning_tool.R|data_prep
+ignoredFiles: app_function.R|emergency_planning_tool.R|data_prep|profiling

@@ -1,5 +1,7 @@
 # ---- UI ----
 ui <- fluidPage(
+  # for hotjar tracking
+  tags$head(includeScript(paste0(getwd(), "/www/hotjar.js"))),
   fluidRow(
     column(
       9,

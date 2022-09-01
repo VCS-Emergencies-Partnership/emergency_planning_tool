@@ -232,6 +232,8 @@ combined_charities_codes_selected <- combined_charities_codes |>
 
 # Save ---
 combined_charities_codes_selected |>
+  #just keep names & not codes to reduce size of dataset
+  select(-ltla21_code) |>
   write_rds("data/charities_ltla_lookup.rds")
 
 ############################################
@@ -246,8 +248,6 @@ charities_subset <- charities_list_raw |>
   left_join(lookup_lsoa11_ltla21, by = "lsoa11_code") |>
   select(-c("oa11_code", "lsoa11_code", "msoa11_code", "ltla20_code", "lsoa11_code", "lsoa11_code")) |>
   rename(charity_contact_ltla_name = ltla21_name, charity_contact_ltla_code = ltla21_code)
-
-# TO DO: Could come back here to add in classification e.g. elderly etc. or provides services, grants etc.
 
 unique_postcodes <- charities_subset |>
   distinct(charity_contact_postcode_join) |>

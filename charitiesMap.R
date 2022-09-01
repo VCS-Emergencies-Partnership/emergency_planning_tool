@@ -27,17 +27,7 @@ charitiesMapServer <- function(id,
           flag_contact_in_ltla == 1,
           !is.na(lat),
           !is.na(long)
-        ) |>
-        # avoided replace_na() as from tidyr (package not used elsewhere yet)
-        mutate_at(
-          c(
-            "charity_contact_web",
-            "charity_contact_email",
-            "charity_contact_phone",
-            "charity_activities"
-          ),
-          ~ replace(., is.na(.), "-")
-        )
+        ) 
 
       pal <- colorBin("Reds",
         domain = lsoa_vuln_scores_sf_subset()$vulnerability_quantiles,
@@ -53,7 +43,7 @@ charitiesMapServer <- function(id,
           clusterOptions = markerClusterOptions(),
           popup = paste0(
             "<b> Name: </b>", charities_within_area$charity_name, "<br>",
-            "<b> Web: </b>", charities_within_area$charity_contact_web, "<br>",
+            "<b> Web: </b>", paste0("<a href='", charities_within_area$charity_contact_web, "' target='_blank'>", charities_within_area$charity_contact_web, "</a>") , "<br>",
             "<b> Email: </b>", charities_within_area$charity_contact_email, "<br>",
             "<b> Phone: </b>", charities_within_area$charity_contact_phone, "<br>",
             "<b> Actvities: </b>", charities_within_area$charity_activities

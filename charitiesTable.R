@@ -12,17 +12,6 @@ charitiesTableServer <- function(id, charities_data_subset) {
   moduleServer(id, function(input, output, session) {
     charities_data_subset_clean <- reactive({
       charities_data_subset() |>
-        # avoided replace_na() as from tidyr (package not used elsewhere yet)
-        mutate_at(
-          c(
-            "charity_contact_web",
-            "charity_contact_email",
-            "charity_contact_phone",
-            "charity_contact_ltla_name",
-            "charity_activities"
-          ),
-          ~ replace(., is.na(.), "-")
-        ) |>
         select(
           "Contact Info Local Authority" = "charity_contact_ltla_name",
           "Name" = "charity_name",

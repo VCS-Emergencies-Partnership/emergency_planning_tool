@@ -9,9 +9,18 @@ subsetCharitiesDataServer <- function(id, charities_data, charities_ltla_lookup_
       charities_ltla_lookup |>
         dplyr::filter(ltla21_name %in% ltlas_for_filtering()) |>
         inner_join(charities_data, by = "organisation_number") |>
-        select(-ltla21_code) |>
         # create flag where charity has contact info is within the chosen LTLA
-        mutate(flag_contact_in_ltla = charity_contact_ltla_name %in% ltlas_for_filtering()) 
+        mutate(flag_contact_in_ltla = charity_contact_ltla_name %in% ltlas_for_filtering()) |>
+        # avoided replace_na() as from tidyr (package not used elsewhere yet)
+        mutate_at(
+          c(
+            "charity_contact_web",
+            "charity_contact_email",
+            "charity_contact_phone",
+            "charity_activities"
+          ),
+          ~ replace(., is.na(.), "-")
+        )
       
     })
   })
