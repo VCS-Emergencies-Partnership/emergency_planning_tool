@@ -41,6 +41,7 @@ server <- function(input, output, session) {
       # Vulnerability index map (module)
       vulnMapServer("test",
                     lsoa_vuln_scores_sf_subset = lsoa_vuln_scores_subset,
+                    flood_alert_data = lsoa_flood_alert_data,
                     flood_risk_data = lsoa_flood_risk_ltla_lookup,
                     lsoas_clicked = lsoas_clicked_global
       )

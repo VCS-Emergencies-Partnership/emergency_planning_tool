@@ -4,6 +4,7 @@ library(dplyr)
 library(magrittr)
 library(sf)
 library(stringr)
+library(readr)
 
 # Source: https://environment.data.gov.uk/flood-monitoring/doc/reference
 # Updated every 15 minutes.
@@ -53,6 +54,8 @@ flood_alert_lsoas <- flood_alerts |>
 # set geometry to the polygon not the point so joins via polygon
 st_geometry(flood_alert_lsoas) <- "geometry_poly"
 
+# Save
 flood_alert_lsoas |>
   st_drop_geometry() |>
-  select(-geometry_point)
+  select(-geometry_point) |>
+  write_rds("data/flood_alert_lsoas.Rds")
