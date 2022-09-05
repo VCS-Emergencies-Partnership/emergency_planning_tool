@@ -17,6 +17,7 @@ source("charitiesTable.R")
 source("charitiesMap.R")
 source("explanation.R")
 source('floodingLicence.R')
+source("utils.R")
 
 vuln_scores_flood <- read_rds("data/flooding_vuln_scores_sf.rds")
 vuln_drivers_flood <- read_rds("data/flooding_drivers.rds")
