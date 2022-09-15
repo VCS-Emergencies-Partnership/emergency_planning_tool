@@ -3,6 +3,9 @@ topDriversTableUI <- function(id) {
   tagList(
     "Neighbourhoods drivers of vulnerabilities ranked",
     textOutput(NS(id, "lsoas_clicked_name")),
+    actionButton(NS(id, "hide_show_val_col"),
+                 label = "Hide/show values"
+    ),
     tableOutput(NS(id, "top_drivers_table"))
   )
 }
@@ -15,7 +18,7 @@ topDriversTableServer <- function(id, vuln_drivers, lsoas_clicked, selected_ltla
 
   moduleServer(id, function(input, output, session) {
     observeEvent(
-      lsoas_clicked(),
+      list(lsoas_clicked(), input$hide_show_val_col),
       {
         output$top_drivers_table <- renderTable({
 
@@ -27,20 +30,30 @@ topDriversTableServer <- function(id, vuln_drivers, lsoas_clicked, selected_ltla
 
           drivers <- vuln_drivers |>
             dplyr::filter(lsoa11_name %in% lsoas_clicked()) |>
-            # explain the concept of quantiles in plain language 
+            # explain the concept of quantiles in plain language
             # variable_quantiles = 1 means in top 10% worst scoring neighborhoods nationally
             mutate(variable_quantiles = case_when(
               variable_quantiles <= 5 ~ paste0("in ", variable_quantiles, "0% most vulnerable neighbourhoods"),
-              variable_quantiles > 5 ~ paste0("in ", 11-variable_quantiles, "0% least vulnerable neighbourhoods"),
-              )) |>
+              variable_quantiles > 5 ~ paste0("in ", 11 - variable_quantiles, "0% least vulnerable neighbourhoods"),
+            )) |>
             select(
               `Rank` = normalised_rank,
               `Driver of flooding vulnerability` = variable,
-        #      Value = value,
+              Value = value,
               `Comparison of value nationally` = variable_quantiles
-            ) |> 
+            ) |>
             arrange(Rank)
-            
+
+          # So only show values when user clicks the button
+          if (input$hide_show_val_col[1] %% 2 == 0) {
+            drivers_for_table <- drivers |>
+              select(-Value)
+          } else {
+            drivers_for_table <- drivers
+          }
+
+
+          drivers_for_table
         })
 
         output$lsoas_clicked_name <- renderText({
