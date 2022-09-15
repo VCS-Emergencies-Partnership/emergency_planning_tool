@@ -36,7 +36,7 @@ topDriversTableServer <- function(id, vuln_drivers, lsoas_clicked, selected_ltla
             select(
               `Rank` = normalised_rank,
               `Driver of flooding vulnerability` = variable,
-              Value = value,
+        #      Value = value,
               `Comparison of value nationally` = variable_quantiles
             ) |> 
             arrange(Rank)
