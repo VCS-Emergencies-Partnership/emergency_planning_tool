@@ -97,5 +97,40 @@ server <- function(input, output, session) {
       )
     }
   })
+  
+  # Navigation buttons - Server -------------
+  
+  observeEvent(input$selected_areas_next_button, {
+    updateTabsetPanel(session, "tabs", selected = "vulnerabilities")
+  })
+  
+  observeEvent(input$vulnerabilities_back_button, {
+    updateTabsetPanel(session, "tabs", selected = "selected_areas")
+  })
+  
+  observeEvent(input$vulnerabilities_next_button, {
+    updateTabsetPanel(session, "tabs", selected = "organisations")
+  })
+  
+  observeEvent(input$organisations_back_button, {
+    updateTabsetPanel(session, "tabs", selected = "vulnerabilities")
+  })
+  
+  observeEvent(input$organisations_next_button, {
+    updateTabsetPanel(session, "tabs", selected = "resources")
+  })
+  
+  observeEvent(input$resources_back_button, {
+    updateTabsetPanel(session, "tabs", selected = "organisations")
+  })
+  
+  observeEvent(input$resources_next_button, {
+    updateTabsetPanel(session, "tabs", selected = "methodology_data")
+  })
+  
+  observeEvent(input$methodology_data_back_button, {
+    updateTabsetPanel(session, "tabs", selected = "resources")
+  })
+  
 }
 

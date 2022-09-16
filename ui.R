@@ -33,8 +33,8 @@ ui <- fluidPage(
       # Map to select area (module)
       selectedAreaMapUI("test"),
       
-      # Button once selected area - don't know if need this? TO DO: Think about UX
-      #  actionButton("selected_area_button", "Next page")
+      # Button to move to next page 
+      actionButton("selected_areas_next_button", "Next page")
     ),
     
     # Vulnerabilities - UI -------------
@@ -72,7 +72,13 @@ ui <- fluidPage(
             topDriversTableUI("test")
           )
         )
-      )
+      ),
+      
+      # Button to move back page
+      actionButton("vulnerabilities_back_button", "Back page"),
+      
+      # Button to move to next page 
+      actionButton("vulnerabilities_next_button", "Next page")
     ),
     
     # Charities - UI -------------
@@ -97,7 +103,13 @@ ui <- fluidPage(
           #   downloadButton("download_data"),
           charitiesTableUI("test")
         )
-      )
+      ),
+      
+      # Button to move back page
+      actionButton("organisations_back_button", "Back page"),
+      
+      # Button to move to next page 
+      actionButton("organisations_next_button", "Next page")
     ),
     
     # Resources - UI -------------
@@ -105,6 +117,14 @@ ui <- fluidPage(
     tabPanel(
       title = "Resources",
       value = "resources",
+      
+      "Link here to VCSEP website flooding page.",
+      
+      # Button to move back page
+      actionButton("resources_back_button", "Back page"),
+      
+      # Button to move to next page 
+      actionButton("resources_next_button", "Next page")
     ),
     
     # Licence, methodology & data - UI -------------
@@ -112,7 +132,10 @@ ui <- fluidPage(
     tabPanel(
       title = "Methodology & Data",
       value = "methodology_data",
-      "Info here on the flooding vulnerability index (links to Sayers), any lisences & dates of data used."
+      "Info here on the flooding vulnerability index (links to Sayers), any lisences & dates of data used.",
+      
+      # Button to move back page
+      actionButton("methodology_data_back_button", "Back page"),
     )
   )
 )
