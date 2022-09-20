@@ -1,0 +1,25 @@
+Package: emergencyplanning
+Title: Emergency Planning Tool
+Version: 0.0.0.9000
+Authors@R: c(
+    person("Aileen", "McDonald", , "aileenmcdonald@vcsep.org.uk", role = "cre")
+    )
+Description: Use this tool to find areas of vulnerability to potential
+        emergency events, what factors are driving the vulnerability and
+        organisations that work in the area.
+License: GPL (>= 3)
+Encoding: UTF-8
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.2.1
+Imports: 
+    dplyr,
+    DT,
+    leaflet,
+    pkgload,
+    readr,
+    sf,
+    shiny,
+    shinyWidgets
+Depends: 
+    R (>= 2.10)
+LazyData: true
