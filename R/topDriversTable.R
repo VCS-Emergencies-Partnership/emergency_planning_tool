@@ -27,7 +27,7 @@ topDriversTableServer <- function(id, vuln_drivers, lsoas_clicked, selected_ltla
             length(lsoas_clicked()) > 0,
             "Please click on a neighbourhood on the map to view the drivers of vulnerability to your chosen emergency event."
           ))
-            
+
           drivers <- vuln_drivers |>
             dplyr::filter(lsoa11_name %in% lsoas_clicked()) |>
             # explain the concept of quantiles in plain language
@@ -39,8 +39,8 @@ topDriversTableServer <- function(id, vuln_drivers, lsoas_clicked, selected_ltla
             select(
               `Rank` = normalised_rank,
               `Driver of flooding vulnerability` = variable,
-               Value = value,
-              `Comparison of value nationally` = variable_quantiles
+              `Comparison of value nationally` = variable_quantiles,
+                Value = value
             ) |>
             arrange(Rank) |>
             mutate(Rank = if_else(is.na(Rank), "-", as.character(Rank))) |>
@@ -79,7 +79,7 @@ topDriversTableServer <- function(id, vuln_drivers, lsoas_clicked, selected_ltla
 # --------------------------------------------------------------------------------
 
 # vuln_drivers_flood <- read_rds("data/flooding_drivers.rds")
-# 
+#
 # topDriversTableTest <- function() {
 #   ui <- fluidPage(
 #     topDriversTableUI("test")
