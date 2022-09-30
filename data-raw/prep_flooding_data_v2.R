@@ -35,6 +35,11 @@ data_eng <- raw_data |>
   filter(country == "England") |>
   rename(lsoa11_code = code, lsoa11_name = name)
 
+# Check if all LSOAs in data
+lookup_lsoa11_ltla21 |>
+  filter(str_detect(lsoa11_code, "^E")) |>
+  anti_join(data_eng, by = "lsoa11_code")
+# all 32,834 LSOAs
 
 #####################################################
 # Loading in helper data

@@ -18,9 +18,21 @@ vulnMapServer <- function(id, lsoa_vuln_scores_sf_subset, flood_risk_data, lsoas
   stopifnot(is.reactive(lsoa_vuln_scores_sf_subset))
 
   moduleServer(id, function(input, output, session) {
+
+    # Once loaded .rda file no longer recognised as spatial object?
+    lsoa_vuln_scores_sf_subset_clean <- reactive({
+
+      lsoa_vuln_scores_sf_subset() |>
+      st_as_sf(crs = 4326) |>
+      rename(vulnerability_quantiles = nvfi_quantiles_eng)
+    })
+
+
+
     pal <- reactive({
-      colorBin("Reds",
-        domain = lsoa_vuln_scores_sf_subset()$vulnerability_quantiles,
+      colorBin("inferno",
+        reverse = TRUE,
+        domain = lsoa_vuln_scores_sf_subset_clean()$vulnerability_quantiles,
         bins = c(1:10)
       )
     })
@@ -29,21 +41,20 @@ vulnMapServer <- function(id, lsoa_vuln_scores_sf_subset, flood_risk_data, lsoas
     output$vuln_map <- renderLeaflet({
 
       # Catch errors if no area has been selected - blank message as not at top of the page
-      validate(need(nrow(lsoa_vuln_scores_sf_subset()) != 0, ""))
+      validate(need(nrow(lsoa_vuln_scores_sf_subset_clean()) != 0, ""))
 
       legend_labels = c("Least vulnerable", rep("", times = 7) , "Most vulnerable")
 
       pal <- pal()
 
-      #    lsoa_vuln_scores_sf_subset() |>
       leaflet() |>
         addProviderTiles(providers$CartoDB.Positron) |>
         vuln_map_function(
-          vuln_data = lsoa_vuln_scores_sf_subset(),
+          vuln_data = lsoa_vuln_scores_sf_subset_clean(),
           pal_input = pal
         ) |>
         addLegend(
-          data = lsoa_vuln_scores_sf_subset(),
+          data = lsoa_vuln_scores_sf_subset_clean(),
           pal = pal,
           values = ~vulnerability_quantiles,
           opacity = 0.7,
@@ -66,10 +77,11 @@ vulnMapServer <- function(id, lsoa_vuln_scores_sf_subset, flood_risk_data, lsoas
             clearShapes() |>
             addProviderTiles(providers$CartoDB.Positron) |>
             vuln_map_function(
-              vuln_data = lsoa_vuln_scores_sf_subset(),
+              vuln_data = lsoa_vuln_scores_sf_subset_clean(),
               pal_input = pal
             )
         } else {
+
           pal <- pal()
 
           flood_risk_lsoas <- flood_risk_data |>
@@ -77,7 +89,7 @@ vulnMapServer <- function(id, lsoa_vuln_scores_sf_subset, flood_risk_data, lsoas
             pull(lsoa11_code)
 
           lsoa_vuln_scores_sf_subset_flood_risk <- reactive({
-            lsoa_vuln_scores_sf_subset() |>
+            lsoa_vuln_scores_sf_subset_clean() |>
               filter(lsoa11_code %in% flood_risk_lsoas)
           })
 
@@ -119,15 +131,15 @@ vulnMapServer <- function(id, lsoa_vuln_scores_sf_subset, flood_risk_data, lsoas
 # library(geographr)
 #
 # subset_lsoas <- lookup_lsoa11_ltla21 |>
-#   filter(ltla21_code == "E06000007") |>
+#   filter(ltla21_code == "E06000001") |>
 #   select(lsoa11_code)
 #
-# lsoa_vuln_scores_flood <- read_rds("data/flooding_vuln_scores_sf.rds")
+# load("data/vuln_scores_flood.rda")
+# load("data/lsoa_flood_risk_ltla_lookup.rda")
 #
-# lsoa_vuln_scores_subset_flood <- lsoa_vuln_scores_flood |>
+# lsoa_vuln_scores_subset_flood <- vuln_scores_flood |>
 #   inner_join(subset_lsoas, by = "lsoa11_code")
 #
-# lsoa_flood_risk_ltla_lookup <- read_rds("data/lsoa_flood_risk_ltla_lookup.rds")
 #
 # vulnMapTest <- function() {
 #   ui <- fluidPage(
