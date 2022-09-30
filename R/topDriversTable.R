@@ -3,9 +3,9 @@ topDriversTableUI <- function(id) {
   tagList(
     "Neighbourhoods drivers of vulnerabilities ranked",
     textOutput(NS(id, "lsoas_clicked_name")),
-    actionButton(NS(id, "hide_show_val_col"),
-                 label = "Hide/show values"
-    ),
+    # actionButton(NS(id, "hide_show_val_col"),
+    #              label = "Hide/show values"
+   # ),
     tableOutput(NS(id, "top_drivers_table"))
   )
 }
@@ -32,31 +32,32 @@ topDriversTableServer <- function(id, vuln_drivers, lsoas_clicked, selected_ltla
             dplyr::filter(lsoa11_name %in% lsoas_clicked()) |>
             # explain the concept of quantiles in plain language
             # variable_quantiles = 1 means in top 10% worst scoring neighborhoods nationally
-            mutate(variable_quantiles = case_when(
-              variable_quantiles <= 5 ~ paste0("in ", variable_quantiles, "0% most vulnerable neighbourhoods"),
-              variable_quantiles > 5 ~ paste0("in ", 11 - variable_quantiles, "0% least vulnerable neighbourhoods"),
+            mutate(quantiles_eng = case_when(
+              quantiles_eng <= 5 ~ paste0("in ", quantiles_eng, "0% most vulnerable neighbourhoods"),
+              quantiles_eng > 5 ~ paste0("in ", 11 - quantiles_eng, "0% least vulnerable neighbourhoods"),
             )) |>
             select(
               `Rank` = normalised_rank,
-              `Driver of flooding vulnerability` = variable,
-              `Comparison of value nationally` = variable_quantiles,
-                Value = value
+              `Driver of flooding vulnerability` = domain_variable_name,
+              `Domain or variable` = domain_variable,
+              `Comparison of value nationally` = quantiles_eng
+         #     `Values` = values
             ) |>
-            arrange(Rank) |>
+            arrange(`Domain or variable`, Rank) |>
             mutate(Rank = if_else(is.na(Rank), "-", as.character(Rank))) |>
             mutate(`Comparison of value nationally` = if_else(is.na(`Comparison of value nationally`), "No data available", `Comparison of value nationally`))
 
-          # So only show values when user clicks the button
-          if (input$hide_show_val_col[1] %% 2 == 0) {
-            drivers_for_table <- drivers |>
-              select(-Value)
-          } else {
-            drivers_for_table <- drivers
-          }
+        #   # So only show values when user clicks the button
+        #   if (input$hide_show_val_col[1] %% 2 == 0) {
+        #     drivers_for_table <- drivers |>
+        #       select(-Value)
+        #   } else {
+        #     drivers_for_table <- drivers
+        #   }
+        #   drivers_for_table
 
-
-          drivers_for_table
-        })
+          drivers
+         })
 
         output$lsoas_clicked_name <- renderText({
           paste("Neighbourhood: ", lsoas_clicked())
@@ -78,7 +79,7 @@ topDriversTableServer <- function(id, vuln_drivers, lsoas_clicked, selected_ltla
 # Test -------------------------------------------------------------------------
 # --------------------------------------------------------------------------------
 
-# vuln_drivers_flood <- read_rds("data/flooding_drivers.rds")
+# load("data/vuln_drivers_flood.rda")
 #
 # topDriversTableTest <- function() {
 #   ui <- fluidPage(

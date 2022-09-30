@@ -1,10 +1,10 @@
-#' Function to add Polygons of neighborhood vulnerability onto a base map 
+#' Function to add Polygons of neighborhood vulnerability onto a base map
 #'
-#' @param base_map_input The base map 
+#' @param base_map_input The base map
 #' @param vuln_data The dataset to be used for the polygons
-#' This dataset should have columns 'vulnerability_quantiles' & 'lsoa11_name' 
+#' This dataset should have columns 'vulnerability_quantiles' & 'lsoa11_name'
 #' @param pal_input The pallette to be used for the polygons
-#' 
+#'
 vuln_map_function <- function (base_map_input, vuln_data, pal_input) {
   base_map_input |>
     addPolygons(
@@ -27,5 +27,24 @@ vuln_map_function <- function (base_map_input, vuln_data, pal_input) {
       layerId = ~lsoa11_name,
       label = ~lsoa11_name,
       group = "base",
-    ) 
+    )
 }
+
+#' #' Function to sum and then standarise the variables
+#' #'
+#' #' @param base_map_input The base map
+#' #' @param vuln_data The dataset to be used for the polygons
+#' #' This dataset should have columns 'vulnerability_quantiles' & 'lsoa11_name'
+#' #' @param pal_input The pallette to be used for the polygons
+#' #'
+#' sum_stand <- function(data, columns, indicator) {
+#'   data |>
+#'     select(code, {{ columns }}) |>
+#'     mutate(across({{ columns }}, standardise)) |>
+#'     rowwise(code) |>
+#'     summarise(stand_sum = sum({{ columns }})) |>
+#'     ungroup() |>
+#'     mutate(stand_sum_stand = standardise(stand_sum))
+#' }
+#'
+

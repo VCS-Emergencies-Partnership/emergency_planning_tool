@@ -21,7 +21,7 @@ topVulnServer <- function(id, lsoa_vuln_scores_sf_subset) {
       validate(need(nrow(lsoa_vuln_scores_sf_subset()) != 0, "Please select an area on the first tab."))
 
       prop_top_20 <- lsoa_vuln_scores_sf_subset() |>
-        summarise(prop = sum(top_20_national) / n())
+        summarise(prop = sum(top_20_eng) / n())
 
       paste0(
         round(prop_top_20$prop, 2) * 100,
@@ -34,16 +34,17 @@ topVulnServer <- function(id, lsoa_vuln_scores_sf_subset) {
 #--------------------------------------------------------------------------------
 # Test -------------------------------------------------------------------------
 #--------------------------------------------------------------------------------
-
+# library(geographr)
+#
 # subset_lsoas <- lookup_lsoa11_ltla21 |>
 #   filter(ltla21_code == "E06000001") |>
 #   select(lsoa11_code)
-# 
-# lsoa_vuln_scores_flood <- read_rds("data/flooding_vuln_scores_sf.rds")
-# 
-# lsoa_vuln_scores_subset_flood <- lsoa_vuln_scores_flood |>
+#
+# load("data/vuln_scores_flood.rda")
+#
+# lsoa_vuln_scores_subset_flood <- vuln_scores_flood |>
 #   inner_join(subset_lsoas, by = "lsoa11_code")
-# 
+#
 # topVulnTest <- function() {
 #   ui <- fluidPage(
 #     topVulnUI("test")
@@ -55,6 +56,6 @@ topVulnServer <- function(id, lsoa_vuln_scores_sf_subset) {
 #   }
 #   shinyApp(ui, server)
 # }
-# 
+#
 # # Run test
 # topVulnTest()

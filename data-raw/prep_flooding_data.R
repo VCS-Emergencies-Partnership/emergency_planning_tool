@@ -192,7 +192,13 @@ vuln_drivers_flood <- data_eng_vars_domain_rank_lsoa |>
       bind_rows(data_eng_domain_rank_var),
     by = c("lsoa11_code", "domain_variable", "domain_variable_id")
   ) |>
-  select(-domain_variable_id)
+  select(-domain_variable_id) |>
+  left_join(
+    data_eng |>
+      select(lsoa11_name, lsoa11_code),
+    by = "lsoa11_code"
+  ) |>
+  relocate(lsoa11_name, .after = lsoa11_code)
 
 # Save ----
 usethis::use_data(vuln_drivers_flood, overwrite = TRUE)
@@ -253,4 +259,3 @@ lsoa_flood_risk_ltla_lookup <- lookup_lsoa11_ltla21 |>
 
 # Save ----
 usethis::use_data(lsoa_flood_risk_ltla_lookup, overwrite = TRUE)
-

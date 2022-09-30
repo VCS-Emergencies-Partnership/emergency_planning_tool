@@ -13,10 +13,18 @@ charitiesMapServer <- function(id,
 
   # Checks to ensure the input is reactive
   stopifnot(is.reactive(charities_data_subset))
- # stopifnot(is.reactive(lsoa_vuln_scores_sf_subset))
+  # stopifnot(is.reactive(lsoa_vuln_scores_sf_subset))
 
   moduleServer(id, function(input, output, session) {
     output$charities_map <- renderLeaflet({
+
+      # Once loaded .rda file no longer recognised as spatial object?
+      lsoa_vuln_scores_sf_subset_clean <- reactive({
+        lsoa_vuln_scores_sf_subset() |>
+          st_as_sf(crs = 4326) |>
+          rename(vulnerability_quantiles = nvfi_quantiles_eng)
+      })
+
 
       # Catch errors if no area has been selected - blank message as not at top of the page
       validate(need(nrow(charities_data_subset()) != 0, ""))
@@ -29,12 +37,13 @@ charitiesMapServer <- function(id,
           !is.na(long)
         )
 
-      pal <- colorBin("Reds",
-        domain = lsoa_vuln_scores_sf_subset()$vulnerability_quantiles,
+      pal <- colorBin("inferno",
+        reverse = TRUE,
+        domain = lsoa_vuln_scores_sf_subset_clean()$vulnerability_quantiles,
         bins = c(1:10)
       )
 
-      legend_labels = c("Least vulnerable", rep("", times = 7) , "Most vulnerable")
+      legend_labels <- c("Least vulnerable", rep("", times = 7), "Most vulnerable")
 
       charities_within_area |>
         leaflet() |>
@@ -45,14 +54,14 @@ charitiesMapServer <- function(id,
           clusterOptions = markerClusterOptions(),
           popup = paste0(
             "<b> Name: </b>", charities_within_area$charity_name, "<br>",
-            "<b> Web: </b>", paste0("<a href='", charities_within_area$charity_contact_web, "' target='_blank'>", charities_within_area$charity_contact_web, "</a>") , "<br>",
+            "<b> Web: </b>", paste0("<a href='", charities_within_area$charity_contact_web, "' target='_blank'>", charities_within_area$charity_contact_web, "</a>"), "<br>",
             "<b> Email: </b>", charities_within_area$charity_contact_email, "<br>",
             "<b> Phone: </b>", charities_within_area$charity_contact_phone, "<br>",
             "<b> Actvities: </b>", charities_within_area$charity_activities
           )
         ) |>
         addPolygons(
-          data = lsoa_vuln_scores_sf_subset(),
+          data = lsoa_vuln_scores_sf_subset_clean(),
           # outline of polygon
           weight = 0.7,
           opacity = 0.5,
@@ -61,9 +70,9 @@ charitiesMapServer <- function(id,
           # fill of polygon
           fillColor = ~ pal(vulnerability_quantiles),
           fillOpacity = 0.7
-        )  |>
+        ) |>
         addLegend(
-          data = lsoa_vuln_scores_sf_subset(),
+          data = lsoa_vuln_scores_sf_subset_clean(),
           pal = pal,
           values = ~vulnerability_quantiles,
           opacity = 0.7,
