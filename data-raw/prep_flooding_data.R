@@ -86,8 +86,8 @@ data_eng_vars_rank_lsoa <- data_eng |>
   arrange(lsoa11_code, desc(normalised_value)) |>
   group_by(lsoa11_code) |>
   mutate(normalised_rank = rank(-normalised_value,
-    na.last = TRUE,
-    ties.method = "first"
+                                na.last = TRUE,
+                                ties.method = "first"
   )) |>
   ungroup()
 
@@ -108,8 +108,8 @@ data_eng_domain_rank_lsoa <- data_eng |>
   arrange(lsoa11_code, desc(normalised_value)) |>
   group_by(lsoa11_code) |>
   mutate(normalised_rank = rank(-normalised_value,
-    na.last = TRUE,
-    ties.method = "first"
+                                na.last = TRUE,
+                                ties.method = "first"
   )) |>
   ungroup()
 
@@ -154,8 +154,8 @@ data_eng_vars_rank_var <- data_eng |>
   arrange(domain_variable_id, desc(normalised_value)) |>
   group_by(domain_variable_id) |>
   mutate(normalised_rank = rank(-normalised_value,
-    na.last = TRUE,
-    ties.method = "first"
+                                na.last = TRUE,
+                                ties.method = "first"
   )) |>
   ungroup() |>
   mutate(quantiles_eng = quantise(normalised_rank, num_quantiles = 10)) |>
@@ -173,8 +173,8 @@ data_eng_domain_rank_var <- data_eng |>
   arrange(domain_variable_id, desc(normalised_value)) |>
   group_by(domain_variable_id) |>
   mutate(normalised_rank = rank(-normalised_value,
-    na.last = TRUE,
-    ties.method = "first"
+                                na.last = TRUE,
+                                ties.method = "first"
   )) |>
   ungroup() |>
   mutate(quantiles_eng = quantise(normalised_rank, num_quantiles = 10)) |>
