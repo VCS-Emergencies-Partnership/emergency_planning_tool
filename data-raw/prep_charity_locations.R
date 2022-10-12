@@ -45,22 +45,6 @@ charities_areas_raw <-
     flatten = TRUE
   )
 
-# Charity classification
-tf <- download_file("https://ccewuksprdoneregsadata1.blob.core.windows.net/data/json/publicextract.charity_classification.zip", ".zip")
-
-tf |>
-  unzip(exdir = tempdir())
-
-charities_classification_raw <-
-  fromJSON(
-    list.files(
-      tempdir(),
-      pattern = "publicextract.charity_classification.json",
-      full.names = TRUE
-    ),
-    flatten = TRUE
-  )
-
 
 # Identifiers in data -----
 # organisation_number: The organisation number for the charity. This is the index value for the charity (used for joining).

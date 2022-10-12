@@ -4,7 +4,7 @@ library(stringr)
 library(tidyr)
 library(fuzzyjoin)
 
-# Load data ----
+# Load Charity Commissioner categories data ----
 # Source: https://register-of-charities.charitycommission.gov.uk/register/full-register-download
 
 # Had issues with the .txt files as not pulling through all the rows in the data
@@ -47,7 +47,7 @@ skip = 41
   # 27 variables in NFVI calcs
   slice(1:27)
 
-############################################
+# Match organisation categories to NVFI social vulnerability variables -----
 
 # Info on the matching logic: https://brcsbrms.sharepoint.com/sites/VCSEP/_layouts/15/doc.aspx?sourcedoc={78fe3e10-91a6-4589-946b-65358bed3b84}&action=edit
 # TO DO: come up with logic for remaining vulnerabilities
@@ -94,5 +94,3 @@ charities_vuln_drivers_flood_lookup <- charities_classification_raw |>
 
 # Save ----
 usethis::use_data(charities_vuln_drivers_flood_lookup, overwrite = TRUE)
-
-
