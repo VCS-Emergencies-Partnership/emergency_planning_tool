@@ -55,102 +55,105 @@ skip = 1
 # LSOA calcs only
 #####################################################
 
-# # Loading LSOA data (LSOA level data only) -----
-# raw_data <- read_excel(list.files(
-#   tempdir(),
-#   pattern = "Climate_Just_2017_Master_Excel_Sheet_NFVI_and_SFRI_August2018.xlsx",
-#   full.names = TRUE
-# ),
-# sheet = "Data"
-# ) |>
-#   clean_names()
-#
-# # Subset so only for England
-# data_eng_lsoa <- raw_data |>
-#   filter(country == "England") |>
-#   rename(lsoa11_code = code,
-#          lsoa11_name = name)
-#
-# # Check if all LSOAs in data
-# lookup_lsoa11_ltla21 |>
-#   filter(str_detect(lsoa11_code, "^E")) |>
-#   anti_join(data_eng_lsoa, by = "lsoa11_code")
-# # all 32,834 LSOAs
-#
-# # Create data for LSOA flood exposure & LTLA lookup (LSOA level data only) ----
-#
-# # https://www.climatejust.org.uk/sites/default/files/INFO_Sheet_SFRI.pdf
-# # ‘SFRIPFCI’ - SFRI individual for fluvial & costal flooding for present day
-# # ‘SFRIPSWI’ - SFRI individual for surface water flooding for present day
-# flood_exposure_lsoas <- data_eng_lsoa |>
-#   # only neighbourhoods exposed to flooding
-#   filter(sfripfcg != 0 | sfripswg != 0) |>
-#   mutate(flood_risk = 1) |>
-#   select(lsoa11_code, flood_risk)
-#
-# lsoa_flood_risk_ltla_lookup <- lookup_lsoa11_ltla21 |>
-#   filter(str_detect(ltla21_code, "^E")) |>
-#   left_join(flood_exposure_lsoas, by = "lsoa11_code") |>
-#   mutate(flood_risk = if_else(is.na(flood_risk), 0, flood_risk))
-#
-# # Save ----
-# usethis::use_data(lsoa_flood_risk_ltla_lookup, overwrite = TRUE)
-#
-# # Make data for NFVI quantiles/categories (LSOA level data only) -----
-# # Higher value = more vulnerable
-# lsoa_nvfi_quantiles <- data_eng_lsoa |>
-#   mutate(nvfi_quantiles_eng = quantise(nvfi, num_quantiles = 10)) |>
-#   select(lsoa11_code, nvfi, nvfi_quantiles_eng) |>
-#   mutate(top_20_eng = if_else(nvfi_quantiles_eng %in% c(9, 10), 1, 0)) |>
-#   left_join(boundaries_lsoa11, by =  "lsoa11_code") |>
-#   relocate(lsoa11_name, .after = lsoa11_code)
-#
-# # Could clean up but changes direction (upper then lower vs. upper then lower half way through table)
-# # Inclusivity of upper or lower limit also seems to change at last and first class
-# raw_nvfi_sayers_classification
-#
-# nvfi_sayers_classification <- tibble(
-#   lower = c(-Inf, -2.5, -1.5, -0.5, 0.5, 1.5, 2.5),
-#   upper = c(-2.5, -1.5, -0.5, 0.5, 1.5, 2.5, Inf),
-#   label = rev(raw_nvfi_sayers_classification$label)
-# )
-#
-# vuln_scores_flood_lsoa <- lsoa_nvfi_quantiles |>
-#   mutate(sayers_class = case_when(
-#     nvfi <= -2.5 ~ "Slight",
-#     -2.5 < nvfi & nvfi <= -1.5 ~ "Extremely low",
-#     -1.5 < nvfi & nvfi <= -0.5 ~ "Relatively low",
-#     -0.5 < nvfi & nvfi <= 0.5 ~ "Average",
-#     0.5 < nvfi & nvfi <= 1.5 ~ "Relatively high",
-#     1.5 < nvfi & nvfi < 2.5 ~ "Extremely high",
-#     2.5 <= nvfi ~ "Acute"
-#   ), .after = top_20_eng)
-#
-# # Save ----
-# usethis::use_data(vuln_scores_flood_lsoa, overwrite = TRUE)
-#
-# # More general naming of columns so code below can be used for both LSOA and LTLA level data ----
-# geog_col_name <- "lsoa11_name"
-# geog_col_code <- "lsoa11_code"
-# geog <- "lsoa"
-#
-# data_eng <- data_eng_lsoa |>
-#   rename(geog_code = lsoa11_code, geog_name = lsoa11_name)
+# Loading LSOA data (LSOA level data only) -----
+raw_data <- read_excel(list.files(
+  tempdir(),
+  pattern = "Climate_Just_2017_Master_Excel_Sheet_NFVI_and_SFRI_August2018.xlsx",
+  full.names = TRUE
+),
+sheet = "Data"
+) |>
+  clean_names()
+
+# Subset so only for England
+data_eng_lsoa <- raw_data |>
+  filter(country == "England") |>
+  rename(lsoa11_code = code,
+         lsoa11_name = name)
+
+# Check if all LSOAs in data
+lookup_lsoa11_ltla21 |>
+  filter(str_detect(lsoa11_code, "^E")) |>
+  anti_join(data_eng_lsoa, by = "lsoa11_code")
+# all 32,834 LSOAs
+
+# Create data for LSOA flood exposure & LTLA lookup (LSOA level data only) ----
+# https://www.climatejust.org.uk/sites/default/files/INFO_Sheet_SFRI.pdf
+# ‘SFRIPFCI’ - SFRI individual for fluvial & costal flooding for present day
+# ‘SFRIPSWI’ - SFRI individual for surface water flooding for present day
+
+# TO DO: come back to this section as only 5 LSOAs have SFRI of 0 for both fluvial & coastal (i.e. no exposure to fluvial and coastal)
+# Q: should move back to using DEFRA flood risk/zone data where subsets at higher rate?
+
+flood_exposure_lsoas <- data_eng_lsoa |>
+  # only neighbourhoods exposed to flooding
+  filter(sfripfcg != 0 | sfripswg != 0) |>
+  mutate(flood_risk = 1) |>
+  select(lsoa11_code, flood_risk)
+
+lsoa_flood_risk_ltla_lookup <- lookup_lsoa11_ltla21 |>
+  filter(str_detect(ltla21_code, "^E")) |>
+  left_join(flood_exposure_lsoas, by = "lsoa11_code") |>
+  mutate(flood_risk = if_else(is.na(flood_risk), 0, flood_risk))
+
+# Save ----
+usethis::use_data(lsoa_flood_risk_ltla_lookup, overwrite = TRUE)
+
+# Make data for NFVI quantiles/categories (LSOA level data only) -----
+# Higher value = more vulnerable
+lsoa_nvfi_quantiles <- data_eng_lsoa |>
+  mutate(nvfi_quantiles_eng = quantise(nvfi, num_quantiles = 10)) |>
+  select(lsoa11_code, nvfi, nvfi_quantiles_eng) |>
+  mutate(top_20_eng = if_else(nvfi_quantiles_eng %in% c(9, 10), 1, 0)) |>
+  left_join(boundaries_lsoa11, by =  "lsoa11_code") |>
+  relocate(lsoa11_name, .after = lsoa11_code)
+
+# Could clean up but changes direction (upper then lower vs. upper then lower half way through table)
+# Inclusivity of upper or lower limit also seems to change at last and first class
+raw_nvfi_sayers_classification
+
+nvfi_sayers_classification <- tibble(
+  lower = c(-Inf, -2.5, -1.5, -0.5, 0.5, 1.5, 2.5),
+  upper = c(-2.5, -1.5, -0.5, 0.5, 1.5, 2.5, Inf),
+  label = rev(raw_nvfi_sayers_classification$label)
+)
+
+vuln_scores_flood_lsoa <- lsoa_nvfi_quantiles |>
+  mutate(sayers_class = case_when(
+    nvfi <= -2.5 ~ "Slight",
+    -2.5 < nvfi & nvfi <= -1.5 ~ "Extremely low",
+    -1.5 < nvfi & nvfi <= -0.5 ~ "Relatively low",
+    -0.5 < nvfi & nvfi <= 0.5 ~ "Average",
+    0.5 < nvfi & nvfi <= 1.5 ~ "Relatively high",
+    1.5 < nvfi & nvfi < 2.5 ~ "Extremely high",
+    2.5 <= nvfi ~ "Acute"
+  ), .after = top_20_eng)
+
+# Save ----
+usethis::use_data(vuln_scores_flood_lsoa, overwrite = TRUE)
+
+# More general naming of columns so code below can be used for both LSOA and LTLA level data ----
+geog_col_name <- "lsoa11_name"
+geog_col_code <- "lsoa11_code"
+geog <- "lsoa"
+
+data_eng <- data_eng_lsoa |>
+  rename(geog_code = lsoa11_code, geog_name = lsoa11_name)
 
 #####################################################
 # LTLA calcs only
 #####################################################
 
-# Loading LTLA data -----
-# Created from 'data-raw/prep_ltla_nvfi.R' file
-load("data/eng_nvfi_ltla.rda")
-
-data_eng <- eng_nvfi_ltla |>
-  rename(geog_code = ltla21_code, geog_name = ltla21_name)
-
-geog_col_name <- "ltla21_name"
-geog_col_code <- "ltla21_code"
-geog <- "ltla"
+# # Loading LTLA data -----
+# # Created from 'data-raw/prep_ltla_nvfi.R' file
+# load("data/eng_nvfi_ltla.rda")
+#
+# data_eng <- eng_nvfi_ltla |>
+#   rename(geog_code = ltla21_code, geog_name = ltla21_name)
+#
+# geog_col_name <- "ltla21_name"
+# geog_col_code <- "ltla21_code"
+# geog <- "ltla"
 
 #############################################################################################################################
 

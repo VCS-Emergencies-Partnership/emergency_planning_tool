@@ -82,8 +82,6 @@ vulnMapServer <- function(id, lsoa_vuln_scores_sf_subset, flood_risk_data, lsoas
             )
         } else {
 
-          browser()
-
           pal <- pal()
 
           flood_risk_lsoas <- flood_risk_data |>
