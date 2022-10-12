@@ -82,16 +82,17 @@ lookup_vuln_id_match_term <- tribble(
 #   mutate(classification_description = str_to_lower(classification_description)) |>
 #   fuzzy_left_join(lookup_vuln_id_match_term, by = c("classification_description" = "charity_comm_classification_match_term"), match_fun = str_detect)
 
-charities_vuln_id_lookup <- charities_classification_raw |>
+charities_vuln_drivers_flood_lookup <- charities_classification_raw |>
   select(organisation_number, classification_type, classification_description) |>
   mutate(classification_description = str_to_lower(classification_description)) |>
   fuzzy_left_join(lookup_vuln_id_match_term, by = c("classification_description" = "charity_comm_classification_match_term"), match_fun = str_detect) |>
   distinct(organisation_number, variable_id) |>
-  filter(!is.na(variable_id))
+  filter(!is.na(variable_id)) |>
+  left_join(raw_lookup, by = "variable_id") |>
+  select(-variable_id)
 
 
-
-# # Save ----
-# usethis::use_data(charities_categories, overwrite = TRUE)
+# Save ----
+usethis::use_data(charities_vuln_drivers_flood_lookup, overwrite = TRUE)
 
 

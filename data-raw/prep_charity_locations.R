@@ -272,36 +272,3 @@ charities_lat_long <- charities_subset |>
 
 # Save ----
 usethis::use_data(charities_lat_long, overwrite = TRUE)
-
-
-############################################
-# Charity classifications ----
-############################################
-
-charities_classification_raw |>
-  distinct(classification_type, classification_description) |>
-  arrange(classification_type)
-
-charities_categories <- charities_classification_raw |>
-  mutate(category = case_when(
-    classification_type == "Who" & classification_description == "Young" ~ "Young people",
-    classification_type == "Who" & classification_description == "Elderly/old People" ~ "Older people",
-    (classification_type == "Who" & classification_description == "People With Disabilities") |
-      (classification_type == "What" & classification_description == "Disability")  ~ "Disabilities",
-    classification_type == "What" ~ classification_description,
-    TRUE ~ "Other"
-  )) |>
-  mutate(service = case_when(
-    classification_type == "How" & classification_description == "Provides Services" |
-      classification_type == "How" & classification_description == "Provides Human Resources" ~ "Services or Human Resources",
-    classification_type == "How" ~ classification_description,
-    TRUE ~ "Other"
-  )) |>
-  select(organisation_number, category, service) |>
-  pivot_longer(!organisation_number, names_to = "what", values_to = "value") |>
-  # TO DO: Check if only keep rows where have a category or service that is not 'Other'
-  filter(value != "Other")
-
-# Save ----
-usethis::use_data(charities_categories, overwrite = TRUE)
-
