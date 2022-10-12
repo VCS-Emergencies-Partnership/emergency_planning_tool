@@ -40,9 +40,9 @@ topVulnServer <- function(id, lsoa_vuln_scores_sf_subset) {
 #   filter(ltla21_code == "E06000001") |>
 #   select(lsoa11_code)
 #
-# load("data/vuln_scores_flood.rda")
+# load("data/vuln_scores_flood_lsoa.rda")
 #
-# lsoa_vuln_scores_subset_flood <- vuln_scores_flood |>
+# lsoa_vuln_scores_subset_flood <- vuln_scores_flood_lsoa |>
 #   inner_join(subset_lsoas, by = "lsoa11_code")
 #
 # topVulnTest <- function() {

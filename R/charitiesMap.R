@@ -98,9 +98,9 @@ charitiesMapServer <- function(id,
 #   filter(ltla21_code == "E06000001") |>
 #   select(lsoa11_code)
 #
-# lsoa_vuln_scores_flood <- read_rds("data/flooding_vuln_scores_sf.rds")
+# load("data/vuln_scores_flood_lsoa.rda")
 #
-# lsoa_vuln_scores_subset_flood <- lsoa_vuln_scores_flood |>
+# lsoa_vuln_scores_subset_flood <- vuln_scores_flood_lsoa |>
 #   inner_join(subset_lsoas, by = "lsoa11_code")
 #
 # source("subsetCharitiesData.R")

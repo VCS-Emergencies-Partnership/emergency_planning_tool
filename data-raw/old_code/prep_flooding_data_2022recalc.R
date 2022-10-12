@@ -170,14 +170,14 @@ vuln_variables_combined_labels <- vuln_variables_combined |>
 # TO DO: check if quantising of these variables make sense
 
 # Save ----
-vuln_drivers_flood <- vuln_variables_combined_labels |>
+vuln_drivers_flood_lsoa <- vuln_variables_combined_labels |>
   select(-c("variable", "value")) |>
   rename("lsoa11_code" = "lsoa_code",
          "value" = "value_label",
          "variable" = "variable_label") |>
   relocate("lsoa11_name", .after = "lsoa11_code")
 
-usethis::use_data(vuln_drivers_flood, overwrite = TRUE)
+usethis::use_data(vuln_drivers_flood_lsoa, overwrite = TRUE)
 
 #--------------------------------------------------------------
 # Overall flooding vulnerability scores ----------------------
@@ -189,23 +189,23 @@ vuln_scores_overall <- vuln_scores |>
   mutate(top_20_national = if_else(flood_vulnerability_composite_quantiles %in% c(9, 10), 1, 0)) |>
   select(lsoa_code, vulnerability_quantiles = flood_vulnerability_composite_quantiles, top_20_national)
 
-vuln_scores_flood <- boundaries_lsoa11 |>
+vuln_scores_flood_lsoa <- boundaries_lsoa11 |>
   filter(str_detect(lsoa11_code, "^E")) |>
   left_join(vuln_scores_overall, by = c("lsoa11_code" = "lsoa_code"))
 
 # Check if mismtaches of LSOAs in vuln data but not in geographr data
-vuln_scores_flood |>
+vuln_scores_flood_lsoa |>
   st_drop_geometry() |>
   anti_join(boundaries_lsoa11,
             by = "lsoa11_code")
 
 boundaries_lsoa11 |>
   filter(str_detect(lsoa11_code, "^E")) |>
-  anti_join(vuln_scores_flood |>
+  anti_join(vuln_scores_flood_lsoa |>
               st_drop_geometry(),
             by = "lsoa11_code")
 
 # Save
-usethis::use_data(vuln_scores_flood, overwrite = TRUE)
+usethis::use_data(vuln_scores_flood_lsoa, overwrite = TRUE)
 
 

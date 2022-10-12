@@ -1,5 +1,8 @@
 # *** IMPORTANT - READ BEFORE RUNNING *****
-
+# This script is for both LSOA and LTLA level Neighbourhood Vulnerability Flood Index data
+# The LSOA level data is pulled from & the LTLA data is created via 'data-raw/prep_ltla_nvfi.R' file and saved in the 'data' folder
+# To run for LSOA level data comment out the LTLA code in lines 143-152
+# To run for LTLA level data comment out the LSOA code in lines 58-138
 
 library(readxl)
 library(compositr)

@@ -79,7 +79,7 @@ topDriversTableServer <- function(id, vuln_drivers, lsoas_clicked, selected_ltla
 # Test -------------------------------------------------------------------------
 # --------------------------------------------------------------------------------
 
-# load("data/vuln_drivers_flood.rda")
+# load("data/vuln_drivers_flood_lsoa.rda")
 #
 # topDriversTableTest <- function() {
 #   ui <- fluidPage(
@@ -88,7 +88,7 @@ topDriversTableServer <- function(id, vuln_drivers, lsoas_clicked, selected_ltla
 #   server <- function(input, output, session) {
 #     topDriversTableServer("test",
 #       selected_ltlas = reactive(c("City of London")),
-#       vuln_drivers = vuln_drivers_flood,
+#       vuln_drivers = vuln_drivers_flood_lsoa,
 #       lsoas_clicked = reactive(c("City of London 001A"))
 #     )
 #   }

@@ -225,7 +225,7 @@ nvfi_sayers_classification <- tibble(
   label = rev(raw_nvfi_sayers_classification$label)
 )
 
-vuln_scores_flood <- lsoa_nvfi_quantiles |>
+vuln_scores_flood_lsoa <- lsoa_nvfi_quantiles |>
   mutate(sayers_class = case_when(
     nvfi <= -2.5 ~ "Slight",
     -2.5 < nvfi & nvfi <= -1.5 ~ "Extremely low",
@@ -237,7 +237,7 @@ vuln_scores_flood <- lsoa_nvfi_quantiles |>
   ), .after = top_20_eng)
 
 # Save ----
-usethis::use_data(vuln_scores_flood, overwrite = TRUE)
+usethis::use_data(vuln_scores_flood_lsoa, overwrite = TRUE)
 
 ########################################################
 # Step 3 - Make data for LSOA flood exposure & LTLA lookup

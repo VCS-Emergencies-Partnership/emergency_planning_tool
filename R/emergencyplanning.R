@@ -184,7 +184,7 @@ emergencyplanning <- function() {
         # Subset the vulnerability scores data with selected LSOAs
         lsoa_vuln_scores_subset <- subsetVulnDataServer(
           "test",
-          lsoa_data = vuln_scores_flood,
+          lsoa_data = vuln_scores_flood_lsoa,
           ltlas_for_filtering = selected_ltlas
         )
 
@@ -205,7 +205,7 @@ emergencyplanning <- function() {
 
         # Table of top drivers of vulnerability for clicked LSOA (module)
         topDriversTableServer("test",
-                              vuln_drivers = vuln_drivers_flood,
+                              vuln_drivers = vuln_drivers_flood_lsoa,
                               lsoas_clicked = lsoas_clicked_global,
                               selected_ltlas = selected_ltlas
         )
@@ -221,7 +221,7 @@ emergencyplanning <- function() {
         # Repeated from when the 'vulnerabilities' tab is selected
         lsoa_vuln_scores_subset <- subsetVulnDataServer(
           "test",
-          lsoa_data = vuln_scores_flood,
+          lsoa_data = vuln_scores_flood_lsoa,
           ltlas_for_filtering = selected_ltlas
         )
 
