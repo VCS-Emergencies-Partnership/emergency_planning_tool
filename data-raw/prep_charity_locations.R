@@ -243,7 +243,7 @@ charities_ltla_lookup <- combined_charities_codes_selected |>
 usethis::use_data(charities_ltla_lookup, overwrite = TRUE)
 
 ############################################
-# Charity activities & HQ/Contact locations ----
+# Charity  HQ/Contact locations ----
 ############################################
 
 charities_subset <- charities_list_raw |>

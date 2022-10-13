@@ -3,7 +3,8 @@ topDriversTableUI <- function(id) {
   tagList(
     "Neighbourhoods drivers of vulnerabilities ranked",
     textOutput(NS(id, "lsoas_clicked_name")),
-    tableOutput(NS(id, "top_drivers_table"))
+    tableOutput(NS(id, "top_drivers_table_domains")),
+    tableOutput(NS(id, "top_drivers_table_variables"))
   )
 }
 
@@ -18,25 +19,9 @@ topDriversTableServer <- function(id,
 
   moduleServer(id, function(input, output, session) {
     observeEvent(
-      list(lsoas_clicked(), input$hide_show_val_col),
+      lsoas_clicked(),
       {
-        output$top_drivers_table <- renderTable({
-
-          # Message to user if no LTLA selected ----
-          # Catch errors if no area has been selected - leave blank as captured in 'topVuln' module
-          validate(need(
-            length(selected_ltlas()) > 0,
-            ""))
-
-          # Message to user if no LSOA clicked ----
-          validate(need(
-            length(lsoas_clicked()) > 0,
-            "Please click on a neighbourhood on the map to view the drivers of vulnerability to your chosen emergency event."
-          ))
-
-
-
-          # Data to be output ----
+        top_drivers_data <- reactive({
           vuln_drivers |>
             dplyr::filter(lsoa11_name %in% lsoas_clicked()) |>
             # explain the concept of quantiles in plain language
@@ -50,14 +35,54 @@ topDriversTableServer <- function(id,
               `Driver of flooding vulnerability` = domain_variable_name,
               `Domain or variable` = domain_variable,
               `Comparison of value nationally` = quantiles_eng
-         #     `Values` = values
+              #     `Values` = values
             ) |>
             arrange(`Domain or variable`, Rank) |>
             mutate(Rank = if_else(is.na(Rank), "-", as.character(Rank))) |>
             mutate(`Comparison of value nationally` = if_else(is.na(`Comparison of value nationally`), "No data available", `Comparison of value nationally`))
+        })
+
+        output$top_drivers_table_domains <- renderTable({
+
+          # Message to user if no LTLA selected ----
+          # Catch errors if no area has been selected - leave blank as captured in 'topVuln' module
+          validate(need(
+            length(selected_ltlas()) > 0,
+            ""
+          ))
+
+          # Message to user if no LSOA clicked ----
+          validate(need(
+            length(lsoas_clicked()) > 0,
+            "Please click on a neighbourhood on the map to view the drivers of vulnerability to your chosen emergency event."
+          ))
+
+          top_drivers_data() |>
+            filter(`Domain or variable` == "domain") |>
+            select(-`Domain or variable`)
+        })
 
 
-         })
+        output$top_drivers_table_variables <- renderTable({
+
+          # Message to user if no LTLA selected ----
+          # Catch errors if no area has been selected - leave blank as captured in 'top_drivers_table_domains' module
+          validate(need(
+            length(selected_ltlas()) > 0,
+            ""
+          ))
+
+          # Message to user if no LSOA clicked ----
+          # Catch errors if no area has been selected - leave blank as captured in 'top_drivers_table_domains' module
+          validate(need(
+            length(lsoas_clicked()) > 0,
+            ""
+          ))
+
+          top_drivers_data() |>
+            filter(`Domain or variable` == "variable") |>
+            select(-`Domain or variable`)
+        })
 
         output$lsoas_clicked_name <- renderText({
 
