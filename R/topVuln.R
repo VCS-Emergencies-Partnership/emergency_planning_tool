@@ -25,7 +25,7 @@ topVulnServer <- function(id, lsoa_vuln_scores_sf_subset) {
 
       paste0(
         round(prop_top_20$prop, 2) * 100,
-        "% of the neighbourhoods in your area are the most vulnerable to flooding nationally"
+        "% of the neighbourhoods in your area are the most socially vulnerable to flooding nationally"
       )
     })
   })

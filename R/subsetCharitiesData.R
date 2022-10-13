@@ -36,6 +36,11 @@ subsetCharitiesDataServer <- function(id,
     # Dropdown for UI ----
     # Section 'Using renderUI within modules' from https://shiny.rstudio.com/articles/modules.html
     output$top_vuln_drivers <- renderUI({
+
+      # Catch errors if no area has been selected
+      # Leave message blank as error message shown in map below (avoid duplicate message)
+      validate(need(length(ltlas_for_filtering()) != 0, ""))
+
       ns <- session$ns
 
       pickerInput(
@@ -50,6 +55,12 @@ subsetCharitiesDataServer <- function(id,
 
     # Output text for top drivers ----
     output$top_flooding_drivers_ltla_text <- renderUI({
+
+      # Catch errors if no area has been selected
+      # Leave message blank as error message shown in map below (avoid duplicate message)
+      validate(need(length(ltlas_for_filtering()) != 0, ""))
+
+
       tags$ol(
         tags$li(paste(top_flooding_drivers_ltla()$domain_variable_name[1])),
         tags$li(paste(top_flooding_drivers_ltla()$domain_variable_name[2])),

@@ -12,6 +12,18 @@ emergencyplanning <- function() {
   ui <- fluidPage(
     # for hotjar tracking
     tags$head(includeScript(paste0(getwd(), "/www/hotjar.js"))),
+
+    # Make error messages red to stand out
+    # https://stackoverflow.com/questions/59760316/change-the-color-of-text-in-validate-in-a-shiny-app
+    tags$head(
+      tags$style(HTML("
+      .shiny-output-error-validation {
+        color: #ff0000;
+        font-weight: bold;
+      }
+    "))
+    ),
+
     fluidRow(
       column(
         9,
@@ -36,15 +48,23 @@ emergencyplanning <- function() {
       tabPanel(
         title = "Select Areas",
         value = "selected_areas",
-
-        # Dropdown to select area (module)
-        selectAreasDropdownUI("test"),
+        fluidRow(
+          column(
+            6,
+            align = "left",
+            # Dropdown to select area (module)
+            selectAreasDropdownUI("test")
+          ),
+          column(
+            6,
+            align = "right",
+            # Button to move to next page
+            actionButton("selected_areas_next_button", "Next page")
+          )
+        ),
 
         # Map to select area (module)
         selectedAreaMapUI("test"),
-
-        # Button to move to next page
-        actionButton("selected_areas_next_button", "Next page")
       ),
 
       # Vulnerabilities - UI -------------
@@ -52,10 +72,19 @@ emergencyplanning <- function() {
       tabPanel(
         title = "Vulnerabilities",
         value = "vulnerabilities",
-        br(),
         fluidRow(
-          # Button to show licence (module)
-          floodingLisenceUI("test")
+          column(
+            6,
+            align = "left",
+            # Button to move back page
+            actionButton("vulnerabilities_back_button", "Back page"),
+          ),
+          column(
+            6,
+            align = "right",
+            # Button to move to next page
+            actionButton("vulnerabilities_next_button", "Next page")
+          )
         ),
         br(),
         fluidRow(
@@ -83,41 +112,51 @@ emergencyplanning <- function() {
             )
           )
         ),
-
-        # Button to move back page
-        actionButton("vulnerabilities_back_button", "Back page"),
-
-        # Button to move to next page
-        actionButton("vulnerabilities_next_button", "Next page")
+        fluidRow(
+          align = "left",
+          # Button to show licence (module)
+          floodingLisenceUI("test")
+        )
       ),
+
 
       # Charities - UI -------------
 
       tabPanel(
         title = "Organisations",
         value = "organisations",
+        fluidRow(
+          column(
+            6,
+            align = "left",
+            # Button to move back page
+            actionButton("organisations_back_button", "Back page"),
+          ),
+          column(
+            6,
+            align = "right",
+            # Button to move to next page
+            actionButton("organisations_next_button", "Next page")
+          )
+        ),
         br(),
         fluidRow(
-          # Dropdowns to select categories from top drivers of vulnerability for that LTLA
+          # Text to show top drivers of vulnerability for that LTLA
+          # & dropdown to subset data based on these top drivers
           subsetCharitiesDataUI("test")
         ),
         fluidRow(
           column(
             5,
+            # Map of charities working within the area (module)
             charitiesMapUI("test")
           ),
           column(
             7,
-            #   downloadButton("download_data"),
+            # Table of charities working within the area (module)
             charitiesTableUI("test")
           )
-        ),
-
-        # Button to move back page
-        actionButton("organisations_back_button", "Back page"),
-
-        # Button to move to next page
-        actionButton("organisations_next_button", "Next page")
+        )
       ),
 
       # Resources - UI -------------
@@ -125,13 +164,22 @@ emergencyplanning <- function() {
       tabPanel(
         title = "Resources",
         value = "resources",
-        "Link here to VCSEP website flooding page.",
-
-        # Button to move back page
-        actionButton("resources_back_button", "Back page"),
-
-        # Button to move to next page
-        actionButton("resources_next_button", "Next page")
+        fluidRow(
+          column(
+            6,
+            align = "left",
+            # Button to move back page
+            actionButton("resources_back_button", "Back page"),
+          ),
+          column(
+            6,
+            align = "right",
+            # Button to move to next page
+            actionButton("resources_next_button", "Next page")
+          )
+        ),
+        br(),
+        "Tailored links here to flooding resources based on top vulnerability drivers."
       ),
 
       # Licence, methodology & data - UI -------------
@@ -139,10 +187,15 @@ emergencyplanning <- function() {
       tabPanel(
         title = "Methodology & Data",
         value = "methodology_data",
-        "Info here on the flooding vulnerability index (links to Sayers), any lisences & dates of data used.",
-
-        # Button to move back page
-        actionButton("methodology_data_back_button", "Back page"),
+        fluidRow(
+          column(
+            6,
+            align = "left",
+            # Button to move back page
+            actionButton("methodology_data_back_button", "Back page")
+          )
+        ),
+        "Info here on the flooding vulnerability index (links to Sayers), any lisences & dates of data used."
       )
     )
   )

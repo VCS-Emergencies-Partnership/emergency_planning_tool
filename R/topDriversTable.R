@@ -3,15 +3,15 @@ topDriversTableUI <- function(id) {
   tagList(
     "Neighbourhoods drivers of vulnerabilities ranked",
     textOutput(NS(id, "lsoas_clicked_name")),
-    # actionButton(NS(id, "hide_show_val_col"),
-    #              label = "Hide/show values"
-   # ),
     tableOutput(NS(id, "top_drivers_table"))
   )
 }
 
 # Server ----
-topDriversTableServer <- function(id, vuln_drivers, lsoas_clicked, selected_ltlas) {
+topDriversTableServer <- function(id,
+                                  vuln_drivers,
+                                  lsoas_clicked,
+                                  selected_ltlas) {
 
   # Checks to ensure the inputs are reactive (data not reactive)
   stopifnot(is.reactive(lsoas_clicked))
@@ -22,13 +22,22 @@ topDriversTableServer <- function(id, vuln_drivers, lsoas_clicked, selected_ltla
       {
         output$top_drivers_table <- renderTable({
 
-          # Message to user if no LSOAs selected
+          # Message to user if no LTLA selected ----
+          # Catch errors if no area has been selected - leave blank as captured in 'topVuln' module
+          validate(need(
+            length(selected_ltlas()) > 0,
+            ""))
+
+          # Message to user if no LSOA clicked ----
           validate(need(
             length(lsoas_clicked()) > 0,
             "Please click on a neighbourhood on the map to view the drivers of vulnerability to your chosen emergency event."
           ))
 
-          drivers <- vuln_drivers |>
+
+
+          # Data to be output ----
+          vuln_drivers |>
             dplyr::filter(lsoa11_name %in% lsoas_clicked()) |>
             # explain the concept of quantiles in plain language
             # variable_quantiles = 1 means in top 10% worst scoring neighborhoods nationally
@@ -47,19 +56,18 @@ topDriversTableServer <- function(id, vuln_drivers, lsoas_clicked, selected_ltla
             mutate(Rank = if_else(is.na(Rank), "-", as.character(Rank))) |>
             mutate(`Comparison of value nationally` = if_else(is.na(`Comparison of value nationally`), "No data available", `Comparison of value nationally`))
 
-        #   # So only show values when user clicks the button
-        #   if (input$hide_show_val_col[1] %% 2 == 0) {
-        #     drivers_for_table <- drivers |>
-        #       select(-Value)
-        #   } else {
-        #     drivers_for_table <- drivers
-        #   }
-        #   drivers_for_table
 
-          drivers
          })
 
         output$lsoas_clicked_name <- renderText({
+
+          # Message to user if no LSOAs selected ----
+          # Blank since error message captured in 'top_drivers_table' object
+          validate(need(
+            length(lsoas_clicked()) > 0,
+            ""
+          ))
+
           paste("Neighbourhood: ", lsoas_clicked())
         })
       },
