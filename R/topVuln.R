@@ -1,10 +1,13 @@
 # UI ----
 topVulnUI <- function(id) {
   div(
-    # TO DO: Decide if want border
+    # TO DO: Decide if want border: https://stackoverflow.com/questions/69031305/how-to-insert-border-around-text-in-a-shiny-app
+    # Add text in line below into 'style' argument if do want
     # "border-style: solid; border-color: black; border-width: thin;
     style = "text-align: center; font-size: 120%",
     textOutput(NS(id, "top_vuln_text"))
+
+
   )
 }
 

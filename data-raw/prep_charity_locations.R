@@ -166,16 +166,34 @@ charities_areas_updated <- charities_areas_raw |>
     )
   )
 
-# Check all matched
+# Check all matched ----
 charities_areas_updated |>
   filter(geographic_area_type == "Local Authority") |>
   distinct(geographic_area_description) |>
   select(utla21_name = geographic_area_description) |>
   anti_join(utla_list_geogr_wales, by = "utla21_name") |>
   anti_join(utla_list_geogr_eng, by = "utla21_name")
-# TO DO: What UTLAs in Northampshire? https://geoportal.statistics.gov.uk/documents/ons::local-authority-districts-counties-and-unitary-authorities-april-2021-map-in-united-kingdom-/explore
-# Maybe North & West Northampshire?
+# What UTLAs in northamptonshire? https://geoportal.statistics.gov.uk/documents/ons::local-authority-districts-counties-and-unitary-authorities-april-2021-map-in-united-kingdom-/explore
+# Maybe North & West northamptonshire based on https://en.wikipedia.org/wiki/Northamptonshire
 
+# Do manual matching for Northamptonshire ---
+northamptonshire_ltla_codes <- utla_list_geogr_eng |>
+  filter(str_detect(utla21_name, "northamptonshire")) |>
+  select(ltla21_code, ltla21_name)
+
+charities_areas_updated |>
+  filter(geographic_area_type == "Local Authority",
+         str_detect(geographic_area_description, "northamptonshire")) |>
+  distinct(geographic_area_description)
+
+all_northamptonshire_charities <- charities_areas_raw |>
+  filter(str_detect(geographic_area_description, "Northamptonshire"))
+
+northamptonshire_ltla_codes <- all_northamptonshire_charities |>
+  select(organisation_number) |>
+  merge(northamptonshire_ltla_codes)
+
+# Filter out Wales ----
 utla_charities_eng <- charities_areas_updated |>
   filter(geographic_area_type == "Local Authority") |>
   anti_join(utla_list_geogr_wales, by = c("geographic_area_description" = "utla21_name"))
@@ -214,7 +232,8 @@ combined_charities_codes |>
   nrow()
 
 combined_charities_codes_selected <- combined_charities_codes |>
-  select(organisation_number, ltla21_code, ltla21_name)
+  select(organisation_number, ltla21_code, ltla21_name) |>
+  bind_rows(northamptonshire_ltla_codes)
 
 #just keep names & not codes to reduce size of dataset
 charities_ltla_lookup <- combined_charities_codes_selected |>
@@ -242,8 +261,8 @@ unique_postcodes <- charities_subset |>
   mutate(lat = NA,
          long = NA)
 
-# TO DO: improve this code - couldn't get mutate() or map() to work with postcodelookup()
-# Note: this code takes a long time to run
+# Could improve this code - couldn't get mutate() or map() to work with postcodelookup()
+# Note: this code takes a very long time to run
 for (i in 1:nrow(unique_postcodes)) {
   result <- postcode_lookup(unique_postcodes[[i, "charity_contact_postcode_join"]])
   unique_postcodes[i, "lat"] <- result$latitude
