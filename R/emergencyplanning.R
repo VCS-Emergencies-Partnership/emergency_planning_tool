@@ -70,8 +70,8 @@ emergencyplanning <- function() {
               column(width = 1),
               # Metric of % of most vulnerable neighborhoods (module)
               column(10,
-                     align = "center",
-                     topVulnUI("test")
+                align = "center",
+                topVulnUI("test")
               ),
               column(width = 1)
             ),
@@ -98,10 +98,8 @@ emergencyplanning <- function() {
         value = "organisations",
         br(),
         fluidRow(
-          # Dropdowns to select categories and services of charities
-          subsetCharitiesDataCategoriesUI("test",
-                                          charities_categories = charities_categories
-          )
+          # Dropdowns to select categories from top drivers of vulnerability for that LTLA
+          subsetCharitiesDataUI("test")
         ),
         fluidRow(
           column(
@@ -127,7 +125,6 @@ emergencyplanning <- function() {
       tabPanel(
         title = "Resources",
         value = "resources",
-
         "Link here to VCSEP website flooding page.",
 
         # Button to move back page
@@ -162,13 +159,13 @@ emergencyplanning <- function() {
 
     # Dropdown to select area (module)
     selectAreasDropdownServer("test",
-                              selected_ltlas = selected_ltlas
+      selected_ltlas = selected_ltlas
     )
 
     # Map to select area (module)
     selectedAreaMapServer("test",
-                          boundaries_data = boundaries_ltlas,
-                          selected_ltlas = selected_ltlas
+      boundaries_data = boundaries_ltlas,
+      selected_ltlas = selected_ltlas
     )
 
 
@@ -190,14 +187,14 @@ emergencyplanning <- function() {
 
         # Metric of % of most vulnerable neighborhoods (module)
         topVulnServer("test",
-                      lsoa_vuln_scores_sf_subset = lsoa_vuln_scores_subset
+          lsoa_vuln_scores_sf_subset = lsoa_vuln_scores_subset
         )
 
         # Vulnerability index map (module)
         vulnMapServer("test",
-                      lsoa_vuln_scores_sf_subset = lsoa_vuln_scores_subset,
-                      flood_risk_data = lsoa_flood_risk_ltla_lookup,
-                      lsoas_clicked = lsoas_clicked_global
+          lsoa_vuln_scores_sf_subset = lsoa_vuln_scores_subset,
+          flood_risk_data = lsoa_flood_risk_ltla_lookup,
+          lsoas_clicked = lsoas_clicked_global
         )
 
         # # Variable to store the LSOA of clicked
@@ -205,9 +202,9 @@ emergencyplanning <- function() {
 
         # Table of top drivers of vulnerability for clicked LSOA (module)
         topDriversTableServer("test",
-                              vuln_drivers = vuln_drivers_flood_lsoa,
-                              lsoas_clicked = lsoas_clicked_global,
-                              selected_ltlas = selected_ltlas
+          vuln_drivers = vuln_drivers_flood_lsoa,
+          lsoas_clicked = lsoas_clicked_global,
+          selected_ltlas = selected_ltlas
         )
       }
     })
@@ -228,27 +225,23 @@ emergencyplanning <- function() {
         # Subset charity data based on LTLAs selected
         charities_subset <- subsetCharitiesDataServer(
           "test",
-          charities_data = charities_lat_long,
-          charities_ltla_lookup_data = charities_ltla_lookup,
+          charities_vuln_drivers_flood_lookup = charities_vuln_drivers_flood_lookup,
+          charities_lat_long = charities_lat_long,
+          charities_ltla_lookup = charities_ltla_lookup,
+          vuln_drivers_flood_ltla = vuln_drivers_flood_ltla,
           ltlas_for_filtering = selected_ltlas
         )
 
-        # Subset charity data based on categories and services selected
-        charities_categories_subset <- subsetCharitiesDataCategoriesServer(
-          "test",
-          subset_charities_data = charities_subset,
-          charities_categories = charities_categories
-        )
 
         # Map of charities working within the area (module)
         charitiesMapServer("test",
-                           charities_data_subset = charities_categories_subset,
-                           lsoa_vuln_scores_sf_subset = lsoa_vuln_scores_subset
+          charities_subset = charities_subset,
+          lsoa_vuln_scores_sf_subset = lsoa_vuln_scores_subset
         )
 
         # Table of charities (module)
         charitiesTableServer("test",
-                             charities_data_subset = charities_categories_subset
+          charities_subset = charities_subset
         )
       }
     })
@@ -286,7 +279,6 @@ emergencyplanning <- function() {
     observeEvent(input$methodology_data_back_button, {
       updateTabsetPanel(session, "tabs", selected = "resources")
     })
-
   }
 
 

@@ -8,11 +8,11 @@ charitiesMapUI <- function(id) {
 
 # Server -----
 charitiesMapServer <- function(id,
-                               charities_data_subset,
+                               charities_subset,
                                lsoa_vuln_scores_sf_subset) {
 
   # Checks to ensure the input is reactive
-  stopifnot(is.reactive(charities_data_subset))
+   stopifnot(is.reactive(charities_subset))
   # stopifnot(is.reactive(lsoa_vuln_scores_sf_subset))
 
   moduleServer(id, function(input, output, session) {
@@ -27,10 +27,10 @@ charitiesMapServer <- function(id,
 
 
       # Catch errors if no area has been selected - blank message as not at top of the page
-      validate(need(nrow(charities_data_subset()) != 0, ""))
+      validate(need(nrow(charities_subset()) != 0, ""))
 
       # only plot the charities where the contact info is within the chosen LTLA
-      charities_within_area <- charities_data_subset() |>
+      charities_within_area <- charities_subset() |>
         dplyr::filter(
           flag_contact_in_ltla == 1,
           !is.na(lat),
@@ -91,35 +91,44 @@ charitiesMapServer <- function(id,
 # Test -------------------------------------------------------------------------
 #--------------------------------------------------------------------------------
 
-# charities_ltla_lookup <- read_rds("data/charities_ltla_lookup.rds")
-# charities_data <- read_rds("data/charities_list_latlong.rds")
+# load("data/charities_vuln_drivers_flood_lookup.rda")
+# load("data/charities_lat_long.rda")
+# load("data/charities_ltla_lookup.rda")
+# load("data/vuln_drivers_flood_ltla.rda")
+#
+# source("R/subsetCharitiesData.R")
+#
+# load("data/vuln_scores_flood_lsoa.rda")
 #
 # subset_lsoas <- geographr::lookup_lsoa11_ltla21 |>
 #   filter(ltla21_code == "E06000001") |>
 #   select(lsoa11_code)
 #
-# load("data/vuln_scores_flood_lsoa.rda")
-#
 # lsoa_vuln_scores_subset_flood <- vuln_scores_flood_lsoa |>
 #   inner_join(subset_lsoas, by = "lsoa11_code")
 #
-# source("subsetCharitiesData.R")
 #
 # charitiesMapTest <- function() {
 #   ui <- fluidPage(
-#     charitiesMapUI("test"),
+#     subsetCharitiesDataUI("test"),
+#     charitiesMapUI("test")
 #   )
 #
 #   server <- function(input, output, session) {
-#     charities_subset_test <- subsetCharitiesDataServer(
+#
+#     charities_subset <- subsetCharitiesDataServer(
 #       "test",
-#       charities_data = charities_data,
-#       charities_ltla_lookup_data = charities_ltla_lookup_data,
+#       charities_vuln_drivers_flood_lookup = charities_vuln_drivers_flood_lookup,
+#       charities_lat_long = charities_lat_long,
+#       charities_ltla_lookup = charities_ltla_lookup,
+#       vuln_drivers_flood_ltla = vuln_drivers_flood_ltla,
 #       ltlas_for_filtering = reactive(c("Hartlepool"))
 #     )
 #
+#     observe(print(charities_subset()))
+#
 #     charitiesMapServer("test",
-#       charities_data_subset = charities_subset_test,
+#       charities_subset = charities_subset,
 #       lsoa_vuln_scores_sf_subset = reactive(lsoa_vuln_scores_subset_flood)
 #     )
 #   }
