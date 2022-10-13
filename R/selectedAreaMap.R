@@ -68,11 +68,11 @@ selectedAreaMapServer <- function(id, boundaries_data, selected_ltlas) {
 
     # As polygons are clicked, update both the local and global reactive values
     observeEvent(input$map_shape_click, {
-      if (input$map_shape_click$group == "base") {
+      if (input$map_shape_click$group == "base" & length(clicked_ltlas()) < 1) {
         selected_ltlas(c(selected_ltlas(), input$map_shape_click$id))
         clicked_ltlas(c(clicked_ltlas(), input$map_shape_click$id))
         leafletProxy("map") |> showGroup(input$map_shape_click$id)
-      } else {
+      } else if (input$map_shape_click$group != "base") {
         selected_ltlas(setdiff(selected_ltlas(), input$map_shape_click$group))
         clicked_ltlas(setdiff(clicked_ltlas(), input$map_shape_click$group))
         leafletProxy("map") |> hideGroup(input$map_shape_click$group)
@@ -102,19 +102,19 @@ selectedAreaMapServer <- function(id, boundaries_data, selected_ltlas) {
 #--------------------------------------------------------------------------------
 
 # boundaries_ltlas <- read_rds("data/boundaries_ltlas.rds")
-# 
+#
 # selectedAreaMapTest <- function() {
 #   ui <- fluidPage(
 #     selectedAreaMapUI("test")
 #   )
 #   server <- function(input, output, session) {
 #     selected_ltlas <- reactiveVal(vector())
-# 
+#
 #     selectedAreaMapServer("test",
 #                           boundaries_data = boundaries_ltlas,
 #                           selected_ltlas = selected_ltlas)
 #   }
 #   shinyApp(ui, server)
 # }
-# 
+#
 # selectedAreaMapTest()

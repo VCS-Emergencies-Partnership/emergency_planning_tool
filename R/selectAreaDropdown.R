@@ -6,6 +6,8 @@ selectAreasDropdownUI <- function(id) {
     choices = sort(unique(lsoa_flood_risk_ltla_lookup$ltla21_name)),
     multiple = TRUE,
     options = list(
+      # Select 1 Local Authority at a time
+      maxItems = 1,
       plugins = list("remove_button"),
       placeholder = "Select Local Authorities...",
       onInitialize = I('function() { this.setValue(""); }')
@@ -40,18 +42,18 @@ selectAreasDropdownServer <- function(id, selected_ltlas) {
 #--------------------------------------------------------------------------------
 
 # lsoa_flood_risk_ltla_lookup <- read_rds("data/lsoa_flood_risk_ltla_lookup.rds")
-# 
+#
 # selectAreasDropdownTest <- function() {
 #   ui <- fluidPage(
 #     selectAreasDropdownUI("test")
 #   )
 #   server <- function(input, output, session) {
 #     selected_ltlas <- reactiveVal(vector())
-# 
+#
 #     selectAreasDropdownServer("test",
 #                                selected_ltlas = selected_ltlas)
 #   }
 #   shinyApp(ui, server)
 # }
-# 
+#
 # selectAreasDropdownTest()
