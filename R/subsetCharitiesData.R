@@ -2,7 +2,8 @@
 subsetCharitiesDataUI <- function(id) {
   ns <- NS(id)
   tagList(
-    textOutput(NS(id, "top_flooding_drivers_ltla_text")),
+    "The top drivers of social vulnerability to flooding in your area are: ",
+    uiOutput(NS(id, "top_flooding_drivers_ltla_text")),
     uiOutput(ns("top_vuln_drivers"))
   )
 }
@@ -48,8 +49,12 @@ subsetCharitiesDataServer <- function(id,
     })
 
     # Output text for top drivers ----
-    output$top_flooding_drivers_ltla_text <- renderText({
-      paste0("The top drivers of social vulnerability to flooding in your area are: ", paste(top_flooding_drivers_ltla()$domain_variable_name, collapse = ", "))
+    output$top_flooding_drivers_ltla_text <- renderUI({
+      tags$ol(
+        tags$li(paste(top_flooding_drivers_ltla()$domain_variable_name[1])),
+        tags$li(paste(top_flooding_drivers_ltla()$domain_variable_name[2])),
+        tags$li(paste(top_flooding_drivers_ltla()$domain_variable_name[3]))
+      )
     })
 
     # Dataset to return ----
