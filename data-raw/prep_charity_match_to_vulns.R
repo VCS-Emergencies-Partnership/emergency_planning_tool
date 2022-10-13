@@ -2,7 +2,10 @@ library(jsonlite)
 library(dplyr)
 library(stringr)
 library(tidyr)
+library(readxl)
 library(fuzzyjoin)
+library(janitor)
+library(compositr)
 
 # Load Charity Commissioner categories data ----
 # Source: https://register-of-charities.charitycommission.gov.uk/register/full-register-download
@@ -56,7 +59,7 @@ skip = 41
 lookup_vuln_id_match_term <- tribble(
   ~variable_id, ~charity_comm_classification_match_term ,
   "a1",   "young",
-  "n1",   "young",
+  "n3",   "young",
   "a2",   "old/elderly",
   "h1",  "disabilities|disability",
   "m1", "disabilities|disability",
@@ -67,6 +70,7 @@ lookup_vuln_id_match_term <- tribble(
   "i5", "economic/community development/employment|prevention or relief of poverty",
   "t1", "accommodation/housing",
   "t2", "accommodation/housing",
+  "l1", "accommodation/housing"
 )
 
 # # Test of fuzzyjoin joining

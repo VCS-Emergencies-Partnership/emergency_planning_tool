@@ -29,19 +29,17 @@ subsetCharitiesDataServer <- function(id,
 
 
     charities_data_subset <- reactive({
-
-     # browser()
-
       charities_in_area_codes <- charities_ltla_lookup |>
         dplyr::filter(ltla21_name %in% ltlas_for_filtering()) |>
-        select(organisation_number) |>
+        distinct(organisation_number) |>
         pull()
 
       charities_working_in_top_flooding_drivers_codes <- charities_vuln_drivers_flood_lookup |>
         # Using input from renderUI
         dplyr::filter(variable_name %in% input$charity_top_vuln_drivers_chosen) |>
-        select(organisation_number) |>
+        distinct(organisation_number) |>
         pull()
+
 
       charities_area_and_vuln <- intersect(charities_in_area_codes, charities_working_in_top_flooding_drivers_codes)
 
@@ -60,6 +58,8 @@ subsetCharitiesDataServer <- function(id,
           ~ replace(., is.na(.), "-")
         )
     })
+
+    observe(print(nrow(charities_data_subset())))
 
 
     # Dropdown for UI ----
