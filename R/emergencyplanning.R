@@ -235,13 +235,14 @@ emergencyplanning <- function() {
 
         # Map of charities working within the area (module)
         charitiesMapServer("test",
-          charities_subset = charities_subset,
+          charities_subset = charities_subset$data,
+          error_text = charities_subset$error_text,
           lsoa_vuln_scores_sf_subset = lsoa_vuln_scores_subset
         )
 
         # Table of charities (module)
         charitiesTableServer("test",
-          charities_subset = charities_subset
+          charities_subset = charities_subset$data
         )
       }
     })

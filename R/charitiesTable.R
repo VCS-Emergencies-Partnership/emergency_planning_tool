@@ -27,8 +27,7 @@ charitiesTableServer <- function(id,
 
     output$charities_table <- DT::renderDT(
       {
-        # Catch errors if no area has been selected - show message as at top of the page
-        shiny::validate(need(nrow(charities_subset()) != 0, "Please select an area on the first tab."))
+
 
         # Future idea: could order by proximity to the LTLA the user has selected
         charities_subset_clean() |>
@@ -92,10 +91,10 @@ charitiesTableServer <- function(id,
 #       ltlas_for_filtering = reactive(c("Hartlepool"))
 #     )
 #
-#     observe(print(charities_subset()))
+#     observe(print(charities_subset$data()))
 #
 #       charitiesTableServer("test",
-#                            charities_subset = charities_subset
+#                            charities_subset = charities_subset$data
 #       )
 #   }
 #

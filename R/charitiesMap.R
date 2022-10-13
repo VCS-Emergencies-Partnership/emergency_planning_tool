@@ -9,7 +9,8 @@ charitiesMapUI <- function(id) {
 # Server -----
 charitiesMapServer <- function(id,
                                charities_subset,
-                               lsoa_vuln_scores_sf_subset) {
+                               lsoa_vuln_scores_sf_subset,
+                               error_text) {
 
   # Checks to ensure the input is reactive
    stopifnot(is.reactive(charities_subset))
@@ -18,16 +19,17 @@ charitiesMapServer <- function(id,
   moduleServer(id, function(input, output, session) {
     output$charities_map <- renderLeaflet({
 
+    #  browser()
+
+      # Catch errors - message is created in subsetCharitiesData module
+      validate(need(length(error_text()) == 0, paste0(error_text())))
+
       # Once loaded .rda file no longer recognised as spatial object?
       lsoa_vuln_scores_sf_subset_clean <- reactive({
         lsoa_vuln_scores_sf_subset() |>
           st_as_sf(crs = 4326) |>
           rename(vulnerability_quantiles = nvfi_quantiles_eng)
       })
-
-
-      # Catch errors if no area has been selected - blank message as not at top of the page
-      validate(need(nrow(charities_subset()) != 0, ""))
 
       # only plot the charities where the contact info is within the chosen LTLA
       charities_within_area <- charities_subset() |>
@@ -125,10 +127,13 @@ charitiesMapServer <- function(id,
 #       ltlas_for_filtering = reactive(c("Hartlepool"))
 #     )
 #
-#     observe(print(charities_subset()))
+#  #   observe(print(charities_subset$data()))
+#     observe(print(filter(charities_subset$data(), flag_contact_in_ltla == 1)))
+#     observe(print(charities_subset$error_text()))
 #
 #     charitiesMapServer("test",
-#       charities_subset = charities_subset,
+#       charities_subset = charities_subset$data,
+#       error_text = charities_subset$error_text,
 #       lsoa_vuln_scores_sf_subset = reactive(lsoa_vuln_scores_subset_flood)
 #     )
 #   }

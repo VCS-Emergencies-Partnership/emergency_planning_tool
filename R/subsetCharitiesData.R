@@ -2,8 +2,8 @@
 subsetCharitiesDataUI <- function(id) {
   ns <- NS(id)
   tagList(
-  textOutput(NS(id, "top_flooding_drivers_ltla_text")),
-  uiOutput(ns("top_vuln_drivers"))
+    textOutput(NS(id, "top_flooding_drivers_ltla_text")),
+    uiOutput(ns("top_vuln_drivers"))
   )
 }
 
@@ -53,7 +53,10 @@ subsetCharitiesDataServer <- function(id,
     })
 
     # Dataset to return ----
-    reactive({
+    charities_data_subset <- reactive({
+
+      # browser()
+
       charities_in_area_codes <- charities_ltla_lookup |>
         dplyr::filter(ltla21_name %in% ltlas_for_filtering()) |>
         distinct(organisation_number) |>
@@ -84,14 +87,61 @@ subsetCharitiesDataServer <- function(id,
         )
     })
 
-    # # Return 2 items from this module
-    # # https://mastering-shiny.org/scaling-modules.html?q=list#multiple-outputs
-    # list(
-    #   data = reactive(charities_data_subset()),
-    #   top_vulns = reactive(top_flooding_drivers_ltla()$domain_variable_name)
-    # )
+    # if(nrow(charities_data_subset()) == 0) {browser()}
+
+    # Text to mask error messages to pass into the map and table ----
+    # TO DO: Improve the language of these messages to make easier to understand
+    error_text <- reactive({
+      text <- c()
 
 
+      if (length(ltlas_for_filtering()) == 0) {
+        text <- c(
+          text,
+          "Please select an area on the first tab."
+        )
+      } else if (length(ltlas_for_filtering()) > 0 &&
+        length(input$charity_top_vuln_drivers_chosen) == 0) {
+        text <- c(
+          text,
+          "Please select vulnerability drivers from the dropdown."
+        )
+      } else if (length(ltlas_for_filtering()) > 0 &&
+        length(input$charity_top_vuln_drivers_chosen) > 0 &&
+        nrow(charities_data_subset()) == 0) {
+        text <- c(
+          text,
+          "There are no charities which operate in the area which work in categories for the top vulnerability drivers you have selected."
+        )
+      } else if (length(ltlas_for_filtering()) > 0 &&
+        length(input$charity_top_vuln_drivers_chosen) > 0 &&
+        nrow(charities_data_subset()) > 0 &&
+        nrow(filter(charities_data_subset(), flag_contact_in_ltla == 1)) == 0) {
+        text <- c(
+          text,
+          "There are no charities whose work relates to the top vulnerability drivers you have selected with a contact address in your area."
+        )
+      } else if (length(ltlas_for_filtering()) > 0 &&
+        length(input$charity_top_vuln_drivers_chosen) > 0 &&
+        nrow(charities_data_subset()) > 0 &&
+        nrow(filter(charities_data_subset(), flag_contact_in_ltla == 1)) > 0 &&
+        nrow(filter(charities_data_subset(), flag_contact_in_ltla == 1, !is.na(lat), !is.na(long))) == 0) {
+        text <- c(
+          text,
+          "There are no charities whose work relates to the top vulnerability drivers you have selected with a contact address in your area that have been able to map location. Please see table for results."
+        )
+      } else {
+        text
+      }
+    })
+
+
+    # Return 2 items from this module
+    # https://mastering-shiny.org/scaling-modules.html?q=list#multiple-outputs
+    list(
+      data = reactive(charities_data_subset()),
+      error_text = reactive(error_text())
+    )
   })
 }
 
@@ -99,30 +149,31 @@ subsetCharitiesDataServer <- function(id,
 # Test -------------------------------------------------------------------------
 #--------------------------------------------------------------------------------
 
-load("data/charities_vuln_drivers_flood_lookup.rda")
-load("data/charities_lat_long.rda")
-load("data/charities_ltla_lookup.rda")
-load("data/vuln_drivers_flood_ltla.rda")
-
-subsetCharitiesDataTest <- function() {
-  ui <- fluidPage(
-    subsetCharitiesDataUI("test")
-  )
-
-  server <- function(input, output, session) {
-    charities_subset <- subsetCharitiesDataServer(
-      "test",
-      charities_vuln_drivers_flood_lookup = charities_vuln_drivers_flood_lookup,
-      charities_lat_long = charities_lat_long,
-      charities_ltla_lookup = charities_ltla_lookup,
-      vuln_drivers_flood_ltla = vuln_drivers_flood_ltla,
-      ltlas_for_filtering = reactive(c("Hartlepool"))
-    )
-
-    observe(print(charities_subset()))
- }
-  shinyApp(ui, server)
-}
-
-# Run test
-subsetCharitiesDataTest()
+# load("data/charities_vuln_drivers_flood_lookup.rda")
+# load("data/charities_lat_long.rda")
+# load("data/charities_ltla_lookup.rda")
+# load("data/vuln_drivers_flood_ltla.rda")
+#
+# subsetCharitiesDataTest <- function() {
+#   ui <- fluidPage(
+#     subsetCharitiesDataUI("test")
+#   )
+#
+#   server <- function(input, output, session) {
+#     charities_subset <- subsetCharitiesDataServer(
+#       "test",
+#       charities_vuln_drivers_flood_lookup = charities_vuln_drivers_flood_lookup,
+#       charities_lat_long = charities_lat_long,
+#       charities_ltla_lookup = charities_ltla_lookup,
+#       vuln_drivers_flood_ltla = vuln_drivers_flood_ltla,
+#       ltlas_for_filtering = reactive(c("Hartlepool"))
+#     )
+#
+#     #  observe(print(charities_subset$data()))
+#     observe(print(charities_subset$error_text()))
+#   }
+#   shinyApp(ui, server)
+# }
+#
+# # Run test
+# subsetCharitiesDataTest()
