@@ -4,14 +4,15 @@ charitiesTableUI <- function(id) {
 }
 
 # Server -----
-charitiesTableServer <- function(id, charities_data_subset) {
+charitiesTableServer <- function(id,
+                                 charities_subset) {
 
   # Checks to ensure the input is reactive
-  stopifnot(is.reactive(charities_data_subset))
+  stopifnot(is.reactive(charities_subset))
 
   moduleServer(id, function(input, output, session) {
-    charities_data_subset_clean <- reactive({
-      charities_data_subset() |>
+    charities_subset_clean <- reactive({
+      charities_subset() |>
         select(
           "Contact Info Local Authority" = "charity_contact_ltla_name",
           "Name" = "charity_name",
@@ -26,10 +27,10 @@ charitiesTableServer <- function(id, charities_data_subset) {
 
     output$charities_table <- DT::renderDT(
       {
-        # Catch errors if no area has been selected - show message as at top of the page
-        shiny::validate(need(nrow(charities_data_subset()) != 0, "Please select an area on the first tab."))
-        
-        charities_data_subset_clean() |>
+
+
+        # Future idea: could order by proximity to the LTLA the user has selected
+        charities_subset_clean() |>
           arrange(desc(flag_contact_in_ltla), Name) |>
           select(-flag_contact_in_ltla)
       },
@@ -67,31 +68,39 @@ charitiesTableServer <- function(id, charities_data_subset) {
 # Test -------------------------------------------------------------------------
 #--------------------------------------------------------------------------------
 
-# charities_ltla_lookup <- read_rds("data/charities_ltla_lookup.rds")
-# charities_data <- read_rds("data/charities_list_latlong.rds")
-# 
-# source("subsetCharitiesData.R")
-# 
+# load("data/charities_vuln_drivers_flood_lookup.rda")
+# load("data/charities_lat_long.rda")
+# load("data/charities_ltla_lookup.rda")
+# load("data/vuln_drivers_flood_ltla.rda")
+#
+# source("R/subsetCharitiesData.R")
+#
 # charitiesTableTest <- function() {
 #   ui <- fluidPage(
+#     subsetCharitiesDataUI("test"),
 #     charitiesTableUI("test")
 #   )
-# 
+#
 #   server <- function(input, output, session) {
-#     charities_subset_test <- subsetCharitiesDataServer(
+#     charities_subset <- subsetCharitiesDataServer(
 #       "test",
-#       charities_data = charities_data,
-#       charities_ltla_lookup_data = charities_ltla_lookup,
+#       charities_vuln_drivers_flood_lookup = charities_vuln_drivers_flood_lookup,
+#       charities_lat_long = charities_lat_long,
+#       charities_ltla_lookup = charities_ltla_lookup,
+#       vuln_drivers_flood_ltla = vuln_drivers_flood_ltla,
 #       ltlas_for_filtering = reactive(c("Hartlepool"))
 #     )
-# 
-#    # observe(print(charities_subset_test()))
-# 
-#     charitiesTableServer("test",
-#       charities_data_subset = charities_subset_test
-#     )
+#
+#     observe(print(charities_subset$data()))
+#
+#       charitiesTableServer("test",
+#                            charities_subset = charities_subset$data
+#       )
 #   }
+#
 #   shinyApp(ui, server)
 # }
-# 
+#
+# # Run test
 # charitiesTableTest()
+#

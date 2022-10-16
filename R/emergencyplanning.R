@@ -12,6 +12,18 @@ emergencyplanning <- function() {
   ui <- fluidPage(
     # for hotjar tracking
     tags$head(includeScript(paste0(getwd(), "/www/hotjar.js"))),
+
+    # Make error messages red to stand out
+    # https://stackoverflow.com/questions/59760316/change-the-color-of-text-in-validate-in-a-shiny-app
+    tags$head(
+      tags$style(HTML("
+      .shiny-output-error-validation {
+        color: #ff0000;
+        font-weight: bold;
+      }
+    "))
+    ),
+
     fluidRow(
       column(
         9,
@@ -36,15 +48,23 @@ emergencyplanning <- function() {
       tabPanel(
         title = "Select Areas",
         value = "selected_areas",
-
-        # Dropdown to select area (module)
-        selectAreasDropdownUI("test"),
+        fluidRow(
+          column(
+            6,
+            align = "left",
+            # Dropdown to select area (module)
+            selectAreasDropdownUI("test")
+          ),
+          column(
+            6,
+            align = "right",
+            # Button to move to next page
+            actionButton("selected_areas_next_button", "Next page")
+          )
+        ),
 
         # Map to select area (module)
         selectedAreaMapUI("test"),
-
-        # Button to move to next page
-        actionButton("selected_areas_next_button", "Next page")
       ),
 
       # Vulnerabilities - UI -------------
@@ -52,10 +72,19 @@ emergencyplanning <- function() {
       tabPanel(
         title = "Vulnerabilities",
         value = "vulnerabilities",
-        br(),
         fluidRow(
-          # Button to show licence (module)
-          floodingLisenceUI("test")
+          column(
+            6,
+            align = "left",
+            # Button to move back page
+            actionButton("vulnerabilities_back_button", "Back page"),
+          ),
+          column(
+            6,
+            align = "right",
+            # Button to move to next page
+            actionButton("vulnerabilities_next_button", "Next page")
+          )
         ),
         br(),
         fluidRow(
@@ -70,8 +99,8 @@ emergencyplanning <- function() {
               column(width = 1),
               # Metric of % of most vulnerable neighborhoods (module)
               column(10,
-                     align = "center",
-                     topVulnUI("test")
+                align = "center",
+                topVulnUI("test")
               ),
               column(width = 1)
             ),
@@ -83,43 +112,51 @@ emergencyplanning <- function() {
             )
           )
         ),
-
-        # Button to move back page
-        actionButton("vulnerabilities_back_button", "Back page"),
-
-        # Button to move to next page
-        actionButton("vulnerabilities_next_button", "Next page")
+        fluidRow(
+          align = "left",
+          # Button to show licence (module)
+          floodingLisenceUI("test")
+        )
       ),
+
 
       # Charities - UI -------------
 
       tabPanel(
         title = "Organisations",
         value = "organisations",
+        fluidRow(
+          column(
+            6,
+            align = "left",
+            # Button to move back page
+            actionButton("organisations_back_button", "Back page"),
+          ),
+          column(
+            6,
+            align = "right",
+            # Button to move to next page
+            actionButton("organisations_next_button", "Next page")
+          )
+        ),
         br(),
         fluidRow(
-          # Dropdowns to select categories and services of charities
-          subsetCharitiesDataCategoriesUI("test",
-                                          charities_categories = charities_categories
-          )
+          # Text to show top drivers of vulnerability for that LTLA
+          # & dropdown to subset data based on these top drivers
+          subsetCharitiesDataUI("test")
         ),
         fluidRow(
           column(
             5,
+            # Map of charities working within the area (module)
             charitiesMapUI("test")
           ),
           column(
             7,
-            #   downloadButton("download_data"),
+            # Table of charities working within the area (module)
             charitiesTableUI("test")
           )
-        ),
-
-        # Button to move back page
-        actionButton("organisations_back_button", "Back page"),
-
-        # Button to move to next page
-        actionButton("organisations_next_button", "Next page")
+        )
       ),
 
       # Resources - UI -------------
@@ -127,14 +164,22 @@ emergencyplanning <- function() {
       tabPanel(
         title = "Resources",
         value = "resources",
-
-        "Link here to VCSEP website flooding page.",
-
-        # Button to move back page
-        actionButton("resources_back_button", "Back page"),
-
-        # Button to move to next page
-        actionButton("resources_next_button", "Next page")
+        fluidRow(
+          column(
+            6,
+            align = "left",
+            # Button to move back page
+            actionButton("resources_back_button", "Back page"),
+          ),
+          column(
+            6,
+            align = "right",
+            # Button to move to next page
+            actionButton("resources_next_button", "Next page")
+          )
+        ),
+        br(),
+        "Tailored links here to flooding resources based on top vulnerability drivers."
       ),
 
       # Licence, methodology & data - UI -------------
@@ -142,10 +187,15 @@ emergencyplanning <- function() {
       tabPanel(
         title = "Methodology & Data",
         value = "methodology_data",
-        "Info here on the flooding vulnerability index (links to Sayers), any lisences & dates of data used.",
-
-        # Button to move back page
-        actionButton("methodology_data_back_button", "Back page"),
+        fluidRow(
+          column(
+            6,
+            align = "left",
+            # Button to move back page
+            actionButton("methodology_data_back_button", "Back page")
+          )
+        ),
+        "Info here on the flooding vulnerability index (links to Sayers), any lisences & dates of data used."
       )
     )
   )
@@ -162,13 +212,13 @@ emergencyplanning <- function() {
 
     # Dropdown to select area (module)
     selectAreasDropdownServer("test",
-                              selected_ltlas = selected_ltlas
+      selected_ltlas = selected_ltlas
     )
 
     # Map to select area (module)
     selectedAreaMapServer("test",
-                          boundaries_data = boundaries_ltlas,
-                          selected_ltlas = selected_ltlas
+      boundaries_data = boundaries_ltlas,
+      selected_ltlas = selected_ltlas
     )
 
 
@@ -184,20 +234,20 @@ emergencyplanning <- function() {
         # Subset the vulnerability scores data with selected LSOAs
         lsoa_vuln_scores_subset <- subsetVulnDataServer(
           "test",
-          lsoa_data = vuln_scores_flood,
+          lsoa_data = vuln_scores_flood_lsoa,
           ltlas_for_filtering = selected_ltlas
         )
 
         # Metric of % of most vulnerable neighborhoods (module)
         topVulnServer("test",
-                      lsoa_vuln_scores_sf_subset = lsoa_vuln_scores_subset
+          lsoa_vuln_scores_sf_subset = lsoa_vuln_scores_subset
         )
 
         # Vulnerability index map (module)
         vulnMapServer("test",
-                      lsoa_vuln_scores_sf_subset = lsoa_vuln_scores_subset,
-                      flood_risk_data = lsoa_flood_risk_ltla_lookup,
-                      lsoas_clicked = lsoas_clicked_global
+          lsoa_vuln_scores_sf_subset = lsoa_vuln_scores_subset,
+          flood_risk_data = lsoa_flood_risk_ltla_lookup,
+          lsoas_clicked = lsoas_clicked_global
         )
 
         # # Variable to store the LSOA of clicked
@@ -205,9 +255,9 @@ emergencyplanning <- function() {
 
         # Table of top drivers of vulnerability for clicked LSOA (module)
         topDriversTableServer("test",
-                              vuln_drivers = vuln_drivers_flood,
-                              lsoas_clicked = lsoas_clicked_global,
-                              selected_ltlas = selected_ltlas
+          vuln_drivers = vuln_drivers_flood_lsoa,
+          lsoas_clicked = lsoas_clicked_global,
+          selected_ltlas = selected_ltlas
         )
       }
     })
@@ -221,34 +271,31 @@ emergencyplanning <- function() {
         # Repeated from when the 'vulnerabilities' tab is selected
         lsoa_vuln_scores_subset <- subsetVulnDataServer(
           "test",
-          lsoa_data = vuln_scores_flood,
+          lsoa_data = vuln_scores_flood_lsoa,
           ltlas_for_filtering = selected_ltlas
         )
 
         # Subset charity data based on LTLAs selected
         charities_subset <- subsetCharitiesDataServer(
           "test",
-          charities_data = charities_lat_long,
-          charities_ltla_lookup_data = charities_ltla_lookup,
+          charities_vuln_drivers_flood_lookup = charities_vuln_drivers_flood_lookup,
+          charities_lat_long = charities_lat_long,
+          charities_ltla_lookup = charities_ltla_lookup,
+          vuln_drivers_flood_ltla = vuln_drivers_flood_ltla,
           ltlas_for_filtering = selected_ltlas
         )
 
-        # Subset charity data based on categories and services selected
-        charities_categories_subset <- subsetCharitiesDataCategoriesServer(
-          "test",
-          subset_charities_data = charities_subset,
-          charities_categories = charities_categories
-        )
 
         # Map of charities working within the area (module)
         charitiesMapServer("test",
-                           charities_data_subset = charities_categories_subset,
-                           lsoa_vuln_scores_sf_subset = lsoa_vuln_scores_subset
+          charities_subset = charities_subset$data,
+          error_text = charities_subset$error_text,
+          lsoa_vuln_scores_sf_subset = lsoa_vuln_scores_subset
         )
 
         # Table of charities (module)
         charitiesTableServer("test",
-                             charities_data_subset = charities_categories_subset
+          charities_subset = charities_subset$data
         )
       }
     })
@@ -286,7 +333,6 @@ emergencyplanning <- function() {
     observeEvent(input$methodology_data_back_button, {
       updateTabsetPanel(session, "tabs", selected = "resources")
     })
-
   }
 
 

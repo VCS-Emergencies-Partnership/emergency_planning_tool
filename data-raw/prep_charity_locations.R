@@ -45,22 +45,6 @@ charities_areas_raw <-
     flatten = TRUE
   )
 
-# Charity classification
-tf <- download_file("https://ccewuksprdoneregsadata1.blob.core.windows.net/data/json/publicextract.charity_classification.zip", ".zip")
-
-tf |>
-  unzip(exdir = tempdir())
-
-charities_classification_raw <-
-  fromJSON(
-    list.files(
-      tempdir(),
-      pattern = "publicextract.charity_classification.json",
-      full.names = TRUE
-    ),
-    flatten = TRUE
-  )
-
 
 # Identifiers in data -----
 # organisation_number: The organisation number for the charity. This is the index value for the charity (used for joining).
@@ -182,16 +166,34 @@ charities_areas_updated <- charities_areas_raw |>
     )
   )
 
-# Check all matched
+# Check all matched ----
 charities_areas_updated |>
   filter(geographic_area_type == "Local Authority") |>
   distinct(geographic_area_description) |>
   select(utla21_name = geographic_area_description) |>
   anti_join(utla_list_geogr_wales, by = "utla21_name") |>
   anti_join(utla_list_geogr_eng, by = "utla21_name")
-# TO DO: What UTLAs in Northampshire? https://geoportal.statistics.gov.uk/documents/ons::local-authority-districts-counties-and-unitary-authorities-april-2021-map-in-united-kingdom-/explore
-# Maybe North & West Northampshire?
+# What UTLAs in northamptonshire? https://geoportal.statistics.gov.uk/documents/ons::local-authority-districts-counties-and-unitary-authorities-april-2021-map-in-united-kingdom-/explore
+# Maybe North & West northamptonshire based on https://en.wikipedia.org/wiki/Northamptonshire
 
+# Do manual matching for Northamptonshire ---
+northamptonshire_ltla_codes <- utla_list_geogr_eng |>
+  filter(str_detect(utla21_name, "northamptonshire")) |>
+  select(ltla21_code, ltla21_name)
+
+charities_areas_updated |>
+  filter(geographic_area_type == "Local Authority",
+         str_detect(geographic_area_description, "northamptonshire")) |>
+  distinct(geographic_area_description)
+
+all_northamptonshire_charities <- charities_areas_raw |>
+  filter(str_detect(geographic_area_description, "Northamptonshire"))
+
+northamptonshire_ltla_codes <- all_northamptonshire_charities |>
+  select(organisation_number) |>
+  merge(northamptonshire_ltla_codes)
+
+# Filter out Wales ----
 utla_charities_eng <- charities_areas_updated |>
   filter(geographic_area_type == "Local Authority") |>
   anti_join(utla_list_geogr_wales, by = c("geographic_area_description" = "utla21_name"))
@@ -230,7 +232,8 @@ combined_charities_codes |>
   nrow()
 
 combined_charities_codes_selected <- combined_charities_codes |>
-  select(organisation_number, ltla21_code, ltla21_name)
+  select(organisation_number, ltla21_code, ltla21_name) |>
+  bind_rows(northamptonshire_ltla_codes)
 
 #just keep names & not codes to reduce size of dataset
 charities_ltla_lookup <- combined_charities_codes_selected |>
@@ -240,7 +243,7 @@ charities_ltla_lookup <- combined_charities_codes_selected |>
 usethis::use_data(charities_ltla_lookup, overwrite = TRUE)
 
 ############################################
-# Charity activities & HQ/Contact locations ----
+# Charity  HQ/Contact locations ----
 ############################################
 
 charities_subset <- charities_list_raw |>
@@ -258,8 +261,8 @@ unique_postcodes <- charities_subset |>
   mutate(lat = NA,
          long = NA)
 
-# TO DO: improve this code - couldn't get mutate() or map() to work with postcodelookup()
-# Note: this code takes a long time to run
+# Could improve this code - couldn't get mutate() or map() to work with postcodelookup()
+# Note: this code takes a very long time to run
 for (i in 1:nrow(unique_postcodes)) {
   result <- postcode_lookup(unique_postcodes[[i, "charity_contact_postcode_join"]])
   unique_postcodes[i, "lat"] <- result$latitude
@@ -268,40 +271,8 @@ for (i in 1:nrow(unique_postcodes)) {
 
 # Join charity data to lat/long
 charities_lat_long <- charities_subset |>
-  left_join(unique_postcodes, by = "charity_contact_postcode_join")
+  left_join(unique_postcodes, by = "charity_contact_postcode_join") |>
+  select(-c("charity_contact_postcode_join", "lsoa11_name", "charity_contact_ltla_code"))
 
 # Save ----
 usethis::use_data(charities_lat_long, overwrite = TRUE)
-
-
-############################################
-# Charity classifications ----
-############################################
-
-charities_classification_raw |>
-  distinct(classification_type, classification_description) |>
-  arrange(classification_type)
-
-charities_categories <- charities_classification_raw |>
-  mutate(category = case_when(
-    classification_type == "Who" & classification_description == "Young" ~ "Young people",
-    classification_type == "Who" & classification_description == "Elderly/old People" ~ "Older people",
-    (classification_type == "Who" & classification_description == "People With Disabilities") |
-      (classification_type == "What" & classification_description == "Disability")  ~ "Disabilities",
-    classification_type == "What" ~ classification_description,
-    TRUE ~ "Other"
-  )) |>
-  mutate(service = case_when(
-    classification_type == "How" & classification_description == "Provides Services" |
-      classification_type == "How" & classification_description == "Provides Human Resources" ~ "Services or Human Resources",
-    classification_type == "How" ~ classification_description,
-    TRUE ~ "Other"
-  )) |>
-  select(organisation_number, category, service) |>
-  pivot_longer(!organisation_number, names_to = "what", values_to = "value") |>
-  # TO DO: Check if only keep rows where have a category or service that is not 'Other'
-  filter(value != "Other")
-
-# Save ----
-usethis::use_data(charities_categories, overwrite = TRUE)
-

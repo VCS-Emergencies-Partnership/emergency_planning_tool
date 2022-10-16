@@ -1,10 +1,13 @@
 # UI ----
 topVulnUI <- function(id) {
   div(
-    # TO DO: Decide if want border
+    # TO DO: Decide if want border: https://stackoverflow.com/questions/69031305/how-to-insert-border-around-text-in-a-shiny-app
+    # Add text in line below into 'style' argument if do want
     # "border-style: solid; border-color: black; border-width: thin;
     style = "text-align: center; font-size: 120%",
     textOutput(NS(id, "top_vuln_text"))
+
+
   )
 }
 
@@ -21,11 +24,11 @@ topVulnServer <- function(id, lsoa_vuln_scores_sf_subset) {
       validate(need(nrow(lsoa_vuln_scores_sf_subset()) != 0, "Please select an area on the first tab."))
 
       prop_top_20 <- lsoa_vuln_scores_sf_subset() |>
-        summarise(prop = sum(top_20_national) / n())
+        summarise(prop = sum(top_20_eng) / n())
 
       paste0(
         round(prop_top_20$prop, 2) * 100,
-        "% of the neighbourhoods in your area are the most vulnerable to flooding nationally"
+        "% of the neighbourhoods in your area are the most socially vulnerable to flooding nationally"
       )
     })
   })
@@ -34,16 +37,17 @@ topVulnServer <- function(id, lsoa_vuln_scores_sf_subset) {
 #--------------------------------------------------------------------------------
 # Test -------------------------------------------------------------------------
 #--------------------------------------------------------------------------------
-
+# library(geographr)
+#
 # subset_lsoas <- lookup_lsoa11_ltla21 |>
 #   filter(ltla21_code == "E06000001") |>
 #   select(lsoa11_code)
-# 
-# lsoa_vuln_scores_flood <- read_rds("data/flooding_vuln_scores_sf.rds")
-# 
-# lsoa_vuln_scores_subset_flood <- lsoa_vuln_scores_flood |>
+#
+# load("data/vuln_scores_flood_lsoa.rda")
+#
+# lsoa_vuln_scores_subset_flood <- vuln_scores_flood_lsoa |>
 #   inner_join(subset_lsoas, by = "lsoa11_code")
-# 
+#
 # topVulnTest <- function() {
 #   ui <- fluidPage(
 #     topVulnUI("test")
@@ -55,6 +59,6 @@ topVulnServer <- function(id, lsoa_vuln_scores_sf_subset) {
 #   }
 #   shinyApp(ui, server)
 # }
-# 
+#
 # # Run test
 # topVulnTest()
