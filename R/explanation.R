@@ -3,13 +3,16 @@ explanation <- function() {
     column(
       2,
       align = "left",
+      br(),
       # img(src = "vcsep_logo.png")
       tags$div(
         class = "vcsep-logo",
         tags$a(
           href = "https://vcsep.org.uk/",
           target = "_blank",
-          img(src = "vcsep_logo.png")
+          img(src = "vcsep_logo.png",
+              height = "60%",
+              width = "60%")
           )
       )
     ),
