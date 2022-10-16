@@ -271,7 +271,8 @@ for (i in 1:nrow(unique_postcodes)) {
 
 # Join charity data to lat/long
 charities_lat_long <- charities_subset |>
-  left_join(unique_postcodes, by = "charity_contact_postcode_join")
+  left_join(unique_postcodes, by = "charity_contact_postcode_join") |>
+  select(-c("charity_contact_postcode_join", "lsoa11_name", "charity_contact_ltla_code"))
 
 # Save ----
 usethis::use_data(charities_lat_long, overwrite = TRUE)
