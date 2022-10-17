@@ -19,5 +19,4 @@ charities_lat_long |>
   filter(!is.na(charity_contact_postcode)) |>
   summarise(count_no_contact_lat_long_postcode_match = sum(is.na(lat)),
             prop_no_contact_lat_long_postcode_match = round(sum(is.na(lat)) / n(), 3))
-# 80% of postcodes no lat/long match!
-# Rerun lat/long matching code
+# 0.7% of those which have a postcode have a lat/long returned

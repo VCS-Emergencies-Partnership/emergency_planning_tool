@@ -5,6 +5,7 @@ library(compositr)
 library(dplyr)
 library(stringr)
 library(tidyr)
+library(purrr)
 
 # Load data ----
 # Source: https://register-of-charities.charitycommission.gov.uk/register/full-register-download
@@ -182,8 +183,10 @@ northamptonshire_ltla_codes <- utla_list_geogr_eng |>
   select(ltla21_code, ltla21_name)
 
 charities_areas_updated |>
-  filter(geographic_area_type == "Local Authority",
-         str_detect(geographic_area_description, "northamptonshire")) |>
+  filter(
+    geographic_area_type == "Local Authority",
+    str_detect(geographic_area_description, "northamptonshire")
+  ) |>
   distinct(geographic_area_description)
 
 all_northamptonshire_charities <- charities_areas_raw |>
@@ -228,13 +231,13 @@ charities_ltla_lookup <- utla_charities_eng_codes |>
   select(organisation_number, ltla21_code, ltla21_name) |>
   mutate(area = "ltla_utla") |>
   bind_rows(all_london_charities_codes |>
-            select(organisation_number, ltla21_code, ltla21_name) |>
-              mutate(area = "london")) |>
+    select(organisation_number, ltla21_code, ltla21_name) |>
+    mutate(area = "london")) |>
   bind_rows(all_england_charities_codes |>
-              select(organisation_number, ltla21_code, ltla21_name) |>
-              mutate(area = "england")) |>
+    select(organisation_number, ltla21_code, ltla21_name) |>
+    mutate(area = "england")) |>
   bind_rows(northamptonshire_ltla_codes |>
-              mutate(area = "ltla_utla")) |>
+    mutate(area = "ltla_utla")) |>
   distinct(organisation_number, ltla21_name, area)
 
 charities_ltla_lookup |>
@@ -255,39 +258,25 @@ usethis::use_data(charities_ltla_lookup, overwrite = TRUE)
 ############################################
 
 charities_subset <- charities_list_raw |>
-  select(organisation_number,
-         charity_name,
-         charity_name,
-         charity_activities,
-         charity_contact_postcode,
-         charity_contact_phone,
-         charity_contact_email,
-         charity_contact_web) |>
+  select(
+    organisation_number,
+    charity_name,
+    charity_name,
+    charity_activities,
+    charity_contact_postcode,
+    charity_contact_phone,
+    charity_contact_email,
+    charity_contact_web
+  ) |>
   semi_join(charities_ltla_lookup, by = "organisation_number") |>
   mutate(charity_contact_postcode_join = str_to_upper(str_replace_all(charity_contact_postcode, " ", ""))) |>
   left_join(lookup_postcode_oa11_lsoa11_msoa11_ltla20, by = c("charity_contact_postcode_join" = "postcode")) |>
   left_join(lookup_lsoa11_ltla21, by = "lsoa11_code") |>
   select(-c("oa11_code", "lsoa11_code", "msoa11_code", "ltla20_code", "lsoa11_code", "lsoa11_code")) |>
-  rename(charity_contact_ltla_name = ltla21_name,
-         charity_contact_ltla_code = ltla21_code)
-
-###########################################################################
-
-# unique_postcodes <- charities_subset |>
-#   distinct(charity_contact_postcode_join) |>
-#   filter(!is.na(charity_contact_postcode_join))  |>
-#   mutate(lat = NA,
-#          long = NA)
-#
-# # Could improve this code - couldn't get mutate() or map() to work with postcodelookup()
-# # Note: this code takes a very long time to run
-# for (i in 1:nrow(unique_postcodes)) {
-#   result <- postcode_lookup(unique_postcodes[[i, "charity_contact_postcode_join"]])
-#   unique_postcodes[i, "lat"] <- result$latitude
-#   unique_postcodes[i, "long"] <- result$longitude
-# }
-
-###########################################################################
+  rename(
+    charity_contact_ltla_name = ltla21_name,
+    charity_contact_ltla_code = ltla21_code
+  )
 
 unique_postcodes <- charities_subset |>
   distinct(charity_contact_postcode_join) |>
@@ -295,45 +284,48 @@ unique_postcodes <- charities_subset |>
   pull()
 
 # Loop to use ostcodesioR::bulk_postcode_lookup which takes a 1 element list of 100 postcodes
+# Does take some time to run
 postcode_lookup <- NULL
-num_loops <- ceiling(length(unique_postcodes)/100) + 1
+num_loops <- ceiling(length(unique_postcodes) / 100) + 1
 
 for (i in 1:num_loops) {
+  start <- 1 + 100 * (i - 1)
+  end <- start + 99
 
-start <- 1 + 100*(i - 1)
-end <- start + 99
+  pc <- unique_postcodes[start:end]
 
-pc <-  unique_postcodes[start:end]
+  returned <- bulk_postcode_lookup(
+    postcodes = list(postcodes = pc)
+  )
 
-returned <- bulk_postcode_lookup(
-  postcodes =  list(postcodes = pc)
-)
+  returned_results <- map(returned, "result")
 
-returned_results <- map(returned, "result")
+  values <- tibble(
+    postcodes = pc,
+    long = map_chr(returned_results, "longitude", .default = NA_character_),
+    lat = map_chr(returned_results, "latitude", .default = NA_character_),
+    loop = i
+  )
 
-values <- tibble(
-postcodes = pc,
-long = map_chr(returned_results, "longitude", .default = NA_character_),
-lat = map_chr(returned_results, "latitude", .default = NA_character_),
-loop = i
-)
-
-postcode_lookup <- postcode_lookup |>
-  bind_rows(values)
+  postcode_lookup <- postcode_lookup |>
+    bind_rows(values)
 }
 
-# Check all run
-remaining <- charities_subset |>
+# Check all postcodes have been run
+charities_subset |>
   distinct(charity_contact_postcode_join) |>
   filter(!is.na(charity_contact_postcode_join)) |>
-  anti_join(postcode_lookup, by = c("charity_contact_postcode_join" = "postcodes")) |>
-  pull()
+  anti_join(postcode_lookup, by = c("charity_contact_postcode_join" = "postcodes"))
 
+# Don't actually use this in the app but saving as code takes time to run
+usethis::use_data(postcode_lookup, overwrite = TRUE)
 
 
 # Join charity data to lat/long
 charities_lat_long <- charities_subset |>
-  left_join(postcode_lookup, by = c("charity_contact_postcode_join" = "postcodes")) |>
+  left_join(postcode_lookup |>
+              select(-loop) |>
+              filter(!is.na(postcodes)), by = c("charity_contact_postcode_join" = "postcodes")) |>
   select(-c("charity_contact_postcode_join", "lsoa11_name", "charity_contact_ltla_code"))
 
 # Save ----
