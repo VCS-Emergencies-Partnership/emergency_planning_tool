@@ -10,7 +10,8 @@ library(DT)
 emergencyplanning <- function() {
 
   # ---- UI ----
-  ui <- fluidPage(
+  ui <- function(request) {
+    fluidPage(
     # for hotjar tracking
     tags$head(includeScript(paste0(getwd(), "/www/hotjar.js"))),
     # For use of box() function
@@ -44,6 +45,10 @@ emergencyplanning <- function() {
       ),
       column(
         3,
+        fluidRow(
+          align = "right",
+             bookmarkButton()
+          ),
         # Dropdown to select emergency
         selectInput(
           "emergency_type",
@@ -210,6 +215,7 @@ emergencyplanning <- function() {
       )
     )
   )
+}
 
 
   # ---- Server ----
@@ -346,7 +352,7 @@ emergencyplanning <- function() {
     })
   }
 
-
+  enableBookmarking("url")
 
   shinyApp(ui, server)
 }
