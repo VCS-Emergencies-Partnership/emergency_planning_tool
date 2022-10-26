@@ -1,0 +1,11 @@
+name: emergency_planning_tool
+title:
+username:
+account: britishredcross
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 7413364
+bundleId: 6439279
+url: https://britishredcross.shinyapps.io/emergency_planning_tool/
+when: 1666707351.45785
+lastSyncTime: 1666707351.45794

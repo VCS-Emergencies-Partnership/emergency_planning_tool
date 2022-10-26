@@ -1,10 +1,24 @@
 # UI ----
 topDriversTableUI <- function(id) {
   tagList(
-    "Neighbourhoods drivers of vulnerabilities ranked",
     textOutput(NS(id, "lsoas_clicked_name")),
-    tableOutput(NS(id, "top_drivers_table_domains")),
-    tableOutput(NS(id, "top_drivers_table_variables"))
+    br(),
+    fluidRow(box(
+      tableOutput(NS(id, "top_drivers_table_domains")),
+      title = "Neighbourhood drivers of vulnerabilities ranked - Domains",
+      solidHeader = TRUE,
+      width = 11,
+      status = "primary",
+      collapsible = TRUE
+    )),
+    fluidRow(box(
+      tableOutput(NS(id, "top_drivers_table_variables")),
+      title = "Neighbourhood drivers of vulnerabilities ranked - Indicators",
+      solidHeader = TRUE,
+      width = 11,
+      status = "primary",
+      collapsible = TRUE
+    ))
   )
 }
 

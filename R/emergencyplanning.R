@@ -4,6 +4,7 @@ library(leaflet)
 library(readr)
 library(dplyr)
 library(shinyWidgets)
+library(shinydashboard)
 library(DT)
 
 emergencyplanning <- function() {
@@ -12,7 +13,8 @@ emergencyplanning <- function() {
   ui <- fluidPage(
     # for hotjar tracking
     tags$head(includeScript(paste0(getwd(), "/www/hotjar.js"))),
-
+    # For use of box() function
+    useShinydashboard(),
     # Make error messages red to stand out
     # https://stackoverflow.com/questions/59760316/change-the-color-of-text-in-validate-in-a-shiny-app
     tags$head(
@@ -21,9 +23,18 @@ emergencyplanning <- function() {
         color: #ff0000;
         font-weight: bold;
       }
+      .box.box-solid.box-primary>.box-header {
+                color:#fff;
+                background:#5C747A
+                }
+              .box.box-solid.box-primary{
+              border-bottom-color:#5C747A;
+              border-left-color:#5C747A;
+              border-right-color:#5C747A;
+              border-top-color:#5C747A;
+              }
     "))
     ),
-
     fluidRow(
       column(
         9,
