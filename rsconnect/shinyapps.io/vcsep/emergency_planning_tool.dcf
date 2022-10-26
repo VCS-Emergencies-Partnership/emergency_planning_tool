@@ -1,0 +1,11 @@
+name: emergency_planning_tool
+title:
+username:
+account: vcsep
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 7427359
+bundleId: 6443103
+url: https://vcsep.shinyapps.io/emergency_planning_tool/
+when: 1666795132.56893
+lastSyncTime: 1666795132.56898
