@@ -5,7 +5,16 @@ topDriversTableUI <- function(id) {
     br(),
     fluidRow(box(
       tableOutput(NS(id, "top_drivers_table_domains")),
-      title = "Neighbourhood drivers of vulnerabilities ranked - Domains",
+      title = span(
+        "Neighbourhood drivers of vulnerabilities ranked - Domains",
+        div(style = "display:inline-block;",
+            title = "- Susceptibility: age and health of local populations
+                     - Ability to prepare: based on income, knowledge and property tenure
+                     - Ability to respond: based on income, knowledge, mobility and access to transport
+                     - Ability to recover: based on income, information use, and mobility/transport
+                     - Community support: social networks, housing characteristics and availability of support
+                          ",
+                          icon("info-circle"))),
       solidHeader = TRUE,
       width = 11,
       status = "primary",
