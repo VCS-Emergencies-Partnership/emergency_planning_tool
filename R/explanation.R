@@ -1,23 +1,23 @@
 explanation <- function() {
   fluidRow(
     column(
-      2,
-      align = "left",
-      br(),
+      1,
+       align = "center",
       # img(src = "vcsep_logo.png")
       tags$div(
         class = "vcsep-logo",
         tags$a(
           href = "https://vcsep.org.uk/",
           target = "_blank",
-          img(src = "vcsep_logo.png",
-              height = "60%",
-              width = "60%")
+          img(src = "vcsep_logo.jpg",
+              height = "100%",
+              width = "100%"
+           )
           )
       )
     ),
     column(
-      10,
+      11,
       tags$h4(
         "Emergency Planning Tool"
       ),
