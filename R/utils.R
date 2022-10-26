@@ -30,6 +30,11 @@ vuln_map_function <- function (base_map_input, vuln_data, pal_input) {
     )
 }
 
+# ---- Review ----
+# - Reword to'Standardise a set of standardised and summed columns'
+# - Rename both functions `stand_sum_stand()` and `sum_stand()` so their purpose
+#   is clearer from their name alone
+
 #' Function to standardise then sum the standardised columns
 #' and then standardise the resulting summed column
 #' #'
@@ -49,6 +54,12 @@ stand_sum_stand <- function(data, id_columns, calc_columns) {
     select(stand_sum_stand) |>
     pull()
 }
+
+# ---- Review ----
+# - Reword to 'Standardise summed columns'
+# - This code features in the function above. It seems to me these functions 
+#   could be refactored to prevent code reuse. i.e., keep this function as is,
+#   and incorporate it into the above function.
 
 #' Function to sum columns and then standardise the resulting summed column
 #' #'

@@ -28,6 +28,12 @@ raw_data <- read_excel(list.files(
     ) |>
   clean_names()
 
+# ---- Review ----
+# - why load demographr above and call its namespace using `::`? better
+#   to use one method
+# - The lsoa population lookup contains local authorities. Run 
+#   `lsoa11_2017pop |> arrange(desc(total_population))`. The top 300+ results
+#   are local authority codes.
 lsoa11_2017pop <- demographr::population17_lsoa11 |>
   select(lsoa11_code, total_population) |>
   filter(str_detect(lsoa11_code, "^E"))
@@ -37,13 +43,24 @@ data_eng_nvfi_vars_lsoa <- raw_data |>
   filter(country == "England") |>
   select(lsoa11_code = code, lsoa11_name = name, a1:n3, sfripfcg, sfripswg)
 
+# ---- Review ----
+# - Consider using skimr::skim() in place of summary
+# - Consider commenting out code that isn't actually part of the build step or
+#   provide commentary on why it has been run and what the implications are.
 data_eng_nvfi_vars_lsoa |>
   summary()
 
 # Aggregate up to LA level via population weighted averages ----
 # Have used 2017 populations since when Sayers report from
+# ---- Review ----
+# - While this may align time perioid of data, would it not be better to use more
+#   recent estimates which better reflect population distributions, even if 
+#   underlying indicators have changed? (I don't know the answer to this question)
 
 # TO DO: does population weighted crime IMD value (c1) make sense? All rest are %. Come back to once investigated variable in IMD docs.
+# ---- Review ----
+# - I was expecting c1 to be a set of ranks, not values between 0-1
+
 
 # Only include LSOAs which have flood exposure
 # p.67 of full report http://www.sayersandpartners.co.uk/uploads/6/2/0/9/6209349/sayers_2017_-_present_and_future_flood_vulnerability_risk_and_disadvantage_-_final_report_-_uploaded_05june2017_printed_-_stan.pdf
@@ -65,8 +82,13 @@ data_eng_nvfi_vars_lsoa |>
 # ‘SFRIPFCI’ - SFRI individual for fluvial & costal flooding for present day
 # ‘SFRIPSWI’ - SFRI individual for surface water flooding for present day
 
+# ---- Review ----
+# - Add note that this step is calculating a population weighted value for each
+#   indicator (e.g., by multiplying by lsoa score by lsoa population then 
+#   dividing by total pop of ltla). I would rename the variable to something 
+#   that describes this morre clearly.
 data_eng_nvfi_vars_ltla <- data_eng_nvfi_vars_lsoa |>
-  left_join(lsoa11_2017pop, by = "lsoa11_code") |>
+  left_join(lsoa11_2017pop, by = "lsoa11_code") |> 
   # only neighbourhoods exposed to flooding
   filter(sfripfcg != 0 | sfripswg != 0) |>
   left_join(
@@ -97,6 +119,13 @@ nvfi_com_variables <- c("l1", "e1", "s1", "s2", "s3", "s4", "n1", "n2", "n3")
 # Standardise variables and then sum and then standardise to get domains values
 # Sum and then standardise domains to get NVFI
 
+# ---- Review ----
+# - Rename the functions `stand_sum_stand()` and `sum_stand()`. It isn't clear 
+#   from their names what the difference is (the docs in utils.R should be to
+#   support understanding their usage).
+# - The functions from utils.R are not loaded into this script. Add call to
+#   `devtools::load_all()` or to source the utils.R script.
+
 # TO DO: think about comment about standardising the variables which are ranks i.e. c1
 # p. 15 in Appendix B; http://www.sayersandpartners.co.uk/uploads/6/2/0/9/6209349/appendix_b_neighbourhood_flood_vulnerability_index_-_final_-_uploaded_4june2017_revised_and_upload_280617_-_minor_corrections.pdf
 eng_nvfi_ltla_standardised_domains <- data_eng_nvfi_vars_ltla |>
@@ -118,6 +147,11 @@ raw_data |>
   select(contains("nvfi")) |>
   summary()
 
+# ---- Review ----
+# - Do you not want to include standarised indicators (in addition to domains and
+#   nvfi overall score)? The indicators below are the population weighted, not
+#   standardised scores
+
 # LTLA level dataset to save ----
 eng_nvfi_ltla <- eng_nvfi_ltla_standardised_domains_nvfi |>
   left_join(data_eng_nvfi_vars_ltla,
@@ -126,3 +160,11 @@ eng_nvfi_ltla <- eng_nvfi_ltla_standardised_domains_nvfi |>
 
 usethis::use_data(eng_nvfi_ltla, overwrite = TRUE)
 
+# ---- Review ----
+# - General comment: I would add a genric build process at the top of the script
+#   that lists the logic, e.g., step 1: population weight values, step 2: ...
+#   This should make reviewing your future code much quicker as you have a
+#   top-level summary to remind you of what happens in the script
+# - General comment: the overall method of population weighting and summing
+#   scores make sense, even if it isn't aligned 100% to the ClimateJust docs.
+#   In other words, I don't think the above approach is 'wrong'.
