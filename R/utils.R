@@ -30,44 +30,28 @@ vuln_map_function <- function (base_map_input, vuln_data, pal_input) {
     )
 }
 
-# ---- Review ----
-# - Reword to'Standardise a set of standardised and summed columns'
-# - Rename both functions `stand_sum_stand()` and `sum_stand()` so their purpose
-#   is clearer from their name alone
-
-#' Function to standardise then sum the standardised columns
-#' and then standardise the resulting summed column
+#' Function to standardise a set of standardised and summed columns
 #' #'
 #' @param data The data
 #' @param id_columns The id columns
 #' @param calc_columns The columns to perform calculations across
 #'
-stand_sum_stand <- function(data, id_columns, calc_columns) {
+standarise_summed_standarise_cols <- function(data, id_columns, calc_columns) {
 
   data |>
     select(all_of({{ id_columns }}), all_of({{ calc_columns }})) |>
     mutate(across(all_of({{ calc_columns }}), standardise)) |>
-    rowwise(all_of({{ id_columns }})) |>
-    summarise(stand_sum = sum(c_across(all_of({{ calc_columns }})))) |>
-    ungroup() |>
-    mutate(stand_sum_stand = standardise(stand_sum)) |>
-    select(stand_sum_stand) |>
-    pull()
+    standarise_summed_cols(id_columns = id_columns, calc_columns = calc_columns)
+
 }
 
-# ---- Review ----
-# - Reword to 'Standardise summed columns'
-# - This code features in the function above. It seems to me these functions 
-#   could be refactored to prevent code reuse. i.e., keep this function as is,
-#   and incorporate it into the above function.
-
-#' Function to sum columns and then standardise the resulting summed column
+#' Function to standardise summed columns
 #' #'
 #' @param data The data
 #' @param id_columns The id columns
 #' @param calc_columns The columns to perform calculations across
 #'
-sum_stand <- function(data, id_columns, calc_columns) {
+standarise_summed_cols <- function(data, id_columns, calc_columns) {
   data |>
     select(all_of({{ id_columns }}), all_of({{ calc_columns }})) |>
     rowwise(all_of({{ id_columns }})) |>
@@ -76,6 +60,5 @@ sum_stand <- function(data, id_columns, calc_columns) {
     mutate(sum_stand = standardise(sum)) |>
     select(sum_stand) |>
     pull()
+
 }
-
-

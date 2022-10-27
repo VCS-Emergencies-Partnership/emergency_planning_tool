@@ -1,6 +1,12 @@
 # Approach - take population weighted averages of the underlying supporting indicators at LSOA level to Local Authority level
 # Then recalculate the NFVI at Local Authority Level using calculation steps for NVFI & domains p.15 & 16 in Appendix B http://www.sayersandpartners.co.uk/uploads/6/2/0/9/6209349/appendix_b_neighbourhood_flood_vulnerability_index_-_final_-_uploaded_4june2017_revised_and_upload_280617_-_minor_corrections.pdf
 
+# Step 1 - Load LSOA level data
+# Step 2 - Filter for England only
+# Step 3 - Aggregate up to LTLA level via population weighted averages
+# Step 4 - Calculate domains and NVFI with LTLA level calculated in Step 3 ----
+
+
 library(compositr)
 library(janitor)
 library(dplyr)
@@ -8,8 +14,11 @@ library(readxl)
 library(demographr)
 library(stringr)
 library(geographr)
+library(skimr)
 
-# Load data ------
+source("R/utils.R")
+
+# Step 1 - Load data ------
 # Data downloaded https://www.climatejust.org.uk/map
 # 'Download' button on left hand side of page
 # 'Excel format' -> 'Neighbourhood Flood Vulnerability Index (NFVI) and Social Flood Risk Index (SFRI) data'
@@ -28,46 +37,37 @@ raw_data <- read_excel(list.files(
     ) |>
   clean_names()
 
-# ---- Review ----
-# - why load demographr above and call its namespace using `::`? better
-#   to use one method
-# - The lsoa population lookup contains local authorities. Run 
-#   `lsoa11_2017pop |> arrange(desc(total_population))`. The top 300+ results
-#   are local authority codes.
-lsoa11_2017pop <- demographr::population17_lsoa11 |>
+lsoa11_2017pop <- population17_lsoa11 |>
   select(lsoa11_code, total_population) |>
   filter(str_detect(lsoa11_code, "^E"))
 
+# Step 2 - Filter for England only ----
 # Data dictionary or NFVI variables: https://www.climatejust.org.uk/sites/default/files/Sayers_et_al_2017_indicator_list%20%28table%203-2%20p27%29-46789%2BMP.pdf
-data_eng_nvfi_vars_lsoa <- raw_data |>
+eng_nvfi_vars_lsoa <- raw_data |>
   filter(country == "England") |>
   select(lsoa11_code = code, lsoa11_name = name, a1:n3, sfripfcg, sfripswg)
 
-# ---- Review ----
-# - Consider using skimr::skim() in place of summary
-# - Consider commenting out code that isn't actually part of the build step or
-#   provide commentary on why it has been run and what the implications are.
-data_eng_nvfi_vars_lsoa |>
-  summary()
+# eng_nvfi_vars_lsoa |>
+#   skim()
 
-# Aggregate up to LA level via population weighted averages ----
+# Step 3 - Aggregate up to LTLA level via population weighted averages ----
 # Have used 2017 populations since when Sayers report from
 # ---- Review ----
-# - While this may align time perioid of data, would it not be better to use more
-#   recent estimates which better reflect population distributions, even if 
+# - While this may align time period of data, would it not be better to use more
+#   recent estimates which better reflect population distributions, even if
 #   underlying indicators have changed? (I don't know the answer to this question)
 
-# TO DO: does population weighted crime IMD value (c1) make sense? All rest are %. Come back to once investigated variable in IMD docs.
-# ---- Review ----
-# - I was expecting c1 to be a set of ranks, not values between 0-1
-
+# Both c1 and i5, which have come from IMD values
+# page 15 http://www.sayersandpartners.co.uk/uploads/6/2/0/9/6209349/appendix_b_neighbourhood_flood_vulnerability_index_-_final_-_uploaded_4june2017_revised_and_upload_280617_-_minor_corrections.pdf
+# 'If an indicator is already in the form of a rank (e.g., as is the Index of Multiple Deprivation, IMD), the equivalent z score is determined by assuming the rank is drawn from a normal distribution and calculating the number of standard deviations from the mean associated with that rank.'
+# TO DO: Unsure if this step has already been done for the raw indicators - to investigate and check with Paul.
 
 # Only include LSOAs which have flood exposure
 # p.67 of full report http://www.sayersandpartners.co.uk/uploads/6/2/0/9/6209349/sayers_2017_-_present_and_future_flood_vulnerability_risk_and_disadvantage_-_final_report_-_uploaded_05june2017_printed_-_stan.pdf
 # 'population weighted average across all neighbourhoods exposed to flooding'
 
 # Check: do all LTLAs have at least one LSOA (neighbourhood) exposed to flooding?
-data_eng_nvfi_vars_lsoa |>
+eng_nvfi_vars_lsoa |>
   left_join(
     lookup_lsoa11_ltla21 |>
       select(-lsoa11_name)
@@ -82,13 +82,8 @@ data_eng_nvfi_vars_lsoa |>
 # ‘SFRIPFCI’ - SFRI individual for fluvial & costal flooding for present day
 # ‘SFRIPSWI’ - SFRI individual for surface water flooding for present day
 
-# ---- Review ----
-# - Add note that this step is calculating a population weighted value for each
-#   indicator (e.g., by multiplying by lsoa score by lsoa population then 
-#   dividing by total pop of ltla). I would rename the variable to something 
-#   that describes this morre clearly.
-data_eng_nvfi_vars_ltla <- data_eng_nvfi_vars_lsoa |>
-  left_join(lsoa11_2017pop, by = "lsoa11_code") |> 
+eng_nvfi_vars_pop_weighted_ltla <- eng_nvfi_vars_lsoa |>
+  left_join(lsoa11_2017pop, by = "lsoa11_code") |>
   # only neighbourhoods exposed to flooding
   filter(sfripfcg != 0 | sfripswg != 0) |>
   left_join(
@@ -101,10 +96,10 @@ data_eng_nvfi_vars_ltla <- data_eng_nvfi_vars_lsoa |>
   ungroup()
 
 
-data_eng_nvfi_vars_ltla |>
-  summary()
+# eng_nvfi_vars_pop_weighted_ltla |>
+#     skim()
 
-# Calculate domains and NVFI at LTLA level ----
+# Step 4 - Calculate domains and NVFI with LTLA level calculated in Step 3 ----
 # Calculation steps for NVFI & domains p.15 & 16 in Appendix B http://www.sayersandpartners.co.uk/uploads/6/2/0/9/6209349/appendix_b_neighbourhood_flood_vulnerability_index_-_final_-_uploaded_4june2017_revised_and_upload_280617_-_minor_corrections.pdf
 # TO DO: get this calculation approach approved
 geog_columns <- c("ltla21_code", "ltla21_name")
@@ -119,38 +114,32 @@ nvfi_com_variables <- c("l1", "e1", "s1", "s2", "s3", "s4", "n1", "n2", "n3")
 # Standardise variables and then sum and then standardise to get domains values
 # Sum and then standardise domains to get NVFI
 
-# ---- Review ----
-# - Rename the functions `stand_sum_stand()` and `sum_stand()`. It isn't clear 
-#   from their names what the difference is (the docs in utils.R should be to
-#   support understanding their usage).
-# - The functions from utils.R are not loaded into this script. Add call to
-#   `devtools::load_all()` or to source the utils.R script.
-
 # TO DO: think about comment about standardising the variables which are ranks i.e. c1
 # p. 15 in Appendix B; http://www.sayersandpartners.co.uk/uploads/6/2/0/9/6209349/appendix_b_neighbourhood_flood_vulnerability_index_-_final_-_uploaded_4june2017_revised_and_upload_280617_-_minor_corrections.pdf
-eng_nvfi_ltla_standardised_domains <- data_eng_nvfi_vars_ltla |>
-mutate(nvfi_sus = stand_sum_stand(data_eng_nvfi_vars_ltla, id_columns = geog_columns, calc_columns = nvfi_sus_variables),
-       nvfi_prp = stand_sum_stand(data_eng_nvfi_vars_ltla, id_columns = geog_columns, calc_columns = nvfi_prp_variables),
-       nvfi_res = stand_sum_stand(data_eng_nvfi_vars_ltla, id_columns = geog_columns, calc_columns = nvfi_res_variables),
-       nvfi_rec = stand_sum_stand(data_eng_nvfi_vars_ltla, id_columns = geog_columns, calc_columns = nvfi_rec_variables),
-       nvfi_com = stand_sum_stand(data_eng_nvfi_vars_ltla, id_columns = geog_columns, calc_columns = nvfi_com_variables)) |>
+eng_nvfi_ltla_standardised_domains <- eng_nvfi_vars_pop_weighted_ltla |>
+mutate(nvfi_sus = standarise_summed_standarise_cols(eng_nvfi_vars_pop_weighted_ltla, id_columns = geog_columns, calc_columns = nvfi_sus_variables),
+       nvfi_prp = standarise_summed_standarise_cols(eng_nvfi_vars_pop_weighted_ltla, id_columns = geog_columns, calc_columns = nvfi_prp_variables),
+       nvfi_res = standarise_summed_standarise_cols(eng_nvfi_vars_pop_weighted_ltla, id_columns = geog_columns, calc_columns = nvfi_res_variables),
+       nvfi_rec = standarise_summed_standarise_cols(eng_nvfi_vars_pop_weighted_ltla, id_columns = geog_columns, calc_columns = nvfi_rec_variables),
+       nvfi_com = standarise_summed_standarise_cols(eng_nvfi_vars_pop_weighted_ltla, id_columns = geog_columns, calc_columns = nvfi_com_variables)) |>
   select(all_of(geog_columns), contains("nvfi"))
 
 eng_nvfi_ltla_standardised_domains_nvfi <- eng_nvfi_ltla_standardised_domains |>
-  mutate(nvfi = sum_stand(eng_nvfi_ltla_standardised_domains, id_columns = geog_columns, calc_columns = c("nvfi_sus", "nvfi_prp", "nvfi_res", "nvfi_rec", "nvfi_com")),
+  mutate(nvfi = standarise_summed_cols(eng_nvfi_ltla_standardised_domains, id_columns = geog_columns, calc_columns = c("nvfi_sus", "nvfi_prp", "nvfi_res", "nvfi_rec", "nvfi_com")),
          .after = ltla21_name)
 
-eng_nvfi_ltla_standardised_domains_nvfi |>
-  summary()
-
-raw_data |>
-  select(contains("nvfi")) |>
-  summary()
+# eng_nvfi_ltla_standardised_domains_nvfi |>
+#   skim()
+#
+# raw_data |>
+#   select(contains("nvfi")) |>
+#   skim()
 
 # ---- Review ----
 # - Do you not want to include standarised indicators (in addition to domains and
 #   nvfi overall score)? The indicators below are the population weighted, not
 #   standardised scores
+# - AM reply - Was looking to replicate format of the LSOA level dataset from ClimateJust where they are the raw indicator values
 
 # LTLA level dataset to save ----
 eng_nvfi_ltla <- eng_nvfi_ltla_standardised_domains_nvfi |>
@@ -159,12 +148,3 @@ eng_nvfi_ltla <- eng_nvfi_ltla_standardised_domains_nvfi |>
 
 
 usethis::use_data(eng_nvfi_ltla, overwrite = TRUE)
-
-# ---- Review ----
-# - General comment: I would add a genric build process at the top of the script
-#   that lists the logic, e.g., step 1: population weight values, step 2: ...
-#   This should make reviewing your future code much quicker as you have a
-#   top-level summary to remind you of what happens in the script
-# - General comment: the overall method of population weighting and summing
-#   scores make sense, even if it isn't aligned 100% to the ClimateJust docs.
-#   In other words, I don't think the above approach is 'wrong'.
