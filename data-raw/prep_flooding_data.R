@@ -83,7 +83,7 @@ lookup_lsoa11_ltla21 |>
 # ‘SFRIPSWI’ - SFRI individual for surface water flooding for present day
 
 # TO DO: come back to this section as only 5 LSOAs have SFRI of 0 for both fluvial & coastal (i.e. no exposure to fluvial and coastal)
-# Q: should move back to using DEFRA flood risk/zone data where subsets at higher rate?
+# Q: should move back to using DEFRA flood risk/zone data where subsets at higher rate or use cut off category e.g. 'High' and above for SFRI?
 
 flood_exposure_lsoas <- data_eng_lsoa |>
   # only neighbourhoods exposed to flooding
@@ -100,16 +100,16 @@ lsoa_flood_risk_ltla_lookup <- lookup_lsoa11_ltla21 |>
 usethis::use_data(lsoa_flood_risk_ltla_lookup, overwrite = TRUE)
 
 # ---- Review ----
-# - rename `top_20_eng` to a variable that is more clear. E.g., `top_quintile`
-#   or `top_20_percent`
 # - Why did you add deciles on top of the NFVI categories?
+# - AM reply - thinking was the NFVI categories where UK wide but the quantiles are England only
+#   but perhaps
 
 # Make data for NFVI quantiles/categories (LSOA level data only) -----
 # Higher value = more vulnerable
 lsoa_nvfi_quantiles <- data_eng_lsoa |>
   mutate(nvfi_quantiles_eng = quantise(nvfi, num_quantiles = 10)) |>
   select(lsoa11_code, nvfi, nvfi_quantiles_eng) |>
-  mutate(top_20_eng = if_else(nvfi_quantiles_eng %in% c(9, 10), 1, 0)) |>
+  mutate(top_20_percent_eng = if_else(nvfi_quantiles_eng %in% c(9, 10), 1, 0)) |>
   left_join(boundaries_lsoa11, by =  "lsoa11_code") |>
   relocate(lsoa11_name, .after = lsoa11_code)
 
@@ -132,7 +132,7 @@ vuln_scores_flood_lsoa <- lsoa_nvfi_quantiles |>
     0.5 < nvfi & nvfi <= 1.5 ~ "Relatively high",
     1.5 < nvfi & nvfi < 2.5 ~ "Extremely high",
     2.5 <= nvfi ~ "Acute"
-  ), .after = top_20_eng)
+  ), .after = top_20_percent_eng)
 
 # Save ----
 usethis::use_data(vuln_scores_flood_lsoa, overwrite = TRUE)
@@ -253,7 +253,7 @@ data_eng_vars_rank_var <- data_eng |>
   # ---- Review ----
   # - I don't understand why there is no grouping variable here. Does the below
   #   code not quantise all ranks across all geographies and all variables? I
-  #   am not sure how you can compare across variables like this? Is the reason 
+  #   am not sure how you can compare across variables like this? Is the reason
   #   the quantising works because the group sizes for each geography are equal?
   #   What would happen if the group sizes were unequal?
   mutate(quantiles_eng = quantise(normalised_rank, num_quantiles = 10)) |>
@@ -274,7 +274,7 @@ data_eng_domain_rank_var <- data_eng |>
     na.last = TRUE,
     ties.method = "first"
   )) |>
-  ungroup() |> 
+  ungroup() |>
   mutate(quantiles_eng = quantise(normalised_rank, num_quantiles = 10)) |>
   select(geog_code, domain_variable_id, quantiles_eng) |>
   mutate(domain_variable = "domain")

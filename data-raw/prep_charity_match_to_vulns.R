@@ -1,3 +1,5 @@
+# Script aims to match social flooding vulnerabilities to charity activities to provide organisations to help with the vulnerabilities
+
 library(jsonlite)
 library(dplyr)
 library(stringr)
@@ -18,7 +20,7 @@ tf |>
   unzip(exdir = tempdir())
 
 # ---- Review ----
-# - I would make this dataframe of class tibble. The standard printing of the 
+# - I would make this dataframe of class tibble. The standard printing of the
 #   base R data.frame class is hard to read, and is maintained throughout this
 #   analysis. Append `|> tibble::as_tibble()` .
 charities_classification_raw <-
@@ -57,19 +59,16 @@ skip = 41
 # Match organisation categories to NVFI social vulnerability variables -----
 
 # Info on the matching logic: https://brcsbrms.sharepoint.com/sites/VCSEP/_layouts/15/doc.aspx?sourcedoc={78fe3e10-91a6-4589-946b-65358bed3b84}&action=edit
-# TO DO: come up with logic for remaining vulnerabilities
-
-# ---- Review ----
-# - Why don't these categories match those in the doc linked above?
-# - Why don't `variable_id` match to more categories?
+# TO DO: come up with logic for remaining vulnerabilities - detail in document above and then implement in code.
 
 # Note: these should be used as detection terms, not exact matches so use fuzzyjoin package
 lookup_vuln_id_match_term <- tribble(
   ~variable_id, ~charity_comm_classification_match_term ,
-  "a1",   "young",
-  "n3",   "young",
-  "a2",   "old/elderly",
-  "h1",  "disabilities|disability",
+  "a1", "young",
+  "n3", "young",
+  "a2", "old/elderly",
+  "h1", "disabilities|disability",
+  "h2", "the advancement of health or saving of lives",
   "m1", "disabilities|disability",
   "i1", "economic/community development/employment",
   "i2", "economic/community development/employment",
@@ -92,15 +91,9 @@ lookup_vuln_id_match_term <- tribble(
 
 # fuzzyjoin_test_data |>
 #   mutate(classification_description = str_to_lower(classification_description)) |>
-#   fuzzy_left_join(lookup_vuln_id_match_term, by = c("classification_description" = "charity_comm_classification_match_term"), match_fun = str_detect) |> 
+#   fuzzy_left_join(lookup_vuln_id_match_term, by = c("classification_description" = "charity_comm_classification_match_term"), match_fun = str_detect) |>
 #   View()
 
-# ---- Review ----
-# - The original `charities_classification_raw` dataframe had 251,525
-#   unique organisations. The `charities_vuln_drivers_flood_lookup`  dataframe
-#   has 180,229. The lookup loses 71,296 of the organisations. It may well be
-#   that these organisations have nothing to do with disasters and emergency
-#   response and the underlying indicators?
 charities_vuln_drivers_flood_lookup <- charities_classification_raw |>
   select(organisation_number, classification_type, classification_description) |>
   mutate(classification_description = str_to_lower(classification_description)) |>
