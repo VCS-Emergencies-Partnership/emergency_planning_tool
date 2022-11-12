@@ -52,7 +52,7 @@ eng_nvfi_vars_lsoa <- raw_data |>
 
 # Step 3 - Aggregate up to LTLA level via population weighted averages ----
 # Have used 2017 populations since when Sayers report from
-# ---- Review ----
+# ---- Mike Review ----
 # - While this may align time period of data, would it not be better to use more
 #   recent estimates which better reflect population distributions, even if
 #   underlying indicators have changed? (I don't know the answer to this question)
@@ -101,7 +101,7 @@ eng_nvfi_vars_pop_weighted_ltla <- eng_nvfi_vars_lsoa |>
 
 # Step 4 - Calculate domains and NVFI with LTLA level calculated in Step 3 ----
 # Calculation steps for NVFI & domains p.15 & 16 in Appendix B http://www.sayersandpartners.co.uk/uploads/6/2/0/9/6209349/appendix_b_neighbourhood_flood_vulnerability_index_-_final_-_uploaded_4june2017_revised_and_upload_280617_-_minor_corrections.pdf
-# TO DO: get this calculation approach approved
+# TO DO: get this calculation approach approved by Paul (2 or 3 step process)
 geog_columns <- c("ltla21_code", "ltla21_name")
 nvfi_sus_variables <- c("a1", "a2", "h1", "h2")
 nvfi_prp_variables <- c("i1", "i2", "i3", "i4", "i5", "f1", "f2", "k1", "t1", "t2")
@@ -114,7 +114,7 @@ nvfi_com_variables <- c("l1", "e1", "s1", "s2", "s3", "s4", "n1", "n2", "n3")
 # Standardise variables and then sum and then standardise to get domains values
 # Sum and then standardise domains to get NVFI
 
-# TO DO: think about comment about standardising the variables which are ranks i.e. c1
+# TO DO: think about comment about standardising the variables which are ranks i.e. c1. Checking with Paul.
 # p. 15 in Appendix B; http://www.sayersandpartners.co.uk/uploads/6/2/0/9/6209349/appendix_b_neighbourhood_flood_vulnerability_index_-_final_-_uploaded_4june2017_revised_and_upload_280617_-_minor_corrections.pdf
 eng_nvfi_ltla_standardised_domains <- eng_nvfi_vars_pop_weighted_ltla |>
 mutate(nvfi_sus = standarise_summed_standarise_cols(eng_nvfi_vars_pop_weighted_ltla, id_columns = geog_columns, calc_columns = nvfi_sus_variables),
@@ -134,12 +134,6 @@ eng_nvfi_ltla_standardised_domains_nvfi <- eng_nvfi_ltla_standardised_domains |>
 # raw_data |>
 #   select(contains("nvfi")) |>
 #   skim()
-
-# ---- Review ----
-# - Do you not want to include standarised indicators (in addition to domains and
-#   nvfi overall score)? The indicators below are the population weighted, not
-#   standardised scores
-# - AM reply - Was looking to replicate format of the LSOA level dataset from ClimateJust where they are the raw indicator values
 
 # LTLA level dataset to save ----
 eng_nvfi_ltla <- eng_nvfi_ltla_standardised_domains_nvfi |>

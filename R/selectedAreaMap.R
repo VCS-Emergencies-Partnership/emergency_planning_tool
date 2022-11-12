@@ -68,7 +68,6 @@ selectedAreaMapServer <- function(id, boundaries_data, selected_ltlas) {
    # As polygons are clicked, update both the local and global reactive values
     observeEvent(input$map_shape_click, {
 
-   # TO DO: Come back to this so don't need to unclick an area to it to update
      if (input$map_shape_click$group == "base") {
        leafletProxy("map") |> hideGroup(clicked_ltlas())
        clicked_ltlas(input$map_shape_click$id)

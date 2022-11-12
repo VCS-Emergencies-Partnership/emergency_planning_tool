@@ -19,10 +19,6 @@ tf <- download_file("https://ccewuksprdoneregsadata1.blob.core.windows.net/data/
 tf |>
   unzip(exdir = tempdir())
 
-# ---- Review ----
-# - I would make this dataframe of class tibble. The standard printing of the
-#   base R data.frame class is hard to read, and is maintained throughout this
-#   analysis. Append `|> tibble::as_tibble()` .
 charities_classification_raw <-
   fromJSON(
     list.files(
@@ -31,7 +27,8 @@ charities_classification_raw <-
       full.names = TRUE
     ),
     flatten = TRUE
-  )
+  ) |>
+  tibble::as_tibble()
 
 # Loading in NVFI lookup ----
 # Data downloaded https://www.climatejust.org.uk/map
