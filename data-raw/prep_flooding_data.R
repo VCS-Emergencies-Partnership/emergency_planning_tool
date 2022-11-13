@@ -1,8 +1,8 @@
 # *** IMPORTANT - READ BEFORE RUNNING *****
 # This script is for both LSOA and LTLA level Neighbourhood Vulnerability Flood Index data
 # The LSOA level data is pulled from ClimateJust & the LTLA data is created via 'data-raw/prep_ltla_nvfi.R' file and saved in the 'data' folder
-# To run for LSOA level data comment out the LTLA code in lines 143-152
-# To run for LTLA level data comment out the LSOA code in lines 58-138
+# To run for LSOA level data comment out the LTLA code in lines 149-162
+# To run for LTLA level data comment out the LSOA code in lines 58-147
 
 library(readxl)
 library(compositr)
@@ -249,14 +249,9 @@ data_eng_vars_rank_var <- data_eng |>
     ties.method = "first"
   )) |>
   ungroup() |>
-
-  # ---- Mike Review ----
-  # - I don't understand why there is no grouping variable here. Does the below
-  #   code not quantise all ranks across all geographies and all variables? I
-  #   am not sure how you can compare across variables like this? Is the reason
-  #   the quantising works because the group sizes for each geography are equal?
-  #   What would happen if the group sizes were unequal?
+  group_by(domain_variable_id) |>
   mutate(quantiles_eng = quantise(normalised_rank, num_quantiles = 10)) |>
+  ungroup() |>
   select(geog_code, domain_variable_id, quantiles_eng) |>
   mutate(domain_variable = "variable")
 
@@ -275,7 +270,9 @@ data_eng_domain_rank_var <- data_eng |>
     ties.method = "first"
   )) |>
   ungroup() |>
+  group_by(domain_variable_id) |>
   mutate(quantiles_eng = quantise(normalised_rank, num_quantiles = 10)) |>
+  ungroup() |>
   select(geog_code, domain_variable_id, quantiles_eng) |>
   mutate(domain_variable = "domain")
 
