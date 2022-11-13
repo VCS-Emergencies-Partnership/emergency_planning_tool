@@ -78,7 +78,6 @@ skip = 1
 # Underlying variables - rank across LSOA ----
 # Data dictionary or NFVI variables: https://www.climatejust.org.uk/sites/default/files/Sayers_et_al_2017_indicator_list%20%28table%203-2%20p27%29-46789%2BMP.pdf
 # High value = higher vulnerability, except e1 (direct flooding exposure) - negative as it acts to reduce the relative vulnerability of one neighbourhood compared to another.
-# TO DO: come back to e1 - a larger value of e1 would increase vulnerability?
 data_eng_vars_rank_lsoa <- data_eng |>
   select(lsoa11_code, a1:n3) |>
   mutate(across(where(is.numeric), standardise)) |>

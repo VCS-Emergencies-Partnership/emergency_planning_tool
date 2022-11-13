@@ -56,9 +56,9 @@ vuln_variables_cleaned <- vuln_variables_joined |>
 # Check of how many unique variables
 ncol(vuln_variables_cleaned) - 1
 # Should be 20? https://github.com/britishredcrosssociety/resilience-index/blob/flooding/R/vulnerability/disasters-emergencies/flooding/2022-interim/metadata.md
-# TO DO: Check
 
 # Aligned indicators - Higher value = worse support
+# TO DO: Check with Paul if primary school age should be negative direction
 # Based on https://github.com/britishredcrosssociety/resilience-index/blob/flooding/R/vulnerability/disasters-emergencies/flooding/2022-interim/england/build-index.R
 vuln_variables_aligned <- vuln_variables_cleaned |>
   mutate(
@@ -86,7 +86,7 @@ vuln_variables_aligned_long <- vuln_variables_aligned |>
   pivot_longer(-lsoa_code, names_to = "variable", values_to = "value")
 
 # Quantiles by each variable (not LSOA)
-# TO DO: think about if makes sense for align variables (when multipied by -1)
+# TO DO: think about if makes sense for align variables (when multiplied by -1)
 vuln_variables_quantised <- vuln_variables_aligned_long |>
   arrange(variable, desc(value)) |>
   group_by(variable) |>

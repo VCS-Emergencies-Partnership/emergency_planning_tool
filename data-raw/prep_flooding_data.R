@@ -1,8 +1,8 @@
 # *** IMPORTANT - READ BEFORE RUNNING *****
 # This script is for both LSOA and LTLA level Neighbourhood Vulnerability Flood Index data
-# The LSOA level data is pulled from & the LTLA data is created via 'data-raw/prep_ltla_nvfi.R' file and saved in the 'data' folder
-# To run for LSOA level data comment out the LTLA code in lines 143-152
-# To run for LTLA level data comment out the LSOA code in lines 58-138
+# The LSOA level data is pulled from ClimateJust & the LTLA data is created via 'data-raw/prep_ltla_nvfi.R' file and saved in the 'data' folder
+# To run for LSOA level data comment out the LTLA code in lines 149-162
+# To run for LTLA level data comment out the LSOA code in lines 58-147
 
 library(readxl)
 library(compositr)
@@ -82,8 +82,8 @@ lookup_lsoa11_ltla21 |>
 # ‘SFRIPFCI’ - SFRI individual for fluvial & costal flooding for present day
 # ‘SFRIPSWI’ - SFRI individual for surface water flooding for present day
 
-# TO DO: come back to this section as only 5 LSOAs have SFRI of 0 for both fluvial & coastal (i.e. no exposure to fluvial and coastal)
-# Q: should move back to using DEFRA flood risk/zone data where subsets at higher rate?
+# TO DO: think about this section as only 5 LSOAs have SFRI of 0 for both fluvial & coastal (i.e. no exposure to fluvial and coastal) due to the 1:1000 year cut off of the EAI
+# Q: should move back to using DEFRA flood risk/zone data where subsets at higher rate or use cut off category e.g. 'High' and above for SFRI?
 
 flood_exposure_lsoas <- data_eng_lsoa |>
   # only neighbourhoods exposed to flooding
@@ -99,12 +99,18 @@ lsoa_flood_risk_ltla_lookup <- lookup_lsoa11_ltla21 |>
 # Save ----
 usethis::use_data(lsoa_flood_risk_ltla_lookup, overwrite = TRUE)
 
+# ---- Mike Review ----
+# - Why did you add deciles on top of the NFVI categories?
+# - AM reply - thinking was the NFVI categories where UK wide but the quantiles are England only
+#   but perhaps is better to use the NFVI categories e.g. 'Acute' etc. Checking with Paul
+#   how these categories are calculated then can consider which is better for the user.
+
 # Make data for NFVI quantiles/categories (LSOA level data only) -----
 # Higher value = more vulnerable
 lsoa_nvfi_quantiles <- data_eng_lsoa |>
   mutate(nvfi_quantiles_eng = quantise(nvfi, num_quantiles = 10)) |>
   select(lsoa11_code, nvfi, nvfi_quantiles_eng) |>
-  mutate(top_20_eng = if_else(nvfi_quantiles_eng %in% c(9, 10), 1, 0)) |>
+  mutate(top_20_percent_eng = if_else(nvfi_quantiles_eng %in% c(9, 10), 1, 0)) |>
   left_join(boundaries_lsoa11, by =  "lsoa11_code") |>
   relocate(lsoa11_name, .after = lsoa11_code)
 
@@ -127,7 +133,7 @@ vuln_scores_flood_lsoa <- lsoa_nvfi_quantiles |>
     0.5 < nvfi & nvfi <= 1.5 ~ "Relatively high",
     1.5 < nvfi & nvfi < 2.5 ~ "Extremely high",
     2.5 <= nvfi ~ "Acute"
-  ), .after = top_20_eng)
+  ), .after = top_20_percent_eng)
 
 # Save ----
 usethis::use_data(vuln_scores_flood_lsoa, overwrite = TRUE)
@@ -164,7 +170,6 @@ data_eng <- data_eng_lsoa |>
 # Underlying variables - rank across LSOA/LTLA ----
 # Data dictionary or NFVI variables: https://www.climatejust.org.uk/sites/default/files/Sayers_et_al_2017_indicator_list%20%28table%203-2%20p27%29-46789%2BMP.pdf
 # High value = higher vulnerability, except e1 (direct flooding exposure) - negative as it acts to reduce the relative vulnerability of one neighbourhood compared to another.
-# TO DO: come back to e1 - a larger value of e1 would increase vulnerability?
 data_eng_vars_rank_geog <- data_eng |>
   select(geog_code, a1:n3) |>
   mutate(across(where(is.numeric), standardise)) |>
@@ -244,7 +249,9 @@ data_eng_vars_rank_var <- data_eng |>
     ties.method = "first"
   )) |>
   ungroup() |>
+  group_by(domain_variable_id) |>
   mutate(quantiles_eng = quantise(normalised_rank, num_quantiles = 10)) |>
+  ungroup() |>
   select(geog_code, domain_variable_id, quantiles_eng) |>
   mutate(domain_variable = "variable")
 
@@ -263,7 +270,9 @@ data_eng_domain_rank_var <- data_eng |>
     ties.method = "first"
   )) |>
   ungroup() |>
+  group_by(domain_variable_id) |>
   mutate(quantiles_eng = quantise(normalised_rank, num_quantiles = 10)) |>
+  ungroup() |>
   select(geog_code, domain_variable_id, quantiles_eng) |>
   mutate(domain_variable = "domain")
 
