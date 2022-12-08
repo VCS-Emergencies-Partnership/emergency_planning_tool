@@ -195,8 +195,10 @@ emergencyplanning <- function() {
           )
         ),
         br(),
-        tags$a(href="https://vcsep.org.uk/winter-preparedness-2022", "Click here"),
-        " to find resources on Winter Preapredeness. In the future, tailored links to flooding resources based on top vulnerability drivers will be found here. "
+        a("Click here", href="https://vcsep.org.uk/winter-preparedness-2022"), "to find resources on Winter Preapredeness.",
+        br(),
+        br(),
+        "In the future, tailored links to flooding resources based on top vulnerability drivers will be found here."
       ),
 
       # Licence, methodology & data - UI -------------
@@ -212,6 +214,7 @@ emergencyplanning <- function() {
             actionButton("methodology_data_back_button", "Back page")
           )
         ),
+        br(),
         "Info here on the flooding vulnerability index (links to Sayers), any lisences & dates of data used."
       )
     )
