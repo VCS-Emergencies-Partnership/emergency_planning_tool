@@ -195,7 +195,8 @@ emergencyplanning <- function() {
           )
         ),
         br(),
-        "Tailored links here to flooding resources based on top vulnerability drivers."
+        tags$a(href="https://vcsep.org.uk/winter-preparedness-2022", "Click here"),
+        " to find resources on Winter Preapredeness. In the future, tailored links to flooding resources based on top vulnerability drivers will be found here. "
       ),
 
       # Licence, methodology & data - UI -------------
