@@ -150,8 +150,8 @@ data_eng <- data_eng_lsoa |>
 # LTLA calcs only
 #####################################################
 
-# # Loading LTLA data -----
-# # Created from 'data-raw/prep_ltla_nvfi.R' file
+# Loading LTLA data -----
+# Created from 'data-raw/prep_ltla_nvfi.R' file
 # load("data/eng_nvfi_ltla.rda")
 #
 # data_eng <- eng_nvfi_ltla |>
