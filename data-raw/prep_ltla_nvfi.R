@@ -137,7 +137,7 @@ eng_nvfi_ltla_standardised_domains_nvfi <- eng_nvfi_ltla_standardised_domains |>
 
 # LTLA level dataset to save ----
 eng_nvfi_ltla <- eng_nvfi_ltla_standardised_domains_nvfi |>
-  left_join(data_eng_nvfi_vars_ltla,
+  left_join(eng_nvfi_vars_pop_weighted_ltla,
             by = c("ltla21_code", "ltla21_name"))
 
 
