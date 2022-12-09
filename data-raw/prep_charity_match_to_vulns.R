@@ -30,6 +30,33 @@ charities_classification_raw <-
   ) |>
   tibble::as_tibble()
 
+# Charity activities
+tf <- download_file("https://ccewuksprdoneregsadata1.blob.core.windows.net/data/json/publicextract.charity.zip", ".zip")
+
+tf |>
+  unzip(exdir = tempdir())
+
+charities_activities_raw <-
+  fromJSON(
+    list.files(
+      tempdir(),
+      pattern = "publicextract.charity.json",
+      full.names = TRUE
+    ),
+    flatten = TRUE
+  )
+
+# Clean activities data to have the same format as the classification data
+charities_activities <- charities_activities_raw |>
+  select(date_of_extract, organisation_number, registered_charity_number, linked_charity_number, charity_activities) |>
+  filter(!is.na(charity_activities)) |>
+  mutate(classification_code = as.numeric(1),
+         classification_type = "Activity", .after=linked_charity_number) |>
+  rename(classification_description = charity_activities)
+
+# Bind the charity activities and classification data together
+charities_classification <- rbind(charities_classification_raw, charities_activities)
+
 # Loading in NVFI lookup ----
 # Data downloaded https://www.climatejust.org.uk/map
 # 'Download' button on left hand side of page
@@ -56,7 +83,7 @@ skip = 41
 # Match organisation categories to NVFI social vulnerability variables -----
 
 # Info on the matching logic: https://brcsbrms.sharepoint.com/sites/VCSEP/_layouts/15/doc.aspx?sourcedoc={78fe3e10-91a6-4589-946b-65358bed3b84}&action=edit
-# TO DO: come up with logic for remaining vulnerabilities - detail in document above and then implement in code.
+# TO DO: increase matching of vulnerabilities and charities
 
 # Note: these should be used as detection terms, not exact matches so use fuzzyjoin package
 lookup_vuln_id_match_term <- tribble(
@@ -74,7 +101,14 @@ lookup_vuln_id_match_term <- tribble(
   "i5", "economic/community development/employment|prevention or relief of poverty",
   "t1", "accommodation/housing",
   "t2", "accommodation/housing",
-  "l1", "accommodation/housing"
+  "l1", "accommodation/housing",
+  "f1", "refugee|immigration",
+  "f2", "language|education",
+  "k1", "refugee|immigration|displacement",
+  "m2", "care home",
+  "m3", "transport|car",
+  "c1", "crime",
+  "n2", "single parent|lone parent"
 )
 
 # Test of fuzzyjoin joining
@@ -85,13 +119,13 @@ lookup_vuln_id_match_term <- tribble(
 #   200001,   "Economic/community Development/employment",
 #   200001,  "The Prevention Or Relief Of Poverty"
 # )
-
+#
 # fuzzyjoin_test_data |>
 #   mutate(classification_description = str_to_lower(classification_description)) |>
 #   fuzzy_left_join(lookup_vuln_id_match_term, by = c("classification_description" = "charity_comm_classification_match_term"), match_fun = str_detect) |>
 #   View()
 
-charities_vuln_drivers_flood_lookup <- charities_classification_raw |>
+charities_vuln_drivers_flood_lookup <- charities_classification |>
   select(organisation_number, classification_type, classification_description) |>
   mutate(classification_description = str_to_lower(classification_description)) |>
   fuzzy_left_join(lookup_vuln_id_match_term, by = c("classification_description" = "charity_comm_classification_match_term"), match_fun = str_detect) |>
