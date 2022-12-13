@@ -327,6 +327,10 @@ charities_lat_long <- charities_subset |>
               select(-loop) |>
               filter(!is.na(postcodes)), by = c("charity_contact_postcode_join" = "postcodes")) |>
   select(-c("charity_contact_postcode_join", "lsoa11_name", "charity_contact_ltla_code"))
+# |>
+#   mutate(long = as.numeric(long),
+#          lat = as.numeric(lat)
+#          )
 
 # Save ----
 usethis::use_data(charities_lat_long, overwrite = TRUE)
