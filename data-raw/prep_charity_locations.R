@@ -46,7 +46,6 @@ charities_areas_raw <-
     flatten = TRUE
   )
 
-
 # Identifiers in data -----
 # organisation_number: The organisation number for the charity. This is the index value for the charity (used for joining).
 # registered_charity_number: The registration number of the registered organisation allocated by the Commission. Note that a main charity and all its linked charities will share the same registered_charity_number.
@@ -320,17 +319,16 @@ charities_subset |>
 # Don't actually use this in the app but saving as code takes time to run
 usethis::use_data(postcode_lookup, overwrite = TRUE)
 
-
 # Join charity data to lat/long
 charities_lat_long <- charities_subset |>
   left_join(postcode_lookup |>
-              select(-loop) |>
-              filter(!is.na(postcodes)), by = c("charity_contact_postcode_join" = "postcodes")) |>
-  select(-c("charity_contact_postcode_join", "lsoa11_name", "charity_contact_ltla_code"))
-# |>
-#   mutate(long = as.numeric(long),
-#          lat = as.numeric(lat)
-#          )
+    select(-loop) |>
+    filter(!is.na(postcodes)), by = c("charity_contact_postcode_join" = "postcodes")) |>
+  select(-c("charity_contact_postcode_join", "lsoa11_name", "charity_contact_ltla_code")) |>
+  mutate(
+    long = as.numeric(long),
+    lat = as.numeric(lat)
+  )
 
 # Save ----
 usethis::use_data(charities_lat_long, overwrite = TRUE)
