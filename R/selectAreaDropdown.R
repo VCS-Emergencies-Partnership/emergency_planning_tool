@@ -41,19 +41,19 @@ selectAreasDropdownServer <- function(id, selected_ltlas) {
 # Test -------------------------------------------------------------------------
 #--------------------------------------------------------------------------------
 
-# lsoa_flood_risk_ltla_lookup <- read_rds("data/lsoa_flood_risk_ltla_lookup.rds")
-#
-# selectAreasDropdownTest <- function() {
-#   ui <- fluidPage(
-#     selectAreasDropdownUI("test")
-#   )
-#   server <- function(input, output, session) {
-#     selected_ltlas <- reactiveVal(vector())
-#
-#     selectAreasDropdownServer("test",
-#                                selected_ltlas = selected_ltlas)
-#   }
-#   shinyApp(ui, server)
-# }
-#
-# selectAreasDropdownTest()
+load("data/lsoa_flood_risk_ltla_lookup.rda")
+
+selectAreasDropdownTest <- function() {
+  ui <- fluidPage(
+    selectAreasDropdownUI("test")
+  )
+  server <- function(input, output, session) {
+    selected_ltlas <- reactiveVal(vector())
+
+    selectAreasDropdownServer("test",
+                               selected_ltlas = selected_ltlas)
+  }
+  shinyApp(ui, server)
+}
+
+selectAreasDropdownTest()

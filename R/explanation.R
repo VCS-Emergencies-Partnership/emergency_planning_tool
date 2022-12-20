@@ -3,7 +3,7 @@ explanation <- function() {
     column(
       1,
        align = "center",
-      # img(src = "vcsep_logo.png")
+      # img(src = "vcsep_logo.png"),
       tags$div(
         class = "vcsep-logo",
         tags$a(
@@ -15,7 +15,7 @@ explanation <- function() {
            )
           )
       )
-    ),
+     ),
     column(
       11,
       tags$h4(

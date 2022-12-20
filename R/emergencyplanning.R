@@ -6,6 +6,7 @@ library(dplyr)
 library(shinyWidgets)
 library(shinydashboard)
 library(DT)
+library(cicerone)
 
 emergencyplanning <- function() {
 
@@ -16,6 +17,8 @@ emergencyplanning <- function() {
     tags$head(includeScript(paste0(getwd(), "/www/hotjar.js"))),
     # For use of box() function
     useShinydashboard(),
+    # For use of user guide
+    use_cicerone(),
     # Make error messages red to stand out
     # https://stackoverflow.com/questions/59760316/change-the-color-of-text-in-validate-in-a-shiny-app
     tags$head(
@@ -222,9 +225,60 @@ emergencyplanning <- function() {
 }
 
 
+  # ---- Guided tour of UI ----
+  guide <- Cicerone$
+    new()$
+    step(
+      "selectAreasDropdown",
+      "Get more information",
+      "Click this tab for help and further information.")$
+    step(
+      "[data-value='vulnerabilities']",
+      "Get more information",
+      "Click this tab for help and further information.",
+      is_id = FALSE)$
+    step(
+      "selected_areas_next_button",
+      "Navigate between tabs",
+      "Once an area of interest has been selected, move through the tabs based on this button."
+    )$
+    step(
+      "tabs",
+      "Navigate between tabs",
+      "The map shows resilience in Local Authorities. Resilience is a combination of vulnerability, capacity to cope, and exposure to shocks.
+    <span style = 'color:#3E2948; font-weight:bold;'>Areas coloured mauve</span> are highly vulnerable, with low capacity to cope."
+    )$
+  step(
+    "[data-value='organisations']",
+    "Get more information",
+    "Click this tab for help and further information.",
+    is_id = FALSE)
+  # $
+  # step(
+  #   el = ".sidebar-menu",
+  #   title = "Choose theme",
+  #   description = "Click the items here to view resilience to <strong>disasters and emergencies</strong>, <strong>health inequalities</strong>, or <strong>migration and displacement</strong>.",
+  #   is_id = FALSE
+  # )$
+  # step(
+  #   ".treeview-menu",
+  #   "Choose filters",
+  #   "You can filter some types of resilience. For example, here you can filter Local Authorities with high risks of flooding or fires.",
+  #   is_id = FALSE
+  # )$
+  # step(
+  #   "[data-value='Help']",
+  #   "Get more information",
+  #   "Click this tab for help and further information.",
+  #   is_id = FALSE
+  # )
+
   # ---- Server ----
 
   server <- function(input, output, session) {
+
+    # initialise then start the guide
+    guide$init()$start()
 
     # Selected Areas - Server -------------
 
