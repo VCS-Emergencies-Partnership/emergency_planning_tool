@@ -65,7 +65,7 @@ emergencyplanning <- function() {
 
       # Selected Areas - UI -------------
       tabPanel(
-        title = "Select Areas",
+        title = "Select area of interest",
         value = "selected_areas",
         fluidRow(
           column(
@@ -207,7 +207,7 @@ emergencyplanning <- function() {
       # Licence, methodology & data - UI -------------
 
       tabPanel(
-        title = "Methodology & Data",
+        title = "Methodology & data",
         value = "methodology_data",
         fluidRow(
           column(
@@ -218,7 +218,7 @@ emergencyplanning <- function() {
           )
         ),
         br(),
-        "Info here on the flooding vulnerability index (links to Sayers), any lisences & dates of data used."
+        methodology_writeup()
       )
     )
   )
@@ -229,49 +229,39 @@ emergencyplanning <- function() {
   guide <- Cicerone$
     new()$
     step(
-      "selectAreasDropdown",
-      "Get more information",
-      "Click this tab for help and further information.")$
+      "head",
+      "Welcome to the Emergency Planning Tool",
+      "This tool can be used to understand the risk of emergency events such as flooding, with social and hazard risk data included. Factors driving vulnerability are explored and these are linked to charities working within the local area.")$
+    step(
+      "[data-value='selected_areas']",
+      "Select an area",
+      "Select an area of interest based on clicking on the region on the map or using the dropdown box.",
+      is_id = FALSE
+    )$
     step(
       "[data-value='vulnerabilities']",
       "Get more information",
-      "Click this tab for help and further information.",
+      "Please watch this short video describing the functionality of this tool.",
       is_id = FALSE)$
+    # User guide on the methodology and data tab
+    step(
+      "[data-value='methodology_data']",
+      "Get more information",
+      "Click this tab for help and further information on the model.",
+      is_id = FALSE)$
+    # User guide on the next button
     step(
       "selected_areas_next_button",
       "Navigate between tabs",
       "Once an area of interest has been selected, move through the tabs based on this button."
-    )$
-    step(
-      "tabs",
-      "Navigate between tabs",
-      "The map shows resilience in Local Authorities. Resilience is a combination of vulnerability, capacity to cope, and exposure to shocks.
-    <span style = 'color:#3E2948; font-weight:bold;'>Areas coloured mauve</span> are highly vulnerable, with low capacity to cope."
-    )$
-  step(
-    "[data-value='organisations']",
-    "Get more information",
-    "Click this tab for help and further information.",
-    is_id = FALSE)
-  # $
-  # step(
-  #   el = ".sidebar-menu",
-  #   title = "Choose theme",
-  #   description = "Click the items here to view resilience to <strong>disasters and emergencies</strong>, <strong>health inequalities</strong>, or <strong>migration and displacement</strong>.",
-  #   is_id = FALSE
-  # )$
-  # step(
-  #   ".treeview-menu",
-  #   "Choose filters",
-  #   "You can filter some types of resilience. For example, here you can filter Local Authorities with high risks of flooding or fires.",
-  #   is_id = FALSE
-  # )$
-  # step(
-  #   "[data-value='Help']",
-  #   "Get more information",
-  #   "Click this tab for help and further information.",
-  #   is_id = FALSE
-  # )
+    )
+    # User guide on all tabs in the tool
+    # step(
+    #   "tabs",
+    #   "Navigate between tabs",
+    #   "The map shows resilience in Local Authorities. Resilience is a combination of vulnerability, capacity to cope, and exposure to shocks.
+    # <span style = 'color:#3E2948; font-weight:bold;'>Areas coloured mauve</span> are highly vulnerable, with low capacity to cope."
+    # )
 
   # ---- Server ----
 
