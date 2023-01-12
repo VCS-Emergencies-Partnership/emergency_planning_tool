@@ -1,9 +1,9 @@
 # UI -----
 vulnMapUI <- function(id) {
   tagList(
-    checkboxInput(NS(id, "flood_risk_checkbox"),
-      label = "Only show flood risk neighbourhoods"
-    ),
+  #   checkboxInput(NS(id, "flood_risk_checkbox"),
+  #     label = "Only show flood risk neighbourhoods"
+  #   ),
     leafletOutput(
       NS(id, "vuln_map"),
       height = 630
