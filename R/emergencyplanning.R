@@ -6,7 +6,7 @@ library(dplyr)
 library(shinyWidgets)
 library(shinydashboard)
 library(DT)
-library(cicerone)
+# library(cicerone)
 
 emergencyplanning <- function() {
 
@@ -18,7 +18,7 @@ emergencyplanning <- function() {
     # For use of box() function
     useShinydashboard(),
     # For use of user guide
-    use_cicerone(),
+    # use_cicerone(),
     # Make error messages red to stand out
     # https://stackoverflow.com/questions/59760316/change-the-color-of-text-in-validate-in-a-shiny-app
     tags$head(
@@ -226,35 +226,35 @@ emergencyplanning <- function() {
 
 
   # ---- Guided tour of UI ----
-  guide <- Cicerone$
-    new()$
-    step(
-      "head",
-      "Welcome to the Emergency Planning Tool",
-      "This tool can be used to understand the risk of emergency events such as flooding, with social and hazard risk data included. Factors driving vulnerability are explored and these are linked to charities working within the local area.")$
-    step(
-      "[data-value='selected_areas']",
-      "Select an area",
-      "Select an area of interest based on clicking on the region on the map or using the dropdown box.",
-      is_id = FALSE
-    )$
-    step(
-      "[data-value='vulnerabilities']",
-      "Get more information",
-      "Please watch this short video describing the functionality of this tool.",
-      is_id = FALSE)$
-    # User guide on the methodology and data tab
-    step(
-      "[data-value='methodology_data']",
-      "Get more information",
-      "Click this tab for help and further information on the model.",
-      is_id = FALSE)$
-    # User guide on the next button
-    step(
-      "selected_areas_next_button",
-      "Navigate between tabs",
-      "Once an area of interest has been selected, move through the tabs based on this button."
-    )
+  # guide <- Cicerone$
+  #   new()$
+  #   step(
+  #     "head",
+  #     "Welcome to the Emergency Planning Tool",
+  #     "This tool can be used to understand the risk of emergency events such as flooding, with social and hazard risk data included. Factors driving vulnerability are explored and these are linked to charities working within the local area.")$
+  #   step(
+  #     "[data-value='selected_areas']",
+  #     "Select an area",
+  #     "Select an area of interest based on clicking on the region on the map or using the dropdown box.",
+  #     is_id = FALSE
+  #   )$
+  #   step(
+  #     "[data-value='vulnerabilities']",
+  #     "Get more information",
+  #     "Please watch this short video describing the functionality of this tool.",
+  #     is_id = FALSE)$
+  #   # User guide on the methodology and data tab
+  #   step(
+  #     "[data-value='methodology_data']",
+  #     "Get more information",
+  #     "Click this tab for help and further information on the model.",
+  #     is_id = FALSE)$
+  #   # User guide on the next button
+  #   step(
+  #     "selected_areas_next_button",
+  #     "Navigate between tabs",
+  #     "Once an area of interest has been selected, move through the tabs based on this button."
+  #   )
     # User guide on all tabs in the tool
     # step(
     #   "tabs",
@@ -268,7 +268,7 @@ emergencyplanning <- function() {
   server <- function(input, output, session) {
 
     # initialise then start the guide
-    guide$init()$start()
+    # guide$init()$start()
 
     # Selected Areas - Server -------------
 

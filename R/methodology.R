@@ -100,7 +100,7 @@ methodology_writeup <- function() {
         tags$a(href = "https://register-of-charities.charitycommission.gov.uk/documents/34602/422354/Data+Definition.docx/f0a342ce-ef45-1401-ee75-26225f6f0d4f?t=1617010186385", target = "_blank", "charity data table"), " is used to link the charity activities field to the vulnerabilities based on key-terms. The charity activities field is a free-text explanation of what the charity does and who they help, provided by the trustees."
       ),
       tags$p(
-        "The VCS Emergencies Partnership do not verify the reputability of the organisations listed and has not verified the information provided. "
+        "The VCS Emergencies Partnership has not verified the reputability of the organisations listed and has not verified the information provided. "
       ),
       br(),
       tags$h2(
