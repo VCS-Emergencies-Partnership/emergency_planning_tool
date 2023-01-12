@@ -24,7 +24,7 @@ topVulnServer <- function(id, lsoa_vuln_scores_sf_subset) {
       validate(need(nrow(lsoa_vuln_scores_sf_subset()) != 0, "Please select an area on the first tab."))
 
       prop_top_20 <- lsoa_vuln_scores_sf_subset() |>
-        summarise(prop = sum(top_20_percent_eng) / n())
+        summarise(prop = sum(nvfi_top_20_percent_eng) / n())
 
       paste0(
         round(prop_top_20$prop, 2) * 100,
