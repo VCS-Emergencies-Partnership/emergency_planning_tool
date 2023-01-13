@@ -65,7 +65,7 @@ emergencyplanning <- function() {
 
       # Selected Areas - UI -------------
       tabPanel(
-        title = "Select area of interest",
+        title = "Select an area",
         value = "selected_areas",
         fluidRow(
           column(
@@ -229,9 +229,11 @@ emergencyplanning <- function() {
   guide <- Cicerone$
     new()$
     step(
-      "head",
+      "[data-value='selected_areas']",
       "Welcome to the Emergency Planning Tool",
-      "This tool can be used to understand the risk of emergency events such as flooding, with social and hazard risk data included. Factors driving vulnerability are explored and these are linked to charities working within the local area.")$
+      "Use this interactive tool to explore the risk of emergency events, such as flooding, in your local area. The tools uses a combination of social vulnerability and hazard risk data. Factors driving social vulnerability are explored and these are linked to charities working within your local area.",
+      is_id = FALSE
+      )$
     step(
       "[data-value='selected_areas']",
       "Select an area",
@@ -247,7 +249,7 @@ emergencyplanning <- function() {
     step(
       "[data-value='methodology_data']",
       "Get more information",
-      "Click this tab for help and further information on the model.",
+      "Click this tab for help and further information on the data behind the model.",
       is_id = FALSE)$
     # User guide on the next button
     step(
@@ -255,13 +257,6 @@ emergencyplanning <- function() {
       "Navigate between tabs",
       "Once an area of interest has been selected, move through the tabs based on this button."
     )
-    # User guide on all tabs in the tool
-    # step(
-    #   "tabs",
-    #   "Navigate between tabs",
-    #   "The map shows resilience in Local Authorities. Resilience is a combination of vulnerability, capacity to cope, and exposure to shocks.
-    # <span style = 'color:#3E2948; font-weight:bold;'>Areas coloured mauve</span> are highly vulnerable, with low capacity to cope."
-    # )
 
   # ---- Server ----
 
