@@ -149,11 +149,13 @@ vuln_scores_flood_lsoa <- lsoa_nvfi_quantiles |>
       100 <= sfripfcg ~ "Extreme"
     ),
     sfri_class_cleaned = case_when(
-      sfripfcg < 12.5 ~ "NA",
-      12.5 <= sfripfcg & sfripfcg < 25 ~ "High",
-      25 <= sfripfcg & sfripfcg < 50 ~ "Very high",
-      50 <= sfripfcg & sfripfcg < 100 ~ "Acute",
-      100 <= sfripfcg ~ "Extreme"
+      sfripfcg <= 0 ~ 0,
+      0 <  sfripfcg & sfripfcg < 5 ~ 1,
+      5 <= sfripfcg & sfripfcg < 12.5 ~ 2,
+      12.5 <= sfripfcg & sfripfcg < 25 ~ 3,
+      25 <= sfripfcg & sfripfcg < 50 ~ 4,
+      50 <= sfripfcg & sfripfcg < 100 ~ 5,
+      100 <= sfripfcg ~ 6
     ), .after = sfripfcg,
   )
 
