@@ -5,9 +5,8 @@ topVulnUI <- function(id) {
     # Add text in line below into 'style' argument if do want
     # "border-style: solid; border-color: #5C747A; border-width: thin;
     style = "text-align: center; font-size: 120%",
-    textOutput(NS(id, "top_vuln_text"))
-
-
+    textOutput(NS(id, "top_vuln_text")),
+    textOutput(NS(id, "ltla_clicked_name"))
   )
 }
 
@@ -28,7 +27,7 @@ topVulnServer <- function(id, lsoa_vuln_scores_sf_subset) {
 
       paste0(
         round(prop_top_20$prop, 2) * 100,
-        "% of the neighbourhoods in your area are the most socially vulnerable to flooding nationally"
+        "% of the neighbourhoods in "
       )
     })
   })
