@@ -20,13 +20,13 @@ methodology_writeup <- function() {
         "•	Susceptibility: characteristics that influence susceptibility to harm such as the age and health of local populations"
       ),
       tags$p(
-        "• Ability to prepare: based on income, knowledge and property tenure"
+        "• Ability to prepare: characteristics that influence a persons ability to prepare for a flood such as income, knowledge and property tenure"
       ),
       tags$p(
-        "• Ability to respond: based on income, knowledge, mobility and access to transport"
+        "• Ability to respond: characteristics that influence a persons ability to respond to a flood such as income, knowledge, mobility and access to transport"
       ),
       tags$p(
-        "• Ability to recover: based on income, information use, and mobility/transport"
+        "• Ability to recover: characteristics that influence a persons ability to recover from a flood such as income, information use, and mobility/transport"
       ),
       tags$p(
         "• Community support: social networks, housing characteristics and availability of support"
@@ -71,12 +71,6 @@ methodology_writeup <- function() {
       tags$div(
         img(src = "sfri_diagram.jpg")
       ),
-      tags$div(
-        img(src = "sfri_diagram.png")
-      ),
-      div(
-        a(href = "https://www.climatejust.org.uk/sites/default/files/Sayers%20et%20al%202017%20-%20Assessment%20Methodology.pdf", target = "_blank", img(src = "sfri_diagram.jpg", width = 225))
-          ),
       tags$p(
         "Schematic diagram detailing the process of building the Social Flood Risk Index (SFRI). Initially, 27 underlying variables (not shown) are combined to produce the 12 indicators (yellow). These indicators are combined to produce the 5 domains (orange) and these are combined to produce the social vulnerability index (blue). This index is combined with flood risk data to produce the final SFRI value for each neighbourhood.  "
       ),
