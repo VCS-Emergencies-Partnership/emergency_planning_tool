@@ -32,8 +32,8 @@ vulnMapServer <- function(id, lsoa_vuln_scores_sf_subset, flood_risk_data, lsoas
     pal <- reactive({
       colorBin("inferno",
         reverse = TRUE,
-        domain = lsoa_vuln_scores_sf_subset_clean()$vulnerability_quantiles,
-        bins = c(1:10)
+        domain = lsoa_vuln_scores_sf_subset_clean()$sfri_class_cleaned,
+        bins = c(0:7)
       )
     })
 
@@ -43,7 +43,7 @@ vulnMapServer <- function(id, lsoa_vuln_scores_sf_subset, flood_risk_data, lsoas
       # Catch errors if no area has been selected - blank message as not at top of the page
       validate(need(nrow(lsoa_vuln_scores_sf_subset_clean()) != 0, ""))
 
-      legend_labels = c("Least vulnerable", rep("", times = 7) , "Most vulnerable")
+      legend_labels = c("Least vulnerable", rep("", times = 5) , "Most vulnerable")
 
       pal <- pal()
 
@@ -56,9 +56,9 @@ vulnMapServer <- function(id, lsoa_vuln_scores_sf_subset, flood_risk_data, lsoas
         addLegend(
           data = lsoa_vuln_scores_sf_subset_clean(),
           pal = pal,
-          values = ~vulnerability_quantiles,
+          values = ~sfri_class_cleaned,
           opacity = 0.7,
-          title = "Flood vulnerability",
+          title = "Social flood vulnerability index",
           position = "bottomright",
           # To change from numeric values to 'most/least vulnerable labels'
           labFormat = function(type, cuts, p) {
