@@ -15,7 +15,7 @@ vuln_map_function <- function (base_map_input, vuln_data, pal_input) {
       color = "#5C747A",
       dashArray = "0.1",
       # fill of polygon
-      fillColor = ~ pal_input(vulnerability_quantiles),
+      fillColor = ~ pal_input(sfri_class_cleaned),
       fillOpacity = 0.7,
       highlight = highlightOptions(
         weight = 5,

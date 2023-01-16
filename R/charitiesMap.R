@@ -41,11 +41,11 @@ charitiesMapServer <- function(id,
 
       pal <- colorBin("inferno",
         reverse = TRUE,
-        domain = lsoa_vuln_scores_sf_subset_clean()$vulnerability_quantiles,
-        bins = c(1:10)
+        domain = lsoa_vuln_scores_sf_subset_clean()$sfri_class_cleaned,
+        bins = c(0:7)
       )
 
-      legend_labels <- c("Least vulnerable", rep("", times = 7), "Most vulnerable")
+      legend_labels <- c("Least vulnerable", rep("", times = 5), "Most vulnerable")
 
       charities_within_area |>
         leaflet() |>
@@ -70,13 +70,13 @@ charitiesMapServer <- function(id,
           color = "#5C747A",
           dashArray = "0.1",
           # fill of polygon
-          fillColor = ~ pal(vulnerability_quantiles),
+          fillColor = ~ pal(sfri_class_cleaned),
           fillOpacity = 0.7
         ) |>
         addLegend(
           data = lsoa_vuln_scores_sf_subset_clean(),
           pal = pal,
-          values = ~vulnerability_quantiles,
+          values = ~sfri_class_cleaned,
           opacity = 0.7,
           title = "Flood vulnerability",
           position = "bottomright",
