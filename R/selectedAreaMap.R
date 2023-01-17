@@ -82,12 +82,7 @@ selectedAreaMapServer <- function(id, boundaries_data, selected_ltlas) {
       # Add automated text of the selected LTLA
       output$ltla_clicked_name <- renderText({
         input$map_shape_click$group
-        paste(selected_ltlas(), "local authority are the most socially vulnerable to flooding nationally")
-      })
-      # Add automated text of the selected LTLA for the charities tab
-      output$ltla_clicked_name_charity_text <- renderText({
-        input$map_shape_click
-        paste(selected_ltlas())
+        paste(clicked_ltlas(), "local authority are the most socially vulnerable to flooding nationally")
       })
     })
 

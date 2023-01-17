@@ -11,7 +11,8 @@ topVulnUI <- function(id) {
 }
 
 # Server ----
-topVulnServer <- function(id, lsoa_vuln_scores_sf_subset) {
+topVulnServer <- function(id,
+                          lsoa_vuln_scores_sf_subset) {
 
   # Checks to ensure the inputs are reactive
   stopifnot(is.reactive(lsoa_vuln_scores_sf_subset))
