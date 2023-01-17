@@ -58,7 +58,7 @@ vulnMapServer <- function(id, lsoa_vuln_scores_sf_subset, flood_risk_data, lsoas
           pal = pal,
           values = ~sfri_class_cleaned,
           opacity = 0.7,
-          title = "Social flood vulnerability index",
+          title = "Flood vulnerability",
           position = "bottomright",
           # To change from numeric values to 'most/least vulnerable labels'
           labFormat = function(type, cuts, p) {
