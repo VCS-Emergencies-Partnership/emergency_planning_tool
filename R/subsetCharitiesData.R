@@ -2,8 +2,9 @@
 subsetCharitiesDataUI <- function(id) {
   ns <- NS(id)
   tagList(
-    "The top drivers of social vulnerability to flooding in your area are: ",
+    uiOutput(NS(id, "selected_ltla_name_charity")),
     uiOutput(NS(id, "top_flooding_drivers_ltla_text")),
+    uiOutput(NS(id, "top_drivers_ltla_text")),
     uiOutput(ns("top_vuln_drivers"))
   )
 }
@@ -20,6 +21,25 @@ subsetCharitiesDataServer <- function(id,
   stopifnot(is.reactive(ltlas_for_filtering))
 
   moduleServer(id, function(input, output, session) {
+
+    # Automate text for initial sentence
+    output$selected_ltla_name_charity <- renderText({
+
+      # Select the LTLA name
+      ltla_name_select <- vuln_drivers_flood_ltla |>
+        dplyr::filter(
+          ltla21_name == ltlas_for_filtering()
+          ) |>
+        select(ltla21_name) |>
+        distinct()
+
+      # Add the automated text
+      paste0(
+        "The top drivers of social vulnerability to flooding in ",
+        ltla_name_select,
+        " local authority are: "
+      )
+    })
 
     # Calc top drivers for chosen LTLA ----
     top_flooding_drivers_ltla <- reactive({
@@ -67,6 +87,7 @@ subsetCharitiesDataServer <- function(id,
         tags$li(paste(top_flooding_drivers_ltla()$domain_variable_name[3]))
       )
     })
+
 
     # Dataset to return ----
     charities_data_subset <- reactive({
