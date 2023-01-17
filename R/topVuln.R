@@ -12,7 +12,8 @@ topVulnUI <- function(id) {
 
 # Server ----
 topVulnServer <- function(id,
-                          lsoa_vuln_scores_sf_subset) {
+                          lsoa_vuln_scores_sf_subset,
+                          selected_ltlas) {
 
   # Checks to ensure the inputs are reactive
   stopifnot(is.reactive(lsoa_vuln_scores_sf_subset))
@@ -26,9 +27,13 @@ topVulnServer <- function(id,
       prop_top_20 <- lsoa_vuln_scores_sf_subset() |>
         summarise(prop = sum(nvfi_top_20_percent_eng) / n())
 
+      selected_ltlas()
+
       paste0(
         round(prop_top_20$prop, 2) * 100,
-        "% of the neighbourhoods in "
+        "% of the neighbourhoods in ",
+        selected_ltlas(),
+        " hello"
       )
     })
   })

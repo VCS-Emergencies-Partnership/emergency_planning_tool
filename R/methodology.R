@@ -34,7 +34,7 @@ methodology_writeup <- function() {
       tags$p(
         "These five domains are built based on 27 underlying vulnerability variables (such as the percentage of people over 75 years in the neighbourhood). A list of all indicators in the model can be",
         tags$a(href = "https://www.climatejust.org.uk/sites/default/files/Sayers_et_al_2017_indicator_list %28table 3-2 p27%29-46789%2BMP.pdf", target = "_blank", "found here."), "More information on each indicator in the flooding model can be ",
-        tags$a(href = "https://www.climatejust.org.uk/sites/default/files/INFO_Sheet_Combined_Flood_New_Sayers_et_al_2017_final-67813%2BMP.pdf", target = "_blank", "found here."), ", including information on the data source and the reasons for inclusion of that indicator in the model. Many of the indicators are based on the 2011 census, but we are in the process of updating the model to include the 2021 census data."
+        tags$a(href = "https://www.climatejust.org.uk/sites/default/files/INFO_Sheet_Combined_Flood_New_Sayers_et_al_2017_final-67813%2BMP.pdf", target = "_blank", "found here"), ", including information on the data source and the reasons for inclusion of that indicator in the model. Many of the indicators are based on the 2011 census, but we are in the process of updating the model to include the 2021 census data."
       ),
       tags$p(
         ""

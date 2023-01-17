@@ -78,12 +78,6 @@ selectedAreaMapServer <- function(id, boundaries_data, selected_ltlas) {
         clicked_ltlas(setdiff(clicked_ltlas(), input$map_shape_click$group))
         leafletProxy("map") |> hideGroup(input$map_shape_click$group)
       }
-
-      # Add automated text of the selected LTLA
-      output$ltla_clicked_name <- renderText({
-        input$map_shape_click$group
-        paste(clicked_ltlas(), "local authority are the most socially vulnerable to flooding nationally")
-      })
     })
 
     # # Previous code to keep - use this if user allowed to select multiple LTLAs

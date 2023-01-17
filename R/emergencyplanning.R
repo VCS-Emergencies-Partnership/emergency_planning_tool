@@ -298,7 +298,8 @@ emergencyplanning <- function() {
 
         # Metric of % of most vulnerable neighborhoods (module)
         topVulnServer("test",
-          lsoa_vuln_scores_sf_subset = lsoa_vuln_scores_subset
+          lsoa_vuln_scores_sf_subset = lsoa_vuln_scores_subset,
+          selected_ltlas = selected_ltlas
         )
 
         # Vulnerability index map (module)
