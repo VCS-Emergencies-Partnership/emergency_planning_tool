@@ -229,12 +229,9 @@ emergencyplanning <- function() {
   guide <- Cicerone$
     new()$
     step(
-      "[data-value='selected_areas']",
+      "tabs",
       "Welcome to the Emergency Planning Tool",
-      "Use this interactive tool to explore the risk of emergency events, such as flooding, in your local area. The tools uses a combination of social vulnerability and hazard risk data. Factors driving social vulnerability are explored and these are linked to charities working within your local area.
-
-      Select an area of interest based on clicking on the region on the map or using the dropdown box.",
-      is_id = FALSE
+      "Use this interactive tool to explore the risk of emergency events, such as flooding, in your local area. The tools uses a combination of social vulnerability and hazard risk data. Factors driving social vulnerability are explored and these are linked to charities working within your local area."
       )$
     step(
       "[data-value='selected_areas']",
@@ -282,7 +279,6 @@ emergencyplanning <- function() {
       boundaries_data = boundaries_ltlas,
       selected_ltlas = selected_ltlas
     )
-
 
     # Vulnerabilities - Server -------------
 
@@ -361,6 +357,7 @@ emergencyplanning <- function() {
         )
       }
     })
+
 
     # Navigation buttons - Server -------------
 
