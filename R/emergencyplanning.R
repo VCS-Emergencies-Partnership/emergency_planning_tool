@@ -231,7 +231,7 @@ emergencyplanning <- function() {
     step(
       el = "card_header",
       title = "Welcome to the Emergency Planning Tool",
-      description = "Use this interactive tool to understand the risk of emergency events, such as flooding, in your local area. The tools uses a combination of <b>social vulnerability</b> and <b>hazard risk</b> data. Factors driving social vulnerability are explored and these are linked to charities working within your local area.<br><br>Please watch this short video describing the tool."
+      description = "Use this interactive tool to understand the risk of emergency events, such as flooding, in your local area. The tools uses a combination of <b>social vulnerability</b> and <b>hazard risk</b> data. Factors driving social vulnerability are explored and these are linked to charities working within your local area.<br><br><a href=https://www.w3schools.com>Watch this short video</a> describing the tool."
       )$
     step(
       "[data-value='selected_areas']",
@@ -239,17 +239,6 @@ emergencyplanning <- function() {
       "Select an area of interest based on clicking on the region on the map or using the dropdown box.",
       is_id = FALSE
     )$
-    step(
-      "[data-value='vulnerabilities']",
-      "Get more information",
-      "Please watch this short video describing the functionality of this tool.",
-      is_id = FALSE)$
-    # User guide on the methodology and data tab
-    step(
-      "[data-value='methodology_data']",
-      "Get more information",
-      "Click this tab for help and further information on the data behind the model.",
-      is_id = FALSE)$
     # User guide on the next button
     step(
       "selected_areas_next_button",
