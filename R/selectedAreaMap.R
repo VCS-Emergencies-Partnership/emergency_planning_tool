@@ -2,7 +2,8 @@
 selectedAreaMapUI <- function(id) {
   leafletOutput(
     NS(id, "map"),
-    height = 630
+    height = 400,
+    width = 400
   )
 }
 
