@@ -9,7 +9,7 @@ selectAreasDropdownUI <- function(id) {
       # Select 1 Local Authority at a time
       maxItems = 1,
       plugins = list("remove_button"),
-      placeholder = "Select Local Authorities...",
+      placeholder = "Type the local authority or click the map...",
       onInitialize = I('function() { this.setValue(""); }')
     )
   )
