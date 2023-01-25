@@ -229,9 +229,9 @@ emergencyplanning <- function() {
   guide <- Cicerone$
     new()$
     step(
-      "tabs",
-      "Welcome to the Emergency Planning Tool",
-      "Use this interactive tool to explore the risk of emergency events, such as flooding, in your local area. The tools uses a combination of social vulnerability and hazard risk data. Factors driving social vulnerability are explored and these are linked to charities working within your local area."
+      el = "card_header",
+      title = "Welcome to the Emergency Planning Tool",
+      description = "Use this interactive tool to understand the risk of emergency events, such as flooding, in your local area. The tools uses a combination of <b>social vulnerability</b> and <b>hazard risk</b> data. Factors driving social vulnerability are explored and these are linked to charities working within your local area.<br><br>Please watch this short video describing the tool."
       )$
     step(
       "[data-value='selected_areas']",
