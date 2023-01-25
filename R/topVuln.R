@@ -33,7 +33,7 @@ topVulnServer <- function(id,
         round(prop_top_20$prop, 2) * 100,
         "% of the neighbourhoods in ",
         selected_ltlas(),
-        " hello"
+        " local authority are the most socially vulnerable to flooding nationally"
       )
     })
   })
