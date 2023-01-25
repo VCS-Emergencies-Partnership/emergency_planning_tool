@@ -1,9 +1,8 @@
 explanation <- function() {
   fluidRow(
     column(
-      1,
+      3,
        align = "center",
-      # img(src = "vcsep_logo.png"),
       tags$div(
         class = "vcsep-logo",
         tags$a(
@@ -17,17 +16,22 @@ explanation <- function() {
       )
      ),
     column(
-      11,
-      tags$h4(
+      id = "card_header",
+      8,
+      tags$h2(
         "Emergency Planning Tool"
+      )
       ),
+    br(),
+    column(
+      11,
       tags$p(
         "Use this tool to find areas of vulnerability to potential
         emergency events, what factors are driving the vulnerability and
         organisations that work in the area."
       ),
       tags$p(
-        "Select an area of interst from the map or the dropdown box and
+        "Select an area of interest from the map or the dropdown box and
         then press next to navigate between the tabs."
       )
     )
