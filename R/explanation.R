@@ -26,13 +26,10 @@ explanation <- function() {
     column(
       11,
       tags$p(
-        "Use this tool to find areas of vulnerability to potential
-        emergency events, what factors are driving the vulnerability and
-        organisations that work in the area."
-      ),
+        "The aim of this tool is to hightlight neighbourhoods vulnerable to potential emergency events, bringing together organisations and resources. We want to support organisations to make more informed decisions when planning for emergencies."
+        ),
       tags$p(
-        "Select an area of interest from the map or the dropdown box and
-        then press next to navigate between the tabs."
+        "Select an area of interest from the map or the dropdown box and then press next to navigate between the tabs."
       )
     )
   )
