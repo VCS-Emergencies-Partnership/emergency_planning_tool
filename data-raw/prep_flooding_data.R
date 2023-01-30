@@ -1,7 +1,7 @@
 # *** IMPORTANT - READ BEFORE RUNNING *****
 # This script is for both LSOA and LTLA level Neighbourhood Vulnerability Flood Index data
 # The LSOA level data is pulled from ClimateJust & the LTLA data is created via 'data-raw/prep_ltla_nvfi.R' file and saved in the 'data' folder
-# To run for LSOA level data comment out the LTLA code in lines 149-162
+# To run for LSOA level data comment out the LTLA code in lines 177-186
 # To run for LTLA level data comment out the LSOA code in lines 58-147
 
 library(readxl)
@@ -109,8 +109,10 @@ usethis::use_data(lsoa_flood_risk_ltla_lookup, overwrite = TRUE)
 # Higher value = more vulnerable
 lsoa_nvfi_quantiles <- data_eng_lsoa |>
   mutate(nvfi_quantiles_eng = quantise(nvfi, num_quantiles = 10)) |>
-  select(lsoa11_code, nvfi, nvfi_quantiles_eng, sfripfcg) |>
-  mutate(nvfi_top_20_percent_eng = if_else(nvfi_quantiles_eng %in% c(9, 10), 1, 0)) |>
+  select(lsoa11_code, nvfi, nvfi_quantiles_eng, sfripfcg, sfripfci) |>
+  mutate(nvfi_top_20_percent_eng = if_else(nvfi_quantiles_eng %in% c(9, 10), 1, 0),
+         eai = (sfripfci / nvfi) /1000) |>
+  select(-sfripfci) |>
   left_join(boundaries_lsoa11, by =  "lsoa11_code") |>
   relocate(lsoa11_name, .after = lsoa11_code)
 
