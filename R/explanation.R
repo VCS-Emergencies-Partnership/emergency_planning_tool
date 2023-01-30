@@ -1,9 +1,10 @@
 explanation <- function() {
   fluidRow(
     column(
-      3,
-       align = "center",
+      1,
+      align = "left",
       tags$div(
+        style = "height:100px",
         class = "vcsep-logo",
         tags$a(
           href = "https://vcsep.org.uk/",
@@ -17,7 +18,7 @@ explanation <- function() {
      ),
     column(
       id = "card_header",
-      8,
+      5,
       tags$h2(
         "Emergency Planning Tool"
       )
