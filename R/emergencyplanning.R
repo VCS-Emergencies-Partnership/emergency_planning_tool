@@ -115,20 +115,19 @@ emergencyplanning <- function() {
           column(
             6,
             fluidRow(
-              column(width = 1),
-              # Metric of % of most vulnerable neighborhoods (module)
-              column(10,
-                align = "center",
-                topVulnUI("test")
-              ),
-              column(width = 1)
-            ),
-            br(),
-            fluidRow(
-              align = "center",
               # Table of top drivers of vulnerability for clicked LSOA (module)
               topDriversTableUI("test")
             )
+            # br(),
+            # fluidRow(
+            #   column(width = 1),
+            #   # Metric of % of most vulnerable neighborhoods (module)
+            #   column(10,
+            #          align = "center",
+            #          topVulnUI("test")
+            #   ),
+              # column(width = 1)
+            # ),
           )
         ),
         fluidRow(
