@@ -1,33 +1,47 @@
 # UI ----
 topDriversTableUI <- function(id) {
   tagList(
-    textOutput(NS(id, "lsoas_clicked_name")),
-    br(),
-    fluidRow(box(
-      tableOutput(NS(id, "top_drivers_table_domains")),
-      title = span(
-        "Neighbourhood drivers of vulnerabilities ranked - Domains",
-        div(style = "display:inline-block;",
-            title = "- Susceptibility: age and health of local populations
+    div(
+      style = "border-style: solid; border-color: #5C747A; border-width: thin",
+      div(
+        style = "text-align: left; font-size: 120%",
+        h2(strong("Social risk")),
+        h4("This section of the tool looks exclusively at the reasons why a neighbourhood is socially vulnerable.")
+      ),
+      div(
+        style = "text-align: centre",
+        textOutput(NS(id, "lsoas_clicked_name")),
+        br(),
+        fluidRow(box(
+          tableOutput(NS(id, "top_drivers_table_domains")),
+          title = span(
+            "Neighbourhood drivers of vulnerabilities ranked - Domains",
+            div(
+              style = "display:inline-block;",
+              title = "- Susceptibility: age and health of local populations
                      - Ability to prepare: based on income, knowledge and property tenure
                      - Ability to respond: based on income, knowledge, mobility and access to transport
                      - Ability to recover: based on income, information use, and mobility/transport
                      - Community support: social networks, housing characteristics and availability of support
                           ",
-                          icon("info-circle"))),
-      solidHeader = TRUE,
-      width = 11,
-      status = "primary",
-      collapsible = TRUE
-    )),
-    fluidRow(box(
-      tableOutput(NS(id, "top_drivers_table_variables")),
-      title = "Neighbourhood drivers of vulnerabilities ranked - Indicators",
-      solidHeader = TRUE,
-      width = 11,
-      status = "primary",
-      collapsible = TRUE
-    ))
+              icon("info-circle")
+            )
+          ),
+          solidHeader = TRUE,
+          width = 11,
+          status = "primary",
+          collapsible = TRUE
+        )),
+        fluidRow(box(
+          tableOutput(NS(id, "top_drivers_table_variables")),
+          title = "Neighbourhood drivers of vulnerabilities ranked - Indicators",
+          solidHeader = TRUE,
+          width = 11,
+          status = "primary",
+          collapsible = TRUE
+        ))
+      )
+    )
   )
 }
 
@@ -36,7 +50,6 @@ topDriversTableServer <- function(id,
                                   vuln_drivers,
                                   lsoas_clicked,
                                   selected_ltlas) {
-
   # Checks to ensure the inputs are reactive (data not reactive)
   stopifnot(is.reactive(lsoas_clicked))
 
@@ -66,7 +79,6 @@ topDriversTableServer <- function(id,
         })
 
         output$top_drivers_table_domains <- renderTable({
-
           # Message to user if no LTLA selected ----
           # Catch errors if no area has been selected - leave blank as captured in 'topVuln' module
           validate(need(
@@ -87,7 +99,6 @@ topDriversTableServer <- function(id,
 
 
         output$top_drivers_table_variables <- renderTable({
-
           # Message to user if no LTLA selected ----
           # Catch errors if no area has been selected - leave blank as captured in 'top_drivers_table_domains' module
           validate(need(
@@ -108,7 +119,6 @@ topDriversTableServer <- function(id,
         })
 
         output$lsoas_clicked_name <- renderText({
-
           # Message to user if no LSOAs selected ----
           # Blank since error message captured in 'top_drivers_table' object
           validate(need(
