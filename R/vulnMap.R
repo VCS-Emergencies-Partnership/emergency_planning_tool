@@ -48,6 +48,7 @@ vulnMapServer <- function(id, lsoa_vuln_scores_sf_subset, flood_risk_data, lsoas
       pal <- pal()
 
       leaflet() |>
+        # "CartoDB.VoyagerLabelsUnder"
         addProviderTiles(providers$CartoDB.Positron) |>
         vuln_map_function(
           vuln_data = lsoa_vuln_scores_sf_subset_clean(),
