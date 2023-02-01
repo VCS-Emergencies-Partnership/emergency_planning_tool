@@ -13,13 +13,14 @@ charitiesTableServer <- function(id,
   moduleServer(id, function(input, output, session) {
     charities_subset_clean <- reactive({
       charities_subset() |>
+        filter(flag_contact_in_ltla == 1) |>
         select(
           "Contact Info Local Authority" = "charity_contact_ltla_name",
           "Name" = "charity_name",
+          "Actvities" = "charity_activities",
           "Website" = "charity_contact_web",
           "Email" = "charity_contact_email",
           "Phone" = "charity_contact_phone",
-          "Actvities" = "charity_activities",
           "flag_contact_in_ltla"
         ) |>
         mutate(Website = ifelse(Website == "-", Website, paste0("<a href='", Website, "' target='_blank'>", Website, "</a>")))
