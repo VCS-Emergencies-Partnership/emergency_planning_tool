@@ -328,7 +328,9 @@ charities_lat_long <- charities_subset |>
   mutate(
     long = as.numeric(long),
     lat = as.numeric(lat)
-  )
+    )
+# |>
+#   filter(!str_detect(charity_name, "[SCOUT]"))
 
 # Save ----
 usethis::use_data(charities_lat_long, overwrite = TRUE)
