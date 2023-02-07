@@ -1,8 +1,8 @@
 # UI ----
 topDriversTableUI <- function(id) {
   tagList(
-    div(
-      style = "border-style: solid; border-color: #5C747A; border-width: thin",
+    # div(
+    #   style = "border-style: solid; border-color: #5C747A; border-width: thin",
       div(
         style = "text-align: left; font-size: 120%",
         h2(strong("Social risk")),
@@ -15,7 +15,7 @@ topDriversTableUI <- function(id) {
         fluidRow(box(
           tableOutput(NS(id, "top_drivers_table_domains")),
           title = span(
-            "Neighbourhood drivers of vulnerabilities ranked - Domains",
+            "Overarching reasons why the neighbourhood is socially vulnerable to flooding",
             div(
               style = "display:inline-block;",
               title = "- Susceptibility: age and health of local populations
@@ -34,7 +34,7 @@ topDriversTableUI <- function(id) {
         )),
         fluidRow(box(
           tableOutput(NS(id, "top_drivers_table_variables")),
-          title = "Neighbourhood drivers of vulnerabilities ranked - Indicators",
+          title = "Underlying reasons why the neighbourhood is socially vulnerable to flooding",
           solidHeader = TRUE,
           width = 11,
           status = "primary",
@@ -42,7 +42,7 @@ topDriversTableUI <- function(id) {
         ))
       )
     )
-  )
+  # )
 }
 
 # Server ----
