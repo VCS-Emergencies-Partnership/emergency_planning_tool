@@ -17,6 +17,7 @@ Imports:
     DT,
     leaflet,
     pkgload,
+    plotly
     readr,
     sf,
     shiny,
