@@ -7,6 +7,7 @@ library(shinyWidgets)
 library(shinydashboard)
 library(DT)
 library(cicerone)
+library(plotly)
 
 emergencyplanning <- function() {
 
@@ -114,9 +115,14 @@ emergencyplanning <- function() {
           ),
           column(
             6,
+            align = "centre",
             fluidRow(
               # Table of top drivers of vulnerability for clicked LSOA (module)
               topDriversTableUI("test")
+            ),
+            fluidRow(
+              # Table of top drivers of vulnerability for clicked LSOA (module)
+              jitterPlotUI("test")
             )
             # br(),
             # fluidRow(
@@ -136,7 +142,6 @@ emergencyplanning <- function() {
           floodingLisenceUI("test")
         )
       ),
-
 
       # Charities - UI -------------
 
@@ -302,6 +307,12 @@ emergencyplanning <- function() {
           vuln_drivers = vuln_drivers_flood_lsoa,
           lsoas_clicked = lsoas_clicked_global,
           selected_ltlas = selected_ltlas
+        )
+
+        # Jitter plot (module)
+        jitterPlotServer("test",
+          lsoa_vuln_scores_sf_subset = lsoa_vuln_scores_subset,
+          lsoas_clicked = lsoas_clicked_global
         )
       }
     })
