@@ -2,8 +2,8 @@ jitterPlotUI <- function(id) {
   tagList(
       div(
         style = "text-align: left; font-size: 120%",
-        h2(strong("Flood risk")),
-        h4("This section of the tool looks exclusively at the flood risk score of the neighbourhood.")
+        h4(strong("Flood risk")),
+        p("This section of the tool looks exclusively at the flood risk score of the neighbourhood.")
       ),
       plotlyOutput(
         NS(id, "plot")
