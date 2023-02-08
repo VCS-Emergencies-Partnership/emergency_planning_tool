@@ -4,8 +4,8 @@ vulnMapUI <- function(id) {
   #   checkboxInput(NS(id, "flood_risk_checkbox"),
   #     label = "Only show flood risk neighbourhoods"
   #   ),
-    h2(strong("Combined social and flood risk")),
-    h4("This map looks at the social reasons neighbourhoods may be at risk of a flood and combines this with the risk of flooding. It is highlighting areas where the largest number of the most vulnerable people are exposed to frequent flooding. Planning and preparedness efforts could be directed to darker areas on the map."),
+    h4(strong("Combined social and flood risk")),
+    p("This map looks at the social reasons neighbourhoods may be at risk of a flood and combines this with the risk of flooding. It is highlighting areas where the largest number of the most vulnerable people are exposed to frequent flooding. Planning and preparedness efforts could be directed to darker areas on the map."),
     leafletOutput(
       NS(id, "vuln_map"),
       height = 630
