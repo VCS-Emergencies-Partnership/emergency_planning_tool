@@ -1,6 +1,17 @@
 # UI -----
 charitiesTableUI <- function(id) {
-  DT::DTOutput(NS(id, "charities_table"))
+  tagList(
+    div(
+      style = "text-align: left; font-size: 120%",
+      h4(strong("Charity commissioner data")),
+      p("This table provides information on charities operating within the local area and has been produced using the Charity Commissioner data, based on annual returns provided by trustees.")
+    ),
+    DT::DTOutput(NS(id, "charities_table")),
+    div(
+      style = "text-align: left; font-size: 120%",
+    p("Please note: The Emergencies Partnership does not have responsibility for the reputability of organisations listed.")
+    )
+  )
 }
 
 # Server -----
@@ -17,13 +28,15 @@ charitiesTableServer <- function(id,
         select(
           "Contact Info Local Authority" = "charity_contact_ltla_name",
           "Name" = "charity_name",
-          "Actvities" = "charity_activities",
           "Website" = "charity_contact_web",
           "Email" = "charity_contact_email",
           "Phone" = "charity_contact_phone",
+          "Actvities" = "charity_activities",
           "flag_contact_in_ltla"
         ) |>
-        mutate(Website = ifelse(Website == "-", Website, paste0("<a href='", Website, "' target='_blank'>", Website, "</a>")))
+        mutate(Website = ifelse(Website == "-", Website, paste0("<a href='", Website, "' target='_blank'>", Website, "</a>")),
+               `Contact details` = paste(Website, Email, Phone, sep = "</br>")) |>
+        select(-Email, -Phone, -Website)
     })
 
     output$charities_table <- DT::renderDT(
