@@ -328,9 +328,8 @@ charities_lat_long <- charities_subset |>
   mutate(
     long = as.numeric(long),
     lat = as.numeric(lat)
-    )
-# |>
-#   filter(!str_detect(charity_name, "[SCOUT]"))
+    ) |>
+  filter(!grepl("SCOUT|Scout|Scouts|SCOUTS", charity_name)) # removing all Scout charities as these will not be useful in planning for a flood
 
 # Save ----
 usethis::use_data(charities_lat_long, overwrite = TRUE)
