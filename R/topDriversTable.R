@@ -5,8 +5,8 @@ topDriversTableUI <- function(id) {
     #   style = "border-style: solid; border-color: #5C747A; border-width: thin",
       div(
         style = "text-align: left; font-size: 120%",
-        h2(strong("Social risk")),
-        h4("This section of the tool looks exclusively at the reasons why a neighbourhood is socially vulnerable.")
+        h4(strong("Social risk")),
+        p("This section of the tool looks exclusively at the reasons why a neighbourhood is socially vulnerable.")
       ),
       div(
         style = "text-align: centre",
