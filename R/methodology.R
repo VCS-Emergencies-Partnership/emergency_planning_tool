@@ -104,7 +104,19 @@ methodology_writeup <- function() {
         "The Social Flood Risk Index (SFRI)"
       ),
       tags$p(
-        "Data"
+        "The VCS Emergencies Partnership for use on the publicly accessible emergency planning tool for use in local assessments, not regional or national scale analysis. For use by to help improve how voluntary/community organisations, not commercial service providers.
+
+The NFVI data sets are provided under licence (from Sayers and Partners). Any use must be cited as ‘Sayers, P.B., Horritt, M., Penning Rowsell, E., and Fieth, J (2017). Present and future flood vulnerability, risk and disadvantage: A UK assessment. A report for the Joseph Rowntree Foundation published by Sayers and Partners LLP’.
+
+The data, or new data products derived from the data, cannot be used by, shared with, or provided to, any third party. Map imagery can be included in report and academic papers associated with the above project.
+
+The IPR remains fully with Sayers and Partners. There is no implied or real transfer of IPR. The licence lasts as along as the data is may available via the platform.
+
+Inappropriate use may lead to implausible or misleading results. Sayers and Partners LLP provide no warranty as to the accuracy of the results. No support, technical software or use guidance will be provided.
+
+Associated trademarks
+Future Flood Explorer (is registered with Sayers and Partners)
+Neighbourhood Flood Vulnerability Index (in review)"
       ),
       tags$h3(
         "Other data licences"
