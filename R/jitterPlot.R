@@ -3,7 +3,7 @@ jitterPlotUI <- function(id) {
       div(
         style = "text-align: left; font-size: 120%",
         h4(strong("Flood risk")),
-        p("This section of the tool looks exclusively at the flood risk score of the neighbourhood.")
+        p("This section of the tool looks exclusively at the flood risk score of the neighbourhood, showing the expected annual probability of flooding.")
       ),
       plotlyOutput(
         NS(id, "plot")
@@ -13,7 +13,9 @@ jitterPlotUI <- function(id) {
 
 jitterPlotServer <- function(id,
                              lsoa_vuln_scores_sf_subset,
-                             lsoas_clicked) {
+                             lsoas_clicked,
+                             selected_ltlas) {
+
   moduleServer(id, function(input, output, session) {
           eai_data <- reactive({
             lsoa_vuln_scores_sf_subset() |>
@@ -22,6 +24,13 @@ jitterPlotServer <- function(id,
     })
 
     output$plot <- renderPlotly({
+      # Message to user if no LTLA selected ----
+      # Catch errors if no area has been selected - leave blank as captured in 'top_drivers_table_domains' module
+      validate(need(
+        length(selected_ltlas()) > 0,
+        ""
+      ))
+
       if (is.null(lsoas_clicked)) {
         jitter_plot_null(data = eai_data())
       } else {
