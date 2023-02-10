@@ -18,9 +18,11 @@ emergencyplanning <- function() {
     tags$head(includeScript(paste0(getwd(), "/www/hotjar.js"))),
     # For use of box() function
     useShinydashboard(),
+    # Add title for page in browser
+    tags$head(HTML("<title>Emergency Planning Tool</title> <link rel='icon' type='image/gif/png' href='vcsep_logo_edited.png'>")),
     # For use of user guide
     use_cicerone(),
-    # Make error messages red to stand out
+    # Make error messages red to stand out and select colour of box and bar chart
     # https://stackoverflow.com/questions/59760316/change-the-color-of-text-in-validate-in-a-shiny-app
     tags$head(
       tags$style(HTML("
@@ -38,6 +40,26 @@ emergencyplanning <- function() {
               border-right-color:#5C747A;
               border-top-color:#5C747A;
               }
+            .bar-chart-bar {
+          background-color: #e8e8e8;
+          display: block;
+          position:relative;
+          width: 100%;
+          height: 20px;
+      }
+      .bar {
+          float: left;
+          height: 100%;
+      }
+      .bar1 {
+          background-color: green;
+      }
+      .bar2 {
+          background-color: yellow;
+      }
+      .bar3 {
+          background-color: red;
+      }
     "))
     ),
     fluidRow(
@@ -312,7 +334,8 @@ emergencyplanning <- function() {
         # Jitter plot (module)
         jitterPlotServer("test",
           lsoa_vuln_scores_sf_subset = lsoa_vuln_scores_subset,
-          lsoas_clicked = lsoas_clicked_global
+          lsoas_clicked = lsoas_clicked_global,
+          selected_ltlas = selected_ltlas
         )
       }
     })
