@@ -4,7 +4,7 @@ explanation <- function() {
       1,
       align = "left",
       tags$div(
-        style = "height:100px",
+        style = "width:50px",
         class = "vcsep-logo",
         tags$a(
           href = "https://vcsep.org.uk/",
