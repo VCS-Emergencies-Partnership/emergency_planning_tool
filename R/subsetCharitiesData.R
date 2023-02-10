@@ -25,18 +25,14 @@ subsetCharitiesDataServer <- function(id,
     # Automate text for initial sentence
     output$selected_ltla_name_charity <- renderText({
 
-      # Select the LTLA name
-      ltla_name_select <- vuln_drivers_flood_ltla |>
-        dplyr::filter(
-          ltla21_name == ltlas_for_filtering()
-          ) |>
-        select(ltla21_name) |>
-        distinct()
+      # Catch errors if no area has been selected
+      # Leave message blank as error message shown in map below (avoid duplicate message)
+      validate(need(length(ltlas_for_filtering()) != 0, ""))
 
       # Add the automated text
       paste0(
         "The top drivers of social vulnerability to flooding in ",
-        ltla_name_select,
+        ltlas_for_filtering(),
         " local authority are: "
       )
     })
