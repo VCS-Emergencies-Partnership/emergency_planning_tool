@@ -88,9 +88,9 @@ skip = 41
 # Note: these should be used as detection terms, not exact matches so use fuzzyjoin package
 lookup_vuln_id_match_term <- tribble(
   ~variable_id, ~charity_comm_classification_match_term ,
-  "a1", "young",
-  "n3", "young",
-  "a2", "old/elderly",
+  "a1", "children/young people",
+  "n3", "children/young people",
+  "a2", "elderly/old people",
   "h1", "disabilities|disability",
   "h2", "the advancement of health or saving of lives",
   "m1", "disabilities|disability",
@@ -104,7 +104,7 @@ lookup_vuln_id_match_term <- tribble(
   "l1", "accommodation/housing",
   "f1", "refugee|immigration",
   "f2", "language|education",
-  "k1", "refugee|immigration|displacement",
+  "k1", "refugee|immigration|displacement|people of a particular ethnic or racial origin",
   "m2", "care home",
   "m3", "transport|car",
   "c1", "crime",
@@ -133,7 +133,6 @@ charities_vuln_drivers_flood_lookup <- charities_classification |>
   filter(!is.na(variable_id)) |>
   left_join(raw_lookup, by = "variable_id") |>
   select(-variable_id)
-
 
 # Save ----
 usethis::use_data(charities_vuln_drivers_flood_lookup, overwrite = TRUE)
