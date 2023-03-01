@@ -1,3 +1,6 @@
 data/
 .Rproj.user
 .Rhistory
+
+# Remove upload file from git
+upload_app.R
