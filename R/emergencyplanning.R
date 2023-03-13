@@ -16,6 +16,8 @@ emergencyplanning <- function() {
     fluidPage(
     # for hotjar tracking
     tags$head(includeScript(paste0(getwd(), "/www/hotjar.js"))),
+    # for onetrust pop-up
+    tags$head(includeScript(paste0(getwd(), "/www/onetrust.js"))),
     # For use of box() function
     useShinydashboard(),
     # Add title for page in browser
@@ -46,19 +48,6 @@ emergencyplanning <- function() {
           position:relative;
           width: 100%;
           height: 20px;
-      }
-      .bar {
-          float: left;
-          height: 100%;
-      }
-      .bar1 {
-          background-color: green;
-      }
-      .bar2 {
-          background-color: yellow;
-      }
-      .bar3 {
-          background-color: red;
       }
     "))
     ),

@@ -3,4 +3,4 @@ data/
 .Rhistory
 
 # Remove upload file from git
-upload_app.R
+/upload_app.R

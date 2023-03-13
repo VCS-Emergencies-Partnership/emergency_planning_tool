@@ -1,17 +1,15 @@
+# https://stackoverflow.com/questions/39692938/cell-coloring-in-shiny-rendertable
 # UI ----
 topDriversTableUI <- function(id) {
   tagList(
-    # div(
-    #   style = "border-style: solid; border-color: #5C747A; border-width: thin",
       div(
         style = "text-align: left; font-size: 120%",
         h4(strong("Social risk")),
         p("This section of the tool looks exclusively at the reasons why a neighbourhood is socially vulnerable.")
       ),
-      div(
-        style = "text-align: centre",
         textOutput(NS(id, "lsoas_clicked_name")),
         br(),
+        # dataTableOutput(NS(id, "drivers_table_domains")),
         fluidRow(box(
           tableOutput(NS(id, "top_drivers_table_domains")),
           title = span(
@@ -33,11 +31,13 @@ topDriversTableUI <- function(id) {
           solidHeader = TRUE,
           width = 11,
           status = "primary",
-          collapsible = TRUE
-        ))
-      )
+          collapsible = TRUE)
+      ),
+      tags$head(tags$style(paste0("#",NS(id, "top_drivers_table_variables"), "td{
+                       position:relative;
+                       };
+                       ")))
     )
-  # )
 }
 
 # Server ----
@@ -58,9 +58,11 @@ topDriversTableServer <- function(id,
             # explain the concept of quantiles in plain language
             # variable_quantiles = 1 means in top 10% worst scoring neighborhoods nationally
             mutate(quantiles_eng = case_when(
-              quantiles_eng <= 5 ~ paste0("in ", quantiles_eng, "0% most vulnerable neighbourhoods"),
-              quantiles_eng > 5 ~ paste0("in ", 11 - quantiles_eng, "0% least vulnerable neighbourhoods"),
-            )) |>
+              quantiles_eng <= 5 ~ '<div style="width: 100%; height: 100%; z-index: 0; background-color: red; position:absolute; top: 0; left: 0; padding:5px;">
+<span>1</span></div>',
+              quantiles_eng > 5 ~ '<div style="width: 100%; height: 100%; z-index: 0; background-color: green; position:absolute; top: 0; left: 0; padding:5px;">
+<span>1</span></div>')
+            ) |>
             select(
               `Rank` = normalised_rank,
               `Driver of flooding vulnerability` = domain_variable_name,
@@ -73,24 +75,38 @@ topDriversTableServer <- function(id,
             mutate(`Comparison of value nationally` = if_else(is.na(`Comparison of value nationally`), "No data available", `Comparison of value nationally`))
         })
 
+        # output$drivers_table_domains <- DT::renderDT({
+        #   DT::datatable(
+        #   top_drivers_data() |>
+        #     filter(`Domain or variable` == "domain") |>
+        #     select(-`Domain or variable`, -`Comparison of value nationally`),
+        #     rownames = F) |>
+        #     formatStyle(columns = c('Quantile'),
+        #                 background = styleColorBar(range(0, 10), 'blue', angle = -90),
+        #                 backgroundSize = '98% 88%',
+        #                 backgroundRepeat = 'no-repeat',
+        #                 backgroundPosition = 'right')
+        #   })
+
+
         output$top_drivers_table_domains <- renderTable({
           # Message to user if no LTLA selected ----
           # Catch errors if no area has been selected - leave blank as captured in 'topVuln' module
           validate(need(
             length(selected_ltlas()) > 0,
-            ""
+            "Please select an area on the first tab."
           ))
 
           # Message to user if no LSOA clicked ----
           validate(need(
             length(lsoas_clicked()) > 0,
-            "Please click on a neighbourhood on the map to view the drivers of vulnerability to your chosen emergency event."
+            "Please select a neighbourhood on the map to view the drivers of vulnerability to your chosen emergency event."
           ))
 
           top_drivers_data() |>
             filter(`Domain or variable` == "domain") |>
             select(-`Domain or variable`)
-        })
+        }, sanitize.text.function = function(x) x)
 
 
         output$top_drivers_table_variables <- renderTable({
@@ -111,7 +127,7 @@ topDriversTableServer <- function(id,
           top_drivers_data() |>
             filter(`Domain or variable` == "variable") |>
             select(-`Domain or variable`)
-        })
+        }, sanitize.text.function = function(x) x)
 
         output$lsoas_clicked_name <- renderText({
           # Message to user if no LSOAs selected ----
