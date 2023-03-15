@@ -231,6 +231,23 @@ emergencyplanning <- function() {
         ),
         br(),
         methodology_writeup()
+      ),
+
+      # Cookie page - UI -------------
+
+      tabPanel(
+        title = "Cookie Policy",
+        value = "cookie_policy",
+        fluidRow(
+          column(
+            6,
+            align = "left",
+            # Button to move back page
+            actionButton("cookie_data_back_button", "Back page")
+          )
+        ),
+        br(),
+        cookie()
       )
     )
   )
@@ -243,8 +260,9 @@ emergencyplanning <- function() {
     step(
       el = "card_header",
       title = "Welcome to the Emergency Planning Tool",
-      description = "Use this interactive tool to understand the risk of emergency events, such as flooding, in your local area. The tools uses a combination of <b>social vulnerability</b> and <b>hazard risk</b> data. Factors driving social vulnerability are explored and these are linked to charities working within your local area.<br><br><a href=https://www.w3schools.com>Watch this short video</a> describing the tool."
+      description = "Use this interactive tool to understand the risk of emergency events, such as flooding, in your local area. The tools uses a combination of <b>social vulnerability</b> and <b>hazard risk</b> data. Factors driving social vulnerability are explored and these are linked to charities working within your local area."
       )$
+    # <br><br><a href=https://www.w3schools.com>Watch this short video</a> describing the tool.
     step(
       "[data-value='selected_areas']",
       "Select an area",
@@ -396,6 +414,10 @@ emergencyplanning <- function() {
 
     observeEvent(input$resources_next_button, {
       updateTabsetPanel(session, "tabs", selected = "methodology_data")
+    })
+
+    observeEvent(input$resources_next_button, {
+      updateTabsetPanel(session, "tabs", selected = "cookie_policy")
     })
 
     observeEvent(input$methodology_data_back_button, {

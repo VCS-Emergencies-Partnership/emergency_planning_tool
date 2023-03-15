@@ -13,3 +13,7 @@ function OptanonWrapper() { }
 function OptanonWrapper() { }
 </script>
 <!-- OneTrust Cookies Consent Notice end for vcsep.shinyapps.io/emergency_planning_tool/ -->
+
+<!-- OneTrust Cookies List start -->
+<div id="ot-sdk-cookie-policy"></div>
+<!-- OneTrust Cookies List end -->
