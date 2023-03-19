@@ -10,7 +10,7 @@ cookie <- function() {
         "Find out how we use cookies on our website"
       ),
       tags$p(
-        "Last updated: 13 March 2023"
+        "Last updated: 19 March 2023"
       ),
       tags$h2(
         "Who are we?"
@@ -121,12 +121,12 @@ cookie <- function() {
       tags$p(
         "We may update how we use cookies (and this policy) from time to time. So please check regularly to keep up to date with any changes."
       ),
-      # tags$h2(
-      #   "5. The cookies we use"
-      # ),
-      # tags$p(
-      #   "There is more information about the individual cookies we use below. This includes the purposes for which we use them and how long they remain on your device. This is a list of all the cookies that may be set."
-      # )
+      tags$h2(
+        "5. The cookies we use"
+      ),
+      tags$p(
+        "There is more information about the individual cookies we use below. This includes the purposes for which we use them and how long they remain on your device. This is a list of all the cookies that may be set."
+      )
     )
   )
 }

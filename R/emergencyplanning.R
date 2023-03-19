@@ -247,9 +247,20 @@ emergencyplanning <- function() {
           )
         ),
         br(),
-        cookie()
+        cookie(),
+        # for onetrust table
+        tags$table(includeScript(paste0(getwd(), "/www/onetrust_table.js"))),
       )
-    )
+    ),
+    br(),
+
+    # add coloured band
+    tags$footer(align="left", style="position:relative; bottom:0; width:100%; height:20px; padding: 0px; background-color: #3E287F; z-index: 1000;"),
+    br(),
+    # add a footer to include manage cookie
+    tags$footer(
+      footer_image(),
+      align="left", style="position:relative; bottom:0; width:100%; height:40px; color: black; padding: 0px; background-color: transparent; z-index: 1000;")
   )
 }
 
