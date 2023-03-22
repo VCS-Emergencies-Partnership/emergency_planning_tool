@@ -14,10 +14,10 @@ emergencyplanning <- function() {
   # ---- UI ----
   ui <- function(request) {
     fluidPage(
-    # for hotjar tracking
-    tags$head(includeScript(paste0(getwd(), "/www/hotjar.js"))),
     # for onetrust pop-up
     tags$head(includeScript(paste0(getwd(), "/www/onetrust.js"))),
+    # for hotjar tracking
+    tags$head(includeScript(paste0(getwd(), "/www/hotjar.js"))),
     # For use of box() function
     useShinydashboard(),
     # Add title for page in browser
