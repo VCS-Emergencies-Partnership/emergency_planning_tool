@@ -15,7 +15,7 @@ emergencyplanning <- function() {
   ui <- function(request) {
     fluidPage(
     # for onetrust pop-up
-    tags$head(includeScript(paste0(getwd(), "/www/onetrust.js"))),
+    tags$head(includeHTML(paste0(getwd(), "/www/onetrust.js"))),
     # for hotjar tracking
     tags$head(includeScript(paste0(getwd(), "/www/hotjar.js"))),
     # For use of box() function
@@ -249,7 +249,7 @@ emergencyplanning <- function() {
         br(),
         cookie(),
         # for onetrust table
-        tags$table(includeScript(paste0(getwd(), "/www/onetrust_table.js"))),
+        tags$table(includeHTML(paste0(getwd(), "/www/onetrust_table.js"))),
       )
     ),
     br(),

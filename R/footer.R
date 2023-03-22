@@ -24,7 +24,7 @@ footer_image <- function() {
     column(
       2,
       align = "right",
-     includeScript(paste0(getwd(), "/www/onetrust_footer.js"))
+     includeHTML(paste0(getwd(), "/www/onetrust_footer.js"))
     )
   )
 }
