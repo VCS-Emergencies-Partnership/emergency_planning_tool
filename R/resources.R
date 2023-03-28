@@ -4,7 +4,7 @@ resources_page <- function() {
     column(
       11,
       align = "left",
-      tags$p("Here is a collection of useful publicly available insight resources that could be of use to the VCS community during a flood. The resources shown are general resources but resources will be provided that are linked to the reasons causing social flood vulernability. Other resorces can be found on the ",
+      tags$p("Here is a collection of useful publicly available insight resources that could be of use to the VCS community during a flood. The resources shown are general resources but resources will be provided that are linked to the reasons causing social flood vulernability. Other resources can be found on the ",
              tags$a(href = "https://vcsep.org.uk/winter-preparedness-2022", target = "_blank", " VCS EP website.")
              )
       ),

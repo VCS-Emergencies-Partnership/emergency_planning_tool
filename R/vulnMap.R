@@ -5,7 +5,7 @@ vulnMapUI <- function(id) {
   #     label = "Only show flood risk neighbourhoods"
   #   ),
     h4(strong("Combined social and flood risk")),
-    p("This map looks at the where social vulnerability and exposure to flooding coincide. It is highlighting areas where the largest number of the most vulnerable people are exposed to frequent flooding. Planning and preparedness efforts could be directed to darker areas on the map."),
+    p("This map looks at where social vulnerability and exposure to flooding coincide. It is highlighting areas where the largest number of the most vulnerable people are exposed to frequent flooding. Planning and preparedness efforts could be directed to darker areas on the map."),
     leafletOutput(
       NS(id, "vuln_map"),
       height = 630
