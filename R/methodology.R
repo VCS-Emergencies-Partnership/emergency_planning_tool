@@ -129,7 +129,7 @@ Neighbourhood Flood Vulnerability Index (in review)"
         "About this app"
       ),
       tags$p(
-        "The emergency planning tool app was designed and developed by Aileen McDonald, Victoria Latham, Matt Thomas and Mike Page. If you have any questions or comments or issues, please contact ", tags$a(href="mailto:victoria.latham@vcsep.org.uk", "Victoria"),"."
+        "The emergency planning tool app was designed and developed by Aileen McDonald, Victoria Latham, Matt Thomas and Mike Page. If you have any questions or comments or issues, please contact ", tags$a(href="mailto:victorialatham@vcsep.org.uk", "Victoria"),"."
       )
     )
   )
