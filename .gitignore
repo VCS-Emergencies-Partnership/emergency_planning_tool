@@ -4,3 +4,6 @@ data/
 
 # Remove upload file from git
 /upload_app.R
+
+# Remove climate just data from git
+data-raw/heat_index_2022.xlsx
