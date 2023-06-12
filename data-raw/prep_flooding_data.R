@@ -108,12 +108,13 @@ usethis::use_data(lsoa_flood_risk_ltla_lookup, overwrite = TRUE)
 # Make data for NFVI quantiles/categories (LSOA level data only) -----
 # Higher value = more vulnerable
 lsoa_nvfi_quantiles <- data_eng_lsoa |>
-  mutate(nvfi_quantiles_eng = quantise(nvfi, num_quantiles = 10)) |>
-  select(lsoa11_code, nvfi, nvfi_quantiles_eng, sfripfcg, sfripfci) |>
-  mutate(nvfi_top_20_percent_eng = if_else(nvfi_quantiles_eng %in% c(9, 10), 1, 0),
+  mutate(risk_value = sfripfcg,
+         risk_quantiles_eng = quantise(nvfi, num_quantiles = 10)) |>
+  select(lsoa11_code, risk_value, risk_quantiles_eng, nvfi, sfripfci) |>
+  mutate(risk_top_20_percent_eng = if_else(risk_quantiles_eng %in% c(9, 10), 1, 0),
          eai = (sfripfci / nvfi) /1000,
          eai_flood = "flood") |>
-  select(-sfripfci) |>
+  select(-sfripfci, nvfi) |>
   left_join(boundaries_lsoa11, by =  "lsoa11_code") |>
   relocate(lsoa11_name, .after = lsoa11_code)
 
@@ -129,37 +130,25 @@ nvfi_sayers_classification <- tibble(
 
 vuln_scores_flood_lsoa <- lsoa_nvfi_quantiles |>
   mutate(
-    nvfi_sayers_class = case_when(
-      nvfi <= -2.5 ~ "Slight",
-      -2.5 < nvfi & nvfi <= -1.5 ~ "Extremely low",
-      -1.5 < nvfi & nvfi <= -0.5 ~ "Relatively low",
-      -0.5 < nvfi & nvfi <= 0.5 ~ "Average",
-      0.5 < nvfi & nvfi <= 1.5 ~ "Relatively high",
-      1.5 < nvfi & nvfi < 2.5 ~ "Extremely high",
-      2.5 <= nvfi ~ "Acute"
-    ), .after = nvfi_top_20_percent_eng
-  ) |>
-  relocate(sfripfcg, .after = nvfi_sayers_class) |>
-  mutate(
-    sfri_sayers_class = case_when(
-      sfripfcg == 0 ~ "No exposed population",
-      sfripfcg < 0 ~ "Exposed, NFVI below the UK mean",
-      0 <  sfripfcg & sfripfcg < 5 ~ "Low",
-      5 <= sfripfcg & sfripfcg < 12.5 ~ "Moderate",
-      12.5 <= sfripfcg & sfripfcg < 25 ~ "High",
-      25 <= sfripfcg & sfripfcg < 50 ~ "Very high",
-      50 <= sfripfcg & sfripfcg < 100 ~ "Acute",
-      100 <= sfripfcg ~ "Extreme"
+    sayers_class = case_when(
+      risk_value == 0 ~ "No exposed population",
+      risk_value < 0 ~ "Exposed, NFVI below the UK mean",
+      0 <  risk_value & risk_value < 5 ~ "Low",
+      5 <= risk_value & risk_value < 12.5 ~ "Moderate",
+      12.5 <= risk_value & risk_value < 25 ~ "High",
+      25 <= risk_value & risk_value < 50 ~ "Very high",
+      50 <= risk_value & risk_value < 100 ~ "Acute",
+      100 <= risk_value ~ "Extreme"
     ),
-    sfri_class_cleaned = case_when(
-      sfripfcg <= 0 ~ 0,
-      0 <  sfripfcg & sfripfcg < 5 ~ 1,
-      5 <= sfripfcg & sfripfcg < 12.5 ~ 2,
-      12.5 <= sfripfcg & sfripfcg < 25 ~ 3,
-      25 <= sfripfcg & sfripfcg < 50 ~ 4,
-      50 <= sfripfcg & sfripfcg < 100 ~ 5,
-      100 <= sfripfcg ~ 6
-    ), .after = sfripfcg,
+    class_cleaned = case_when(
+      risk_value <= 0 ~ 0,
+      0 <  risk_value & risk_value < 5 ~ 1,
+      5 <= risk_value & risk_value < 12.5 ~ 2,
+      12.5 <= risk_value & risk_value < 25 ~ 3,
+      25 <= risk_value & risk_value < 50 ~ 4,
+      50 <= risk_value & risk_value < 100 ~ 5,
+      100 <= risk_value ~ 6
+    ), .after = risk_value,
   )
 
 # Save ----

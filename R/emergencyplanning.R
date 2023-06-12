@@ -68,7 +68,7 @@ emergencyplanning <- function() {
         selectInput(
           "emergency_type",
           label = "Select emergency event",
-          choices = c("Flooding")
+          choices = c("Heat")
         )
       )
     ),
@@ -131,10 +131,10 @@ emergencyplanning <- function() {
               # Table of top drivers of vulnerability for clicked LSOA (module)
               topDriversTableUI("test")
             ),
-            fluidRow(
-              # Table of top drivers of vulnerability for clicked LSOA (module)
-              jitterPlotUI("test")
-            )
+            # fluidRow(
+            #   # Table of top drivers of vulnerability for clicked LSOA (module)
+            #   jitterPlotUI("test")
+            # )
             # br(),
             # fluidRow(
             #   column(width = 1),
@@ -156,42 +156,42 @@ emergencyplanning <- function() {
 
       # Charities - UI -------------
 
-      tabPanel(
-        title = "Organisations",
-        value = "organisations",
-        fluidRow(
-          column(
-            6,
-            align = "left",
-            # Button to move back page
-            actionButton("organisations_back_button", "Back page"),
-          ),
-          column(
-            6,
-            align = "right",
-            # Button to move to next page
-            actionButton("organisations_next_button", "Next page")
-          )
-        ),
-        br(),
-        fluidRow(
-          # Text to show top drivers of vulnerability for that LTLA
-          # & dropdown to subset data based on these top drivers
-          subsetCharitiesDataUI("test")
-        ),
-        fluidRow(
-          column(
-            5,
-            # Map of charities working within the area (module)
-            charitiesMapUI("test")
-          ),
-          column(
-            7,
-            # Table of charities working within the area (module)
-            charitiesTableUI("test")
-          )
-        )
-      ),
+      # tabPanel(
+      #   title = "Organisations",
+      #   value = "organisations",
+      #   fluidRow(
+      #     column(
+      #       6,
+      #       align = "left",
+      #       # Button to move back page
+      #       actionButton("organisations_back_button", "Back page"),
+      #     ),
+      #     column(
+      #       6,
+      #       align = "right",
+      #       # Button to move to next page
+      #       actionButton("organisations_next_button", "Next page")
+      #     )
+      #   ),
+      #   br(),
+      #   fluidRow(
+      #     # Text to show top drivers of vulnerability for that LTLA
+      #     # & dropdown to subset data based on these top drivers
+      #     subsetCharitiesDataUI("test")
+      #   ),
+      #   fluidRow(
+      #     column(
+      #       5,
+      #       # Map of charities working within the area (module)
+      #       charitiesMapUI("test")
+      #     ),
+      #     column(
+      #       7,
+      #       # Table of charities working within the area (module)
+      #       charitiesTableUI("test")
+      #     )
+      #   )
+      # ),
 
       # Resources - UI -------------
 
@@ -322,7 +322,7 @@ emergencyplanning <- function() {
         # Subset the vulnerability scores data with selected LSOAs
         lsoa_vuln_scores_subset <- subsetVulnDataServer(
           "test",
-          lsoa_data = vuln_scores_flood_lsoa,
+          lsoa_data = vuln_scores_heat_lsoa,
           ltlas_for_filtering = selected_ltlas
         )
 
@@ -344,17 +344,17 @@ emergencyplanning <- function() {
 
         # Table of top drivers of vulnerability for clicked LSOA (module)
         topDriversTableServer("test",
-          vuln_drivers = vuln_drivers_flood_lsoa,
+          vuln_drivers = vuln_drivers_heat_lsoa,
           lsoas_clicked = lsoas_clicked_global,
           selected_ltlas = selected_ltlas
         )
 
-        # Jitter plot (module)
-        jitterPlotServer("test",
-          lsoa_vuln_scores_sf_subset = lsoa_vuln_scores_subset,
-          lsoas_clicked = lsoas_clicked_global,
-          selected_ltlas = selected_ltlas
-        )
+        # # Jitter plot (module)
+        # jitterPlotServer("test",
+        #   lsoa_vuln_scores_sf_subset = lsoa_vuln_scores_subset,
+        #   lsoas_clicked = lsoas_clicked_global,
+        #   selected_ltlas = selected_ltlas
+        # )
       }
     })
 
@@ -367,7 +367,7 @@ emergencyplanning <- function() {
         # Repeated from when the 'vulnerabilities' tab is selected
         lsoa_vuln_scores_subset <- subsetVulnDataServer(
           "test",
-          lsoa_data = vuln_scores_flood_lsoa,
+          lsoa_data = vuln_scores_heat_lsoa,
           ltlas_for_filtering = selected_ltlas
         )
 

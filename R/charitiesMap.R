@@ -28,7 +28,7 @@ charitiesMapServer <- function(id,
       lsoa_vuln_scores_sf_subset_clean <- reactive({
         lsoa_vuln_scores_sf_subset() |>
           st_as_sf(crs = 4326) |>
-          rename(vulnerability_quantiles = nvfi_quantiles_eng)
+          rename(vulnerability_quantiles = risk_quantiles_eng)
       })
 
       # only plot the charities where the contact info is within the chosen LTLA
@@ -41,7 +41,7 @@ charitiesMapServer <- function(id,
 
       pal <- colorBin("inferno",
         reverse = TRUE,
-        domain = lsoa_vuln_scores_sf_subset_clean()$sfri_class_cleaned,
+        domain = lsoa_vuln_scores_sf_subset_clean()$class_cleaned,
         bins = c(0:7)
       )
 
@@ -70,13 +70,13 @@ charitiesMapServer <- function(id,
           color = "#5C747A",
           dashArray = "0.1",
           # fill of polygon
-          fillColor = ~ pal(sfri_class_cleaned),
+          fillColor = ~ pal(class_cleaned),
           fillOpacity = 0.7
         ) |>
         addLegend(
           data = lsoa_vuln_scores_sf_subset_clean(),
           pal = pal,
-          values = ~sfri_class_cleaned,
+          values = ~class_cleaned,
           opacity = 0.7,
           title = "Flood vulnerability",
           position = "bottomright",

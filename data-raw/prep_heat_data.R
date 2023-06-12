@@ -69,9 +69,10 @@ lookup_lsoa11_ltla21 |>
 # Make data for SPHVI quantiles/categories (LSOA level data only) -----
 # Higher value = more vulnerable
 lsoa_sphvi_quantiles <- raw_data |>
-  mutate(sphvi_quantiles_eng = quantise(sphvi, num_quantiles = 10)) |>
-  select(lsoa11_code, sphvi, sphvi_quantiles_eng) |>
-  mutate(sphvi_top_20_percent_eng = if_else(sphvi_quantiles_eng %in% c(9, 10), 1, 0)) |>
+  mutate(risk_value = sphvi,
+         risk_quantiles_eng = quantise(risk_value, num_quantiles = 10)) |>
+  select(lsoa11_code, risk_value, risk_quantiles_eng) |>
+  mutate(risk_top_20_percent_eng = if_else(risk_quantiles_eng %in% c(9, 10), 1, 0)) |>
   left_join(boundaries_lsoa11, by = "lsoa11_code") |>
   relocate(lsoa11_name, .after = lsoa11_code)
 
@@ -87,15 +88,25 @@ sphvi_climate_just_classification <- tibble(
 
 vuln_scores_heat_lsoa <- lsoa_sphvi_quantiles |>
   mutate(
-    sphvi_climate_just_class = case_when(
-      sphvi <= -2.5 ~ "Slight",
-      -2.5 < sphvi & sphvi <= -1.5 ~ "Extremely low",
-      -1.5 < sphvi & sphvi <= -0.5 ~ "Relatively low",
-      -0.5 < sphvi & sphvi <= 0.5 ~ "Average",
-      0.5 < sphvi & sphvi <= 1.5 ~ "Relatively high",
-      1.5 < sphvi & sphvi < 2.5 ~ "Extremely high",
-      2.5 <= sphvi ~ "Acute"
-    ), .after = sphvi_top_20_percent_eng
+    sayers_class = case_when(
+      risk_value == 0 ~ "No exposed population",
+      risk_value < 0 ~ "Exposed, NFVI below the UK mean",
+      0 <  risk_value & risk_value < 5 ~ "Low",
+      5 <= risk_value & risk_value < 12.5 ~ "Moderate",
+      12.5 <= risk_value & risk_value < 25 ~ "High",
+      25 <= risk_value & risk_value < 50 ~ "Very high",
+      50 <= risk_value & risk_value < 100 ~ "Acute",
+      100 <= risk_value ~ "Extreme"
+    ),
+    class_cleaned = case_when(
+      risk_value <= 0 ~ 0,
+      0 <  risk_value & risk_value < 5 ~ 1,
+      5 <= risk_value & risk_value < 12.5 ~ 2,
+      12.5 <= risk_value & risk_value < 25 ~ 3,
+      25 <= risk_value & risk_value < 50 ~ 4,
+      50 <= risk_value & risk_value < 100 ~ 5,
+      100 <= risk_value ~ 6
+    ), .after = risk_value,
   )
 
 # Save ----

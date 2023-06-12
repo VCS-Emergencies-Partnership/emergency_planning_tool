@@ -26,7 +26,7 @@ vulnMapServer <- function(id, lsoa_vuln_scores_sf_subset, flood_risk_data, lsoas
 
       lsoa_vuln_scores_sf_subset() |>
       st_as_sf(crs = 4326) |>
-      rename(vulnerability_quantiles = nvfi_quantiles_eng)
+      rename(vulnerability_quantiles = risk_quantiles_eng)
     })
 
 
@@ -34,7 +34,7 @@ vulnMapServer <- function(id, lsoa_vuln_scores_sf_subset, flood_risk_data, lsoas
     pal <- reactive({
       colorBin("inferno",
         reverse = TRUE,
-        domain = lsoa_vuln_scores_sf_subset_clean()$sfri_class_cleaned,
+        domain = lsoa_vuln_scores_sf_subset_clean()$class_cleaned,
         bins = c(0:7)
       )
     })
@@ -59,7 +59,7 @@ vulnMapServer <- function(id, lsoa_vuln_scores_sf_subset, flood_risk_data, lsoas
         addLegend(
           data = lsoa_vuln_scores_sf_subset_clean(),
           pal = pal,
-          values = ~sfri_class_cleaned,
+          values = ~class_cleaned,
           opacity = 0.7,
           title = "Flood vulnerability",
           position = "bottomright",
