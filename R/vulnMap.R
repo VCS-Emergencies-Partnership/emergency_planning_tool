@@ -4,8 +4,8 @@ vulnMapUI <- function(id) {
   #   checkboxInput(NS(id, "flood_risk_checkbox"),
   #     label = "Only show flood risk neighbourhoods"
   #   ),
-    h4(strong("Combined social and flood risk")),
-    p("This map looks at where social vulnerability and exposure to flooding coincide. It is highlighting areas where the largest number of the most vulnerable people are exposed to frequent flooding. Planning and preparedness efforts could be directed to darker areas on the map."),
+    h4(strong("Combined social and heat risk")),
+    p("This map looks at where social vulnerability and exposure to heat coincide. It is highlighting areas where the largest number of the most vulnerable people are exposed to frequent heat. Planning and preparedness efforts could be directed to darker areas on the map."),
     leafletOutput(
       NS(id, "vuln_map"),
       height = 630
@@ -61,7 +61,7 @@ vulnMapServer <- function(id, lsoa_vuln_scores_sf_subset, flood_risk_data, lsoas
           pal = pal,
           values = ~class_cleaned,
           opacity = 0.7,
-          title = "Flood vulnerability",
+          title = "Heat vulnerability",
           position = "bottomright",
           # To change from numeric values to 'most/least vulnerable labels'
           labFormat = function(type, cuts, p) {

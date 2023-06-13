@@ -88,25 +88,24 @@ sphvi_climate_just_classification <- tibble(
 
 vuln_scores_heat_lsoa <- lsoa_sphvi_quantiles |>
   mutate(
-    sayers_class = case_when(
-      risk_value == 0 ~ "No exposed population",
-      risk_value < 0 ~ "Exposed, NFVI below the UK mean",
-      0 <  risk_value & risk_value < 5 ~ "Low",
-      5 <= risk_value & risk_value < 12.5 ~ "Moderate",
-      12.5 <= risk_value & risk_value < 25 ~ "High",
-      25 <= risk_value & risk_value < 50 ~ "Very high",
-      50 <= risk_value & risk_value < 100 ~ "Acute",
-      100 <= risk_value ~ "Extreme"
+    sphvi_climate_just_class = case_when(
+      risk_value <= -2.5 ~ "Slight",
+      -2.5 < risk_value & risk_value <= -1.5 ~ "Extremely low",
+      -1.5 < risk_value & risk_value <= -0.5 ~ "Relatively low",
+      -0.5 < risk_value & risk_value <= 0.5 ~ "Average",
+      0.5 < risk_value & risk_value <= 1.5 ~ "Relatively high",
+      1.5 < risk_value & risk_value < 2.5 ~ "Extremely high",
+      2.5 <= risk_value ~ "Acute"
     ),
     class_cleaned = case_when(
-      risk_value <= 0 ~ 0,
-      0 <  risk_value & risk_value < 5 ~ 1,
-      5 <= risk_value & risk_value < 12.5 ~ 2,
-      12.5 <= risk_value & risk_value < 25 ~ 3,
-      25 <= risk_value & risk_value < 50 ~ 4,
-      50 <= risk_value & risk_value < 100 ~ 5,
-      100 <= risk_value ~ 6
-    ), .after = risk_value,
+      risk_value <= -2.5 ~ 0,
+      -2.5 < risk_value & risk_value <= -1.5 ~ 1,
+      -1.5 < risk_value & risk_value <= -0.5 ~ 2,
+      -0.5 < risk_value & risk_value <= 0.5 ~ 3,
+      0.5 < risk_value & risk_value <= 1.5 ~ 4,
+      1.5 < risk_value & risk_value < 2.5 ~ 5,
+      2.5 <= risk_value ~ 6
+    ), .after = risk_top_20_percent_eng
   )
 
 # Save ----

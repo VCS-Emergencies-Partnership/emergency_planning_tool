@@ -408,7 +408,7 @@ emergencyplanning <- function() {
     })
 
     observeEvent(input$vulnerabilities_next_button, {
-      updateTabsetPanel(session, "tabs", selected = "organisations")
+      updateTabsetPanel(session, "tabs", selected = "resources")
     })
 
     observeEvent(input$organisations_back_button, {
@@ -420,7 +420,7 @@ emergencyplanning <- function() {
     })
 
     observeEvent(input$resources_back_button, {
-      updateTabsetPanel(session, "tabs", selected = "organisations")
+      updateTabsetPanel(session, "tabs", selected = "vulnerabilities")
     })
 
     observeEvent(input$resources_next_button, {

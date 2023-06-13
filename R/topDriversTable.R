@@ -15,7 +15,7 @@ topDriversTableUI <- function(id) {
       fluidRow(box(
         tableOutput(NS(id, "top_drivers_table_domains")),
         title = span(
-          "Overarching reasons why the neighbourhood is socially vulnerable to flooding",
+          "Overarching reasons why the neighbourhood is socially vulnerable to heat",
           div(
             style = "display:inline-block;",
             title = paste0("- Susceptibility: based on the age and health of local populations\n- Ability to prepare: based on income, knowledge and property tenure\n- Ability to respond: based on income, knowledge, mobility and access to transport\n- Ability to recover: based on income, information use, and mobility/transport\n- Community support: based on social networks, housing characteristics and availability of support"),
@@ -29,7 +29,7 @@ topDriversTableUI <- function(id) {
       )),
       fluidRow(box(
         tableOutput(NS(id, "top_drivers_table_variables")),
-        title = "Underlying reasons why the neighbourhood is socially vulnerable to flooding",
+        title = "Underlying reasons why the neighbourhood is socially vulnerable to heat",
         solidHeader = TRUE,
         width = 11,
         status = "primary",
