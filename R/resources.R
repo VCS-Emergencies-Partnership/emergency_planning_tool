@@ -6,7 +6,7 @@ resources_page <- function() {
         align = "left",
         tags$p(
           "Here is a collection of useful publicly available insight resources that could be of use to the VCS community during a heatwave The resources shown are general resources. Other resources can be found on the ",
-          tags$a(href = "https://vcsep.org.uk/winter-preparedness-2022", target = "_blank", " VCS EP website.")
+          tags$a(href = "https://www.vcsep.org.uk/heatwaves-preparedness", target = "_blank", " VCS EP website.")
         )
       ),
       column(
@@ -41,7 +41,7 @@ resources_page <- function() {
         )
       ),
       box(
-        title = "GOV: Hot weather and health", "Guidance on how to suppport vulnerable people.", width = 18, height = 240, background = "purple",
+        title = "GOV: Hot weather and health", "Guidance on how to support vulnerable people.", width = 18, height = 240, background = "purple",
         shiny::actionButton(
           inputId = "ab1", label = "Click here",
           onclick = "window.open('https://www.gov.uk/government/publications/hot-weather-and-health-supporting-vulnerable-people', '_blank')"
@@ -115,14 +115,14 @@ resources_page <- function() {
         )
       ),
       box(
-        title = "VCSEP: Heatwave TTX", "Report and resoruces from a capability exercise on heatwaves.", width = 18, height = 240, background = "purple",
+        title = "VCSEP: Heatwave TTX", "Report and resources from a capability exercise on heatwaves.", width = 18, height = 240, background = "purple",
         shiny::actionButton(
           inputId = "ab1", label = "Click here",
           onclick = "window.open('https://www.vcsep.org.uk/resources/heatwave-ttx-report-and-resources', '_blank')"
         )
       ),
       box(
-        title = "VCSEP: Heatwave scenario exercise", "Example heatwave scenarios that can be used for prepardness.", width = 18, height = 240, background = "purple",
+        title = "VCSEP: Heatwave scenario exercise", "Example heatwave scenarios that can be used for preparedness.", width = 18, height = 240, background = "purple",
         shiny::actionButton(
           inputId = "ab1", label = "Click here",
           onclick = "window.open('https://mcusercontent.com/83011ab5f15b06afda2f15115/files/16a2dff5-335a-968d-6ed9-67619c580032/Heatwave_scenario_exercise_plan_1_.pdf', '_blank')"
