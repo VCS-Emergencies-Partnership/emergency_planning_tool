@@ -6,10 +6,46 @@ methodology_writeup <- function() {
       tags$h1(
         "About the Emergency Planning Tool"
         ),
+      br(),
+      tags$h2(
+        "Heat Model"
+      ),
+      tags$p(
+        "The heat model used in this emergency planning tool contains the indicators used in the ClimateJust Socio Spatial Heat Vulnerability Index (SPHVI) Dimension Data."
+      ),
+      tags$h2(
+        "Social Spatial Heat Vulnerability Index (SPHVI)"
+      ),
+      tags$p(
+        "Socio Spatial Heat Vulnerability Index (SPHVI) data has been categorised and data sourced as follows:"
+      ),
+      tags$p(
+        "•	SENSITIVITY: Age and Health from population estimation ONS 2020 and IMD 2019"
+      ),
+      tags$p(
+        "•	ABILITY TO PREPARE: Income, Tenure, Language, Internet and Local knowledge from IMD 2019, Census 2011, Ofcom 2018 and CDRC 2021 "
+      ),
+      tags$p(
+        "•	ABILITY TO RESPOND: Income, Language, Internet, Local knowledge, Social networks, Mobility, Crime and General infrastructure from IMD 2019, Census 2011, Ofcom 2018, CDRC 2021, Journey Time Statistics 2017, UK Business Counts 2021, ONS Greenspace and FoE 2020"
+      ),
+      tags$p(
+        "•	ABILITY TO RECOVER: Income, Language, Internet, Social networks, Mobility, GP Access, Hospital Access and Pharmacy Access from IMD 2019, Census 2011, Ofcom 2018, CDRC 2021 and Journey Time Statistics 2017 "
+      ),
+      tags$p(
+        "•	ENHANCED EXPOSURE: Physical Environment and Housing Characteristics from UKCEH 2021, ONSGreenspace and IMD 2019"
+      ),
+      tags$p(
+        "For more detailed information, please see ",
+        tags$a(href = "https://www.climatejust.org.uk/map", target = "_blank", "ClimateJust"),
+        ", including information on the data source and the reasons for inclusion of that indicator in the model."
+      ),
+      br(),
+      tags$h2(
+        "Flooding Model"
+      ),
       tags$p(
         "The flooding model used in this emergency planning tool is formed of two parts: ",tags$b("social vulnerability")," and ",tags$b("flood risk"),". These are used to create a Social Flood Risk Index (SFRI)."
       ),
-      br(),
       tags$h2(
         "Social Vulnerability Index"
       ),
@@ -76,29 +112,13 @@ methodology_writeup <- function() {
       ),
       br(),
       tags$h2(
-        "Organisations linked to vulnerabilities"
-      ),
-      tags$p(
-        "The ‘organisations’ tabs within this tool links the social drivers of vulnerability to flooding (for example old age) to charities that work within this field in the local area (for example Age UK). This dataset has been built using the Charity Commissioner data, providing information only on registered charities. More information on this data can be",
-        tags$a(href = "https://register-of-charities.charitycommission.gov.uk/register/full-register-download", target = "_blank", "found here.")
-      ),
-      tags$p(
-        "The charity table is ordered based on the charities contact address so that organisations within the local authority are shown first (and these are shown on the corresponding map). Using the contact address to filter for charities within a local authority has been used so that local support can be sought. However, national charities, who will likely have their contact address listed as their headquarters, will not be shown within the map due to this."
-      ),
-      tags$p(
-        "There are known limitations with the Charity Commissioner data, in that it does not give a full picture of the charity sector. Data is collected based on charities submitting an annual return and there are known issues with data completeness/quality."
-      ),
-      tags$p(
-        "Matching of the vulnerabilities within the flooding model to charities is based initially on the ",
-        tags$a(href = "https://register-of-charities.charitycommission.gov.uk/documents/34602/422354/Data+Definition.docx/f0a342ce-ef45-1401-ee75-26225f6f0d4f?t=1617010186385", target = "_blank", "charity classification data table"), " providing information on (1) What – what the charity does, (2) How – how the charity helps, and (3) Who – who the charity helps. Secondly, the ",
-        tags$a(href = "https://register-of-charities.charitycommission.gov.uk/documents/34602/422354/Data+Definition.docx/f0a342ce-ef45-1401-ee75-26225f6f0d4f?t=1617010186385", target = "_blank", "charity data table"), " is used to link the charity activities field to the vulnerabilities based on key-terms. The charity activities field is a free-text explanation of what the charity does and who they help, provided by the trustees."
-      ),
-      tags$p(
-        "The VCS Emergencies Partnership has not verified the reputability of the organisations listed and has not verified the information provided. "
-      ),
-      br(),
-      tags$h2(
         "Data licences"
+      ),
+      tags$h3(
+        "Social Spatial Heat Vulnerability Index (SPHVI)"
+      ),
+      tags$p(
+        "Climate Just ",tags$a(href = "www.climatejust.org.uk", target = "_blank", "(www.climatejust.org.uk)"), " produced by the University of Manchester. Data updates funded by Friends of the Earth, 2022."
       ),
       tags$h3(
         "The Social Flood Risk Index (SFRI)"
