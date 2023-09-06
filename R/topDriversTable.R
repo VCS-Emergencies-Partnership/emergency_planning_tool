@@ -61,7 +61,7 @@ topDriversTableServer <- function(id,
             )) |>
             select(
               `Rank` = normalised_rank,
-              `Driver of flooding vulnerability` = domain_variable_name,
+              `Driver of heat vulnerability` = domain_variable_name,
               `Domain or variable` = domain_variable,
               `Comparison of value nationally` = quantiles_eng
               #     `Values` = values
